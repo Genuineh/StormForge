@@ -282,9 +282,12 @@ class ContextMenuHandler {
 
   /// Duplicates an element.
   void _duplicateElement(CanvasElement element) {
-    final newElement = element.copyWith(
-      id: null, // Will generate new ID
+    final newElement = StickyNoteElement.create(
+      type: element.type,
       position: element.position + const Offset(20, 20),
+      label: element.label,
+    ).copyWith(
+      description: element.description,
       isSelected: false,
     );
     ref.read(canvasModelProvider.notifier).addElement(newElement);

@@ -21,7 +21,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      - name: Check if Flutter project exists
+        id: check_flutter
+        run: |
+          if [ -f "pubspec.yaml" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+        working-directory: stormforge_modeler
+      
       - name: Setup Flutter
+        if: steps.check_flutter.outputs.exists == 'true'
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.24.0'
@@ -29,18 +40,23 @@ jobs:
           cache: true
       
       - name: Get dependencies
+        if: steps.check_flutter.outputs.exists == 'true'
         run: flutter pub get
       
       - name: Verify formatting
+        if: steps.check_flutter.outputs.exists == 'true'
         run: dart format --output=none --set-exit-if-changed .
       
       - name: Analyze project source
+        if: steps.check_flutter.outputs.exists == 'true'
         run: flutter analyze
       
       - name: Run tests
+        if: steps.check_flutter.outputs.exists == 'true'
         run: flutter test --coverage
       
       - name: Upload coverage
+        if: steps.check_flutter.outputs.exists == 'true'
         uses: codecov/codecov-action@v4
         with:
           files: coverage/lcov.info
@@ -51,34 +67,50 @@ jobs:
   dart-generator:
     name: Dart Generator CI
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: stormforge_dart_generator
     
     steps:
       - uses: actions/checkout@v4
       
+      - name: Check if Dart project exists
+        id: check_dart
+        run: |
+          if [ -f "stormforge_dart_generator/pubspec.yaml" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+      
       - name: Setup Dart
+        if: steps.check_dart.outputs.exists == 'true'
         uses: dart-lang/setup-dart@v1
         with:
           sdk: '3.5.0'
       
       - name: Get dependencies
+        if: steps.check_dart.outputs.exists == 'true'
         run: dart pub get
+        working-directory: stormforge_dart_generator
       
       - name: Verify formatting
+        if: steps.check_dart.outputs.exists == 'true'
         run: dart format --output=none --set-exit-if-changed .
+        working-directory: stormforge_dart_generator
       
       - name: Analyze project source
+        if: steps.check_dart.outputs.exists == 'true'
         run: dart analyze
+        working-directory: stormforge_dart_generator
       
       - name: Run tests
+        if: steps.check_dart.outputs.exists == 'true'
         run: dart test --coverage=coverage
+        working-directory: stormforge_dart_generator
       
       - name: Upload coverage
+        if: steps.check_dart.outputs.exists == 'true'
         uses: codecov/codecov-action@v4
         with:
-          files: coverage/lcov.info
+          files: stormforge_dart_generator/coverage/lcov.info
           flags: dart-generator
           name: dart-generator-coverage
 
@@ -86,19 +118,27 @@ jobs:
   rust-generator:
     name: Rust Generator CI
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: stormforge_generator
     
     steps:
       - uses: actions/checkout@v4
       
+      - name: Check if Rust project exists
+        id: check_rust
+        run: |
+          if [ -f "stormforge_generator/Cargo.toml" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+      
       - name: Setup Rust
+        if: steps.check_rust.outputs.exists == 'true'
         uses: dtolnay/rust-action@stable
         with:
           components: rustfmt, clippy
       
       - name: Cache cargo
+        if: steps.check_rust.outputs.exists == 'true'
         uses: actions/cache@v4
         with:
           path: |
@@ -110,16 +150,24 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       
       - name: Check formatting
+        if: steps.check_rust.outputs.exists == 'true'
         run: cargo fmt --all -- --check
+        working-directory: stormforge_generator
       
       - name: Run clippy
+        if: steps.check_rust.outputs.exists == 'true'
         run: cargo clippy --all-targets --all-features -- -D warnings
+        working-directory: stormforge_generator
       
       - name: Build
+        if: steps.check_rust.outputs.exists == 'true'
         run: cargo build --verbose
+        working-directory: stormforge_generator
       
       - name: Run tests
+        if: steps.check_rust.outputs.exists == 'true'
         run: cargo test --verbose
+        working-directory: stormforge_generator
 
   # IR Schema validation
   ir-schema:
@@ -139,7 +187,11 @@ jobs:
       
       - name: Validate example IR files
         run: |
-          for file in ir_schema/examples/**/*.yaml; do
-            echo "Validating $file..."
-            ajv validate -s ir_schema/schema/ir.schema.json -d "$file" --spec=draft2020 -c ajv-formats || true
-          done
+          if [ -d "ir_schema/examples" ]; then
+            for file in ir_schema/examples/**/*.yaml; do
+              echo "Validating $file..."
+              ajv validate -s ir_schema/schema/ir.schema.json -d "$file" --spec=draft2020 -c ajv-formats
+            done
+          else
+            echo "No IR examples to validate"
+          fi

@@ -73,7 +73,12 @@ class _ElementPropertiesState extends ConsumerState<_ElementProperties> {
   @override
   void didUpdateWidget(covariant _ElementProperties oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.element.id != widget.element.id) {
+    // Update controllers when element changes or when same element's properties change externally
+    if (oldWidget.element.id != widget.element.id ||
+        (oldWidget.element.label != widget.element.label && 
+         _labelController.text != widget.element.label) ||
+        (oldWidget.element.description != widget.element.description &&
+         _descriptionController.text != widget.element.description)) {
       _labelController.text = widget.element.label;
       _descriptionController.text = widget.element.description;
     }

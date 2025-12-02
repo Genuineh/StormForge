@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:stormforge_modeler/models/models.dart';
 
@@ -324,35 +325,8 @@ class CanvasPainter extends CustomPainter {
 /// Extension on double for math operations.
 extension DoubleExtension on double {
   /// Returns the cosine of this angle in radians.
-  double cos() => _cos(this);
+  double cos() => math.cos(this);
   
   /// Returns the sine of this angle in radians.
-  double sin() => _sin(this);
-}
-
-// Simple sin/cos implementations using Taylor series approximation
-double _cos(double x) {
-  // Normalize to [-pi, pi]
-  while (x > 3.14159265359) {
-    x -= 6.28318530718;
-  }
-  while (x < -3.14159265359) {
-    x += 6.28318530718;
-  }
-  
-  final x2 = x * x;
-  return 1 - x2 / 2 + x2 * x2 / 24 - x2 * x2 * x2 / 720;
-}
-
-double _sin(double x) {
-  // Normalize to [-pi, pi]
-  while (x > 3.14159265359) {
-    x -= 6.28318530718;
-  }
-  while (x < -3.14159265359) {
-    x += 6.28318530718;
-  }
-  
-  final x2 = x * x;
-  return x - x * x2 / 6 + x * x2 * x2 / 120 - x * x2 * x2 * x2 / 5040;
+  double sin() => math.sin(this);
 }

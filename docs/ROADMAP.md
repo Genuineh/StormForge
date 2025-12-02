@@ -37,8 +37,8 @@
 |------|-------|--------|
 | Initialize Git repository | - | ✅ |
 | Project documentation | - | ✅ |
-| Development environment setup | - | ⏳ |
-| CI/CD pipeline setup | - | ⏳ |
+| Development environment setup | - | ✅ |
+| CI/CD pipeline setup | - | ✅ |
 
 ---
 
@@ -56,16 +56,16 @@
 
 **Validation Criteria**: Any 5 domains → 5 microservices + 5 dart packages in 30 minutes
 
-### Sprint S01: Flutter Modeler Skeleton + IR v1.0 (2025.10.09 - 2025.10.22)
+### Sprint S01: Flutter Modeler Skeleton + IR v1.0 (2025.10.09 - 2025.10.22) ✅
 
-| Task | Deliverable | Acceptance Criteria |
-|------|-------------|---------------------|
-| Canvas foundation | CustomPainter based canvas | Smooth 60fps rendering |
-| EventStorming elements | 7 element types | All DDD elements represented |
-| Drag & drop | Element manipulation | Intuitive interaction |
-| Zoom & pan | Canvas navigation | Smooth navigation on large models |
-| IR schema v1.0 | YAML schema definition | Comprehensive domain modeling |
-| YAML sync | Real-time export | Changes reflected immediately |
+| Task | Deliverable | Acceptance Criteria | Status |
+|------|-------------|---------------------|--------|
+| Canvas foundation | CustomPainter based canvas | Smooth 60fps rendering | ✅ |
+| EventStorming elements | 7 element types | All DDD elements represented | ✅ |
+| Drag & drop | Element manipulation | Intuitive interaction | ✅ |
+| Zoom & pan | Canvas navigation | Smooth navigation on large models | ✅ |
+| IR schema v1.0 | YAML schema definition | Comprehensive domain modeling | ✅ |
+| YAML sync | Real-time export | Changes reflected immediately | ✅ |
 
 ### Sprint S02: Multi-domain Canvas + Git Storage (2025.10.23 - 2025.11.05)
 

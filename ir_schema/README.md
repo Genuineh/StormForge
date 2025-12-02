@@ -108,14 +108,14 @@ ajv validate -s schema/ir.schema.json -d model.yaml
 ## Development Status
 
 - [x] Project structure defined
-- [ ] JSON Schema v1.0
-- [ ] Bounded Context schema
-- [ ] Aggregate schema
-- [ ] Event schema
-- [ ] Command schema
-- [ ] E-commerce examples
-- [ ] HR examples
-- [ ] Specification documentation
+- [x] JSON Schema v1.0
+- [x] Bounded Context schema
+- [x] Aggregate schema
+- [x] Event schema
+- [x] Command schema
+- [x] E-commerce examples
+- [x] HR examples
+- [x] Specification documentation
 
 ## License
 

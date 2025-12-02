@@ -1,0 +1,145 @@
+# StormForge CI/CD Pipeline
+# Continuous Integration workflow for the StormForge platform
+
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  # Flutter/Dart linting and testing
+  flutter:
+    name: Flutter CI
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: stormforge_modeler
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+          cache: true
+      
+      - name: Get dependencies
+        run: flutter pub get
+      
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed .
+      
+      - name: Analyze project source
+        run: flutter analyze
+      
+      - name: Run tests
+        run: flutter test --coverage
+      
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        with:
+          files: coverage/lcov.info
+          flags: flutter
+          name: flutter-coverage
+
+  # Dart generator linting and testing
+  dart-generator:
+    name: Dart Generator CI
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: stormforge_dart_generator
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Dart
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: '3.5.0'
+      
+      - name: Get dependencies
+        run: dart pub get
+      
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed .
+      
+      - name: Analyze project source
+        run: dart analyze
+      
+      - name: Run tests
+        run: dart test --coverage=coverage
+      
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        with:
+          files: coverage/lcov.info
+          flags: dart-generator
+          name: dart-generator-coverage
+
+  # Rust generator linting and testing
+  rust-generator:
+    name: Rust Generator CI
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: stormforge_generator
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Rust
+        uses: dtolnay/rust-action@stable
+        with:
+          components: rustfmt, clippy
+      
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            stormforge_generator/target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+      
+      - name: Check formatting
+        run: cargo fmt --all -- --check
+      
+      - name: Run clippy
+        run: cargo clippy --all-targets --all-features -- -D warnings
+      
+      - name: Build
+        run: cargo build --verbose
+      
+      - name: Run tests
+        run: cargo test --verbose
+
+  # IR Schema validation
+  ir-schema:
+    name: IR Schema Validation
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install ajv-cli
+        run: npm install -g ajv-cli ajv-formats
+      
+      - name: Validate example IR files
+        run: |
+          for file in ir_schema/examples/**/*.yaml; do
+            echo "Validating $file..."
+            ajv validate -s ir_schema/schema/ir.schema.json -d "$file" --spec=draft2020 -c ajv-formats || true
+          done

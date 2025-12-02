@@ -1,7 +1,7 @@
 # StormForge TODO
 
 > Development tracking document for StormForge platform
-> Last Updated: 2025-10-09 (Project Day 1)
+> Last Updated: 2025-12-02
 
 ## 📋 Phase 0: Proof of Concept (2025.10.09 - 2025.10.31)
 
@@ -14,25 +14,25 @@
 - [x] Create contribution guidelines (CONTRIBUTING.md)
 - [x] Set up .gitignore for Flutter/Rust/Dart
 - [x] Define project directory structure
-- [ ] Set up CI/CD pipeline (GitHub Actions)
-- [ ] Set up code quality tools (linting, formatting)
+- [x] Set up CI/CD pipeline (GitHub Actions)
+- [x] Set up code quality tools (linting, formatting)
 
-### Sprint S01: Flutter Modeler Skeleton + IR v1.0 (2025.10.09 - 2025.10.22)
-- [ ] Initialize Flutter project (stormforge_modeler)
-- [ ] Implement basic canvas widget
-- [ ] Create EventStorming element types:
-  - [ ] Domain Events (Orange sticky notes)
-  - [ ] Commands (Blue sticky notes)
-  - [ ] Aggregates (Yellow sticky notes)
-  - [ ] Policies (Purple sticky notes)
-  - [ ] Read Models (Green sticky notes)
-  - [ ] External Systems (Pink sticky notes)
-  - [ ] UI (White sticky notes)
-- [ ] Implement drag & drop functionality
-- [ ] Implement zoom & pan
-- [ ] Define IR v1.0 YAML schema
-- [ ] Implement YAML export/import
-- [ ] Real-time YAML sync on canvas changes
+### Sprint S01: Flutter Modeler Skeleton + IR v1.0 ✅ (2025.10.09 - 2025.10.22)
+- [x] Initialize Flutter project (stormforge_modeler)
+- [x] Implement basic canvas widget
+- [x] Create EventStorming element types:
+  - [x] Domain Events (Orange sticky notes)
+  - [x] Commands (Blue sticky notes)
+  - [x] Aggregates (Yellow sticky notes)
+  - [x] Policies (Purple sticky notes)
+  - [x] Read Models (Green sticky notes)
+  - [x] External Systems (Pink sticky notes)
+  - [x] UI (White sticky notes)
+- [x] Implement drag & drop functionality
+- [x] Implement zoom & pan
+- [x] Define IR v1.0 YAML schema (JSON Schema)
+- [x] Implement YAML export/import
+- [x] Real-time YAML sync on canvas changes
 
 ### Sprint S02: Multi-domain Canvas + Git Storage (2025.10.23 - 2025.11.05)
 - [ ] Support multiple Bounded Contexts in one canvas
@@ -197,7 +197,7 @@
 
 | Phase | Progress | Status |
 |-------|----------|--------|
-| Phase 0: POC | 10% | 🚧 In Progress |
+| Phase 0: POC | 50% | 🚧 In Progress |
 | Phase 1: MVP | 0% | ⏳ Planned |
 | Phase 2: Ecosystem | 0% | ⏳ Planned |
 | Phase 3: Enterprise | 0% | ⏳ Planned |

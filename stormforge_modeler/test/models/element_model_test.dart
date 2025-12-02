@@ -141,10 +141,7 @@ void main() {
         isSelected: false,
       );
 
-      final modified = connection.copyWith(
-        label: 'Modified',
-        isSelected: true,
-      );
+      final modified = connection.copyWith(label: 'Modified', isSelected: true);
 
       expect(modified.id, connection.id);
       expect(modified.sourceId, connection.sourceId);

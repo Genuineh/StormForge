@@ -26,15 +26,17 @@ class YamlService {
     buffer.writeln();
 
     // Aggregates
-    final aggregates =
-        model.elements.where((e) => e.type == ElementType.aggregate).toList();
+    final aggregates = model.elements
+        .where((e) => e.type == ElementType.aggregate)
+        .toList();
     if (aggregates.isNotEmpty) {
       buffer.writeln('aggregates:');
       for (final aggregate in aggregates) {
         buffer.writeln('  ${_sanitizeName(aggregate.label)}:');
         buffer.writeln('    name: "${aggregate.label}"');
         buffer.writeln(
-            '    description: "${_escapeString(aggregate.description)}"');
+          '    description: "${_escapeString(aggregate.description)}"',
+        );
         buffer.writeln('    root_entity:');
         buffer.writeln('      name: "${aggregate.label}"');
         buffer.writeln('      properties:');
@@ -46,37 +48,43 @@ class YamlService {
     }
 
     // Domain Events
-    final events =
-        model.elements.where((e) => e.type == ElementType.domainEvent).toList();
+    final events = model.elements
+        .where((e) => e.type == ElementType.domainEvent)
+        .toList();
     if (events.isNotEmpty) {
       buffer.writeln('events:');
       for (final event in events) {
         buffer.writeln('  ${_sanitizeName(event.label)}:');
         buffer.writeln('    name: "${event.label}"');
-        buffer.writeln('    description: "${_escapeString(event.description)}"');
+        buffer.writeln(
+          '    description: "${_escapeString(event.description)}"',
+        );
         buffer.writeln('    payload: []');
         buffer.writeln();
       }
     }
 
     // Commands
-    final commands =
-        model.elements.where((e) => e.type == ElementType.command).toList();
+    final commands = model.elements
+        .where((e) => e.type == ElementType.command)
+        .toList();
     if (commands.isNotEmpty) {
       buffer.writeln('commands:');
       for (final command in commands) {
         buffer.writeln('  ${_sanitizeName(command.label)}:');
         buffer.writeln('    name: "${command.label}"');
-        buffer
-            .writeln('    description: "${_escapeString(command.description)}"');
+        buffer.writeln(
+          '    description: "${_escapeString(command.description)}"',
+        );
         buffer.writeln('    payload: []');
         buffer.writeln();
       }
     }
 
     // Policies
-    final policies =
-        model.elements.where((e) => e.type == ElementType.policy).toList();
+    final policies = model.elements
+        .where((e) => e.type == ElementType.policy)
+        .toList();
     if (policies.isNotEmpty) {
       buffer.writeln('# Policies');
       for (final policy in policies) {
@@ -86,15 +94,17 @@ class YamlService {
     }
 
     // Read Models
-    final readModels =
-        model.elements.where((e) => e.type == ElementType.readModel).toList();
+    final readModels = model.elements
+        .where((e) => e.type == ElementType.readModel)
+        .toList();
     if (readModels.isNotEmpty) {
       buffer.writeln('queries:');
       for (final readModel in readModels) {
         buffer.writeln('  Get${_sanitizeName(readModel.label)}:');
         buffer.writeln('    name: "Get${readModel.label}"');
         buffer.writeln(
-            '    description: "${_escapeString(readModel.description)}"');
+          '    description: "${_escapeString(readModel.description)}"',
+        );
         buffer.writeln('    parameters: []');
         buffer.writeln('    returns:');
         buffer.writeln('      type: "${readModel.label}"');
@@ -116,8 +126,9 @@ class YamlService {
     }
 
     // UI Elements
-    final uiElements =
-        model.elements.where((e) => e.type == ElementType.ui).toList();
+    final uiElements = model.elements
+        .where((e) => e.type == ElementType.ui)
+        .toList();
     if (uiElements.isNotEmpty) {
       buffer.writeln('# UI Elements');
       for (final ui in uiElements) {
@@ -157,13 +168,15 @@ class YamlService {
       var xOffset = 300.0;
       for (final entry in aggregates.entries) {
         final aggregateData = entry.value as YamlMap;
-        elements.add(StickyNoteElement.create(
-          type: ElementType.aggregate,
-          position: Offset(xOffset, yOffset),
-          label: aggregateData['name']?.toString() ?? entry.key.toString(),
-        ).copyWith(
-          description: aggregateData['description']?.toString() ?? '',
-        ));
+        elements.add(
+          StickyNoteElement.create(
+            type: ElementType.aggregate,
+            position: Offset(xOffset, yOffset),
+            label: aggregateData['name']?.toString() ?? entry.key.toString(),
+          ).copyWith(
+            description: aggregateData['description']?.toString() ?? '',
+          ),
+        );
         xOffset += 170;
       }
       yOffset += 120;
@@ -175,13 +188,13 @@ class YamlService {
       var xOffset = 50.0;
       for (final entry in events.entries) {
         final eventData = entry.value as YamlMap;
-        elements.add(StickyNoteElement.create(
-          type: ElementType.domainEvent,
-          position: Offset(xOffset, yOffset),
-          label: eventData['name']?.toString() ?? entry.key.toString(),
-        ).copyWith(
-          description: eventData['description']?.toString() ?? '',
-        ));
+        elements.add(
+          StickyNoteElement.create(
+            type: ElementType.domainEvent,
+            position: Offset(xOffset, yOffset),
+            label: eventData['name']?.toString() ?? entry.key.toString(),
+          ).copyWith(description: eventData['description']?.toString() ?? ''),
+        );
         xOffset += 170;
       }
       yOffset += 120;
@@ -193,13 +206,13 @@ class YamlService {
       var xOffset = 50.0;
       for (final entry in commands.entries) {
         final commandData = entry.value as YamlMap;
-        elements.add(StickyNoteElement.create(
-          type: ElementType.command,
-          position: Offset(xOffset, yOffset),
-          label: commandData['name']?.toString() ?? entry.key.toString(),
-        ).copyWith(
-          description: commandData['description']?.toString() ?? '',
-        ));
+        elements.add(
+          StickyNoteElement.create(
+            type: ElementType.command,
+            position: Offset(xOffset, yOffset),
+            label: commandData['name']?.toString() ?? entry.key.toString(),
+          ).copyWith(description: commandData['description']?.toString() ?? ''),
+        );
         xOffset += 170;
       }
       yOffset += 120;
@@ -211,13 +224,13 @@ class YamlService {
       var xOffset = 50.0;
       for (final entry in queries.entries) {
         final queryData = entry.value as YamlMap;
-        elements.add(StickyNoteElement.create(
-          type: ElementType.readModel,
-          position: Offset(xOffset, yOffset),
-          label: queryData['name']?.toString() ?? entry.key.toString(),
-        ).copyWith(
-          description: queryData['description']?.toString() ?? '',
-        ));
+        elements.add(
+          StickyNoteElement.create(
+            type: ElementType.readModel,
+            position: Offset(xOffset, yOffset),
+            label: queryData['name']?.toString() ?? entry.key.toString(),
+          ).copyWith(description: queryData['description']?.toString() ?? ''),
+        );
         xOffset += 170;
       }
     }
@@ -227,10 +240,9 @@ class YamlService {
 
   /// Sanitizes a name for use as a YAML key.
   String _sanitizeName(String name) {
-    return name.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '').replaceFirstMapped(
-          RegExp(r'^.'),
-          (m) => m.group(0)!.toUpperCase(),
-        );
+    return name
+        .replaceAll(RegExp(r'[^a-zA-Z0-9]'), '')
+        .replaceFirstMapped(RegExp(r'^.'), (m) => m.group(0)!.toUpperCase());
   }
 
   /// Escapes special characters in a string for YAML.

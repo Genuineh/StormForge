@@ -62,8 +62,9 @@ class CanvasPainter extends CustomPainter {
 
     // Calculate visible area in canvas coordinates
     final topLeft = viewport.screenToCanvas(Offset.zero);
-    final bottomRight =
-        viewport.screenToCanvas(Offset(size.width, size.height));
+    final bottomRight = viewport.screenToCanvas(
+      Offset(size.width, size.height),
+    );
 
     final startX = (topLeft.dx / gridSize).floor() * gridSize;
     final startY = (topLeft.dy / gridSize).floor() * gridSize;
@@ -72,20 +73,12 @@ class CanvasPainter extends CustomPainter {
 
     // Draw vertical lines
     for (double x = startX; x <= endX; x += gridSize) {
-      canvas.drawLine(
-        Offset(x, startY),
-        Offset(x, endY),
-        gridPaint,
-      );
+      canvas.drawLine(Offset(x, startY), Offset(x, endY), gridPaint);
     }
 
     // Draw horizontal lines
     for (double y = startY; y <= endY; y += gridSize) {
-      canvas.drawLine(
-        Offset(startX, y),
-        Offset(endX, y),
-        gridPaint,
-      );
+      canvas.drawLine(Offset(startX, y), Offset(endX, y), gridPaint);
     }
   }
 
@@ -98,10 +91,7 @@ class CanvasPainter extends CustomPainter {
       ..color = Colors.black.withOpacity(0.2)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
     canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        rect.translate(2, 2),
-        const Radius.circular(4),
-      ),
+      RRect.fromRectAndRadius(rect.translate(2, 2), const Radius.circular(4)),
       shadowPaint,
     );
 
@@ -149,10 +139,7 @@ class CanvasPainter extends CustomPainter {
       ellipsis: '...',
     );
     textPainter.layout(maxWidth: rect.width - 16);
-    textPainter.paint(
-      canvas,
-      rect.topLeft + const Offset(8, 8),
-    );
+    textPainter.paint(canvas, rect.topLeft + const Offset(8, 8));
 
     // Type indicator
     final typeTextPainter = TextPainter(
@@ -170,10 +157,7 @@ class CanvasPainter extends CustomPainter {
     typeTextPainter.layout();
     typeTextPainter.paint(
       canvas,
-      Offset(
-        rect.left + 8,
-        rect.bottom - typeTextPainter.height - 6,
-      ),
+      Offset(rect.left + 8, rect.bottom - typeTextPainter.height - 6),
     );
   }
 
@@ -204,12 +188,7 @@ class CanvasPainter extends CustomPainter {
     final midY = (sourcePoint.dy + targetPoint.dy) / 2;
 
     // Simple quadratic curve
-    path.quadraticBezierTo(
-      midX,
-      midY - 20,
-      targetPoint.dx,
-      targetPoint.dy,
-    );
+    path.quadraticBezierTo(midX, midY - 20, targetPoint.dx, targetPoint.dy);
 
     canvas.drawPath(path, linePaint);
 
@@ -283,11 +262,7 @@ class CanvasPainter extends CustomPainter {
 
   /// Draws a preview of an element being dragged from the palette.
   void _drawDragPreview(Canvas canvas, ElementType type, Offset position) {
-    final rect = Rect.fromCenter(
-      center: position,
-      width: 150,
-      height: 100,
-    );
+    final rect = Rect.fromCenter(center: position, width: 150, height: 100);
 
     // Semi-transparent background
     final backgroundPaint = Paint()
@@ -320,10 +295,7 @@ class CanvasPainter extends CustomPainter {
       textDirection: TextDirection.ltr,
     );
     textPainter.layout();
-    textPainter.paint(
-      canvas,
-      rect.topLeft + const Offset(8, 8),
-    );
+    textPainter.paint(canvas, rect.topLeft + const Offset(8, 8));
   }
 
   @override

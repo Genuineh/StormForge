@@ -170,19 +170,22 @@ abstract class CanvasElement extends Equatable {
   });
 
   /// The bounding rectangle of this element.
-  Rect get bounds => Rect.fromLTWH(
-        position.dx,
-        position.dy,
-        size.width,
-        size.height,
-      );
+  Rect get bounds =>
+      Rect.fromLTWH(position.dx, position.dy, size.width, size.height);
 
   /// Checks if this element contains the given point.
   bool containsPoint(Offset point) => bounds.contains(point);
 
   @override
-  List<Object?> get props =>
-      [id, type, position, size, label, description, isSelected];
+  List<Object?> get props => [
+    id,
+    type,
+    position,
+    size,
+    label,
+    description,
+    isSelected,
+  ];
 }
 
 /// A sticky note element on the canvas.

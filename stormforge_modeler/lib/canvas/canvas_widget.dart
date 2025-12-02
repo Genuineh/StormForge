@@ -41,10 +41,9 @@ class _EventStormingCanvasState extends ConsumerState<EventStormingCanvas> {
                   Offset(constraints.maxWidth / 2, constraints.maxHeight / 2),
             );
 
-            ref.read(canvasModelProvider.notifier).createElementFromDrag(
-                  details.data,
-                  canvasPosition,
-                );
+            ref
+                .read(canvasModelProvider.notifier)
+                .createElementFromDrag(details.data, canvasPosition);
             ref.read(draggedElementTypeProvider.notifier).state = null;
           },
           onLeave: (data) {
@@ -72,8 +71,10 @@ class _EventStormingCanvasState extends ConsumerState<EventStormingCanvas> {
                       dragPreviewPosition: _dragTargetPosition != null
                           ? viewport.screenToCanvas(
                               _dragTargetPosition! -
-                                  Offset(constraints.maxWidth / 2,
-                                      constraints.maxHeight / 2),
+                                  Offset(
+                                    constraints.maxWidth / 2,
+                                    constraints.maxHeight / 2,
+                                  ),
                             )
                           : null,
                     ),
@@ -139,13 +140,13 @@ class _EventStormingCanvasState extends ConsumerState<EventStormingCanvas> {
       final viewport = ref.read(canvasViewportProvider);
       final scaledDelta = delta / viewport.scale;
 
-      final element =
-          ref.read(canvasModelProvider).getElementById(_draggingElementId!);
+      final element = ref
+          .read(canvasModelProvider)
+          .getElementById(_draggingElementId!);
       if (element != null) {
-        ref.read(canvasModelProvider.notifier).moveElement(
-              _draggingElementId!,
-              element.position + scaledDelta,
-            );
+        ref
+            .read(canvasModelProvider.notifier)
+            .moveElement(_draggingElementId!, element.position + scaledDelta);
       }
     } else {
       // Pan the canvas

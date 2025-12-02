@@ -161,10 +161,7 @@ void main() {
     });
 
     test('screenToCanvas transforms correctly', () {
-      const viewport = CanvasViewport(
-        offset: Offset(100, 50),
-        scale: 2.0,
-      );
+      const viewport = CanvasViewport(offset: Offset(100, 50), scale: 2.0);
 
       final canvasPos = viewport.screenToCanvas(const Offset(200, 150));
 
@@ -172,10 +169,7 @@ void main() {
     });
 
     test('canvasToScreen transforms correctly', () {
-      const viewport = CanvasViewport(
-        offset: Offset(100, 50),
-        scale: 2.0,
-      );
+      const viewport = CanvasViewport(offset: Offset(100, 50), scale: 2.0);
 
       final screenPos = viewport.canvasToScreen(const Offset(50, 50));
 
@@ -183,10 +177,7 @@ void main() {
     });
 
     test('transformations are inverse', () {
-      const viewport = CanvasViewport(
-        offset: Offset(123, 456),
-        scale: 1.5,
-      );
+      const viewport = CanvasViewport(offset: Offset(123, 456), scale: 1.5);
       const original = Offset(100, 200);
 
       final canvasPos = viewport.screenToCanvas(original);

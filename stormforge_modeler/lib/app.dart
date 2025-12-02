@@ -56,27 +56,19 @@ class _ModelerHomePageState extends ConsumerState<ModelerHomePage> {
             child: Row(
               children: [
                 // Left panel - Element palette
-                const SizedBox(
-                  width: 250,
-                  child: ElementPalette(),
-                ),
+                const SizedBox(width: 250, child: ElementPalette()),
 
                 // Vertical divider
                 const VerticalDivider(width: 1),
 
                 // Center - Canvas
-                const Expanded(
-                  child: EventStormingCanvas(),
-                ),
+                const Expanded(child: EventStormingCanvas()),
 
                 // Vertical divider
                 const VerticalDivider(width: 1),
 
                 // Right panel - Property panel
-                const SizedBox(
-                  width: 300,
-                  child: PropertyPanel(),
-                ),
+                const SizedBox(width: 300, child: PropertyPanel()),
               ],
             ),
           ),
@@ -103,22 +95,14 @@ class _StatusBar extends ConsumerWidget {
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainerHighest,
         border: Border(
-          top: BorderSide(
-            color: theme.colorScheme.outlineVariant,
-          ),
+          top: BorderSide(color: theme.colorScheme.outlineVariant),
         ),
       ),
       child: Row(
         children: [
-          Text(
-            'StormForge Modeler v0.1.0',
-            style: theme.textTheme.bodySmall,
-          ),
+          Text('StormForge Modeler v0.1.0', style: theme.textTheme.bodySmall),
           const Spacer(),
-          Text(
-            'Ready',
-            style: theme.textTheme.bodySmall,
-          ),
+          Text('Ready', style: theme.textTheme.bodySmall),
         ],
       ),
     );

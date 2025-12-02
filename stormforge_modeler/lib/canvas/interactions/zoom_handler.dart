@@ -5,9 +5,7 @@ import 'package:stormforge_modeler/canvas/canvas_controller.dart';
 /// Handles zoom interactions on the canvas.
 class ZoomHandler {
   /// Creates a zoom handler.
-  ZoomHandler({
-    required this.ref,
-  });
+  ZoomHandler({required this.ref});
 
   /// The Riverpod ref for accessing providers.
   final Ref ref;
@@ -20,10 +18,9 @@ class ZoomHandler {
     final delta = event.scrollDelta.dy;
     final zoomChange = delta > 0 ? (1 - _zoomFactor) : (1 + _zoomFactor);
 
-    ref.read(canvasViewportProvider.notifier).zoom(
-          zoomChange,
-          event.localPosition,
-        );
+    ref
+        .read(canvasViewportProvider.notifier)
+        .zoom(zoomChange, event.localPosition);
   }
 
   /// Handles pinch zoom.
@@ -51,19 +48,16 @@ class ZoomHandler {
   /// Fits all elements into the viewport.
   void fitToContent(Size viewportSize) {
     final canvasModel = ref.read(canvasModelProvider);
-    ref.read(canvasViewportProvider.notifier).fitToContent(
-          canvasModel.elements,
-          viewportSize,
-        );
+    ref
+        .read(canvasViewportProvider.notifier)
+        .fitToContent(canvasModel.elements, viewportSize);
   }
 }
 
 /// Handles pan interactions on the canvas.
 class PanHandler {
   /// Creates a pan handler.
-  PanHandler({
-    required this.ref,
-  });
+  PanHandler({required this.ref});
 
   /// The Riverpod ref for accessing providers.
   final Ref ref;

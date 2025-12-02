@@ -3,14 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stormforge_modeler/models/models.dart';
 
 /// Provider for the canvas model state.
-final canvasModelProvider = StateNotifierProvider<CanvasModelNotifier, CanvasModel>(
-  (ref) => CanvasModelNotifier(),
-);
+final canvasModelProvider =
+    StateNotifierProvider<CanvasModelNotifier, CanvasModel>(
+      (ref) => CanvasModelNotifier(),
+    );
 
 /// Provider for the canvas viewport state.
-final canvasViewportProvider = StateNotifierProvider<CanvasViewportNotifier, CanvasViewport>(
-  (ref) => CanvasViewportNotifier(),
-);
+final canvasViewportProvider =
+    StateNotifierProvider<CanvasViewportNotifier, CanvasViewport>(
+      (ref) => CanvasViewportNotifier(),
+    );
 
 /// Provider for the currently dragged element type (from palette).
 final draggedElementTypeProvider = StateProvider<ElementType?>((ref) => null);
@@ -100,10 +102,7 @@ class CanvasModelNotifier extends StateNotifier<CanvasModel> {
 
   /// Creates a new element from a palette drag.
   void createElementFromDrag(ElementType type, Offset position) {
-    final element = StickyNoteElement.create(
-      type: type,
-      position: position,
-    );
+    final element = StickyNoteElement.create(type: type, position: position);
     addElement(element);
   }
 
@@ -151,10 +150,7 @@ class CanvasViewportNotifier extends StateNotifier<CanvasViewport> {
     final scaleDiff = newScale / state.scale;
     final newOffset = center - (center - state.offset) * scaleDiff;
 
-    state = state.copyWith(
-      scale: newScale,
-      offset: newOffset,
-    );
+    state = state.copyWith(scale: newScale, offset: newOffset);
   }
 
   /// Sets the zoom scale directly.
@@ -204,12 +200,13 @@ class CanvasViewportNotifier extends StateNotifier<CanvasViewport> {
     );
 
     // Center the content
-    final offsetX = (viewportSize.width - contentWidth * finalScale) / 2 - minX * finalScale;
-    final offsetY = (viewportSize.height - contentHeight * finalScale) / 2 - minY * finalScale;
+    final offsetX =
+        (viewportSize.width - contentWidth * finalScale) / 2 -
+        minX * finalScale;
+    final offsetY =
+        (viewportSize.height - contentHeight * finalScale) / 2 -
+        minY * finalScale;
 
-    state = CanvasViewport(
-      offset: Offset(offsetX, offsetY),
-      scale: finalScale,
-    );
+    state = CanvasViewport(offset: Offset(offsetX, offsetY), scale: finalScale);
   }
 }

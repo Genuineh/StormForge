@@ -200,7 +200,10 @@ events:
 ''';
         final model = yamlService.importFromYaml(yaml);
 
-        expect(model.elements.any((e) => e.type == ElementType.domainEvent), isTrue);
+        expect(
+          model.elements.any((e) => e.type == ElementType.domainEvent),
+          isTrue,
+        );
         expect(model.elements.any((e) => e.label == 'OrderCreated'), isTrue);
       });
 
@@ -217,7 +220,10 @@ commands:
 ''';
         final model = yamlService.importFromYaml(yaml);
 
-        expect(model.elements.any((e) => e.type == ElementType.command), isTrue);
+        expect(
+          model.elements.any((e) => e.type == ElementType.command),
+          isTrue,
+        );
         expect(model.elements.any((e) => e.label == 'CreateOrder'), isTrue);
       });
 
@@ -234,17 +240,17 @@ queries:
 ''';
         final model = yamlService.importFromYaml(yaml);
 
-        expect(model.elements.any((e) => e.type == ElementType.readModel), isTrue);
+        expect(
+          model.elements.any((e) => e.type == ElementType.readModel),
+          isTrue,
+        );
         expect(model.elements.any((e) => e.label == 'GetOrder'), isTrue);
       });
 
       test('throws on invalid YAML', () {
         const yaml = 'not a valid yaml map';
 
-        expect(
-          () => yamlService.importFromYaml(yaml),
-          throwsFormatException,
-        );
+        expect(() => yamlService.importFromYaml(yaml), throwsFormatException);
       });
     });
   });

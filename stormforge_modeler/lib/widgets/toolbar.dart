@@ -19,9 +19,7 @@ class ModelerToolbar extends ConsumerWidget {
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainerHighest,
         border: Border(
-          bottom: BorderSide(
-            color: theme.colorScheme.outlineVariant,
-          ),
+          bottom: BorderSide(color: theme.colorScheme.outlineVariant),
         ),
       ),
       child: Row(
@@ -29,11 +27,7 @@ class ModelerToolbar extends ConsumerWidget {
           // Logo/App name
           Row(
             children: [
-              Icon(
-                Icons.flash_on,
-                color: theme.colorScheme.primary,
-                size: 24,
-              ),
+              Icon(Icons.flash_on, color: theme.colorScheme.primary, size: 24),
               const SizedBox(width: 8),
               Text(
                 'StormForge',
@@ -97,9 +91,9 @@ class ModelerToolbar extends ConsumerWidget {
                 onPressed: () {
                   final model = ref.read(canvasModelProvider);
                   if (model.selectedElementId != null) {
-                    ref.read(canvasModelProvider.notifier).removeElement(
-                          model.selectedElementId!,
-                        );
+                    ref
+                        .read(canvasModelProvider.notifier)
+                        .removeElement(model.selectedElementId!);
                   }
                 },
               ),
@@ -115,10 +109,9 @@ class ModelerToolbar extends ConsumerWidget {
                 icon: Icons.zoom_out,
                 tooltip: 'Zoom Out',
                 onPressed: () {
-                  ref.read(canvasViewportProvider.notifier).zoom(
-                        0.8,
-                        Offset.zero,
-                      );
+                  ref
+                      .read(canvasViewportProvider.notifier)
+                      .zoom(0.8, Offset.zero);
                 },
               ),
               Container(
@@ -133,10 +126,9 @@ class ModelerToolbar extends ConsumerWidget {
                 icon: Icons.zoom_in,
                 tooltip: 'Zoom In',
                 onPressed: () {
-                  ref.read(canvasViewportProvider.notifier).zoom(
-                        1.2,
-                        Offset.zero,
-                      );
+                  ref
+                      .read(canvasViewportProvider.notifier)
+                      .zoom(1.2, Offset.zero);
                 },
               ),
               _ToolbarButton(
@@ -178,16 +170,16 @@ class ModelerToolbar extends ConsumerWidget {
 
   void _openProject(BuildContext context, WidgetRef ref) {
     // TODO: Implement open project
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Open Project - Coming soon')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Open Project - Coming soon')));
   }
 
   void _saveProject(BuildContext context, WidgetRef ref) {
     // TODO: Implement save project
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Project saved (demo)')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Project saved (demo)')));
   }
 
   void _exportYaml(BuildContext context, WidgetRef ref) {
@@ -204,10 +196,7 @@ class ModelerToolbar extends ConsumerWidget {
           child: SingleChildScrollView(
             child: SelectableText(
               yaml,
-              style: const TextStyle(
-                fontFamily: 'RobotoMono',
-                fontSize: 12,
-              ),
+              style: const TextStyle(fontFamily: 'RobotoMono', fontSize: 12),
             ),
           ),
         ),
@@ -223,9 +212,9 @@ class ModelerToolbar extends ConsumerWidget {
 
   void _importYaml(BuildContext context, WidgetRef ref) {
     // TODO: Implement import YAML
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Import YAML - Coming soon')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Import YAML - Coming soon')));
   }
 }
 
@@ -243,14 +232,9 @@ class _ToolbarSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: theme.colorScheme.outlineVariant,
-        ),
+        border: Border.all(color: theme.colorScheme.outlineVariant),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: children,
-      ),
+      child: Row(mainAxisSize: MainAxisSize.min, children: children),
     );
   }
 }

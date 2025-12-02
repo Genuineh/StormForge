@@ -22,9 +22,7 @@ class ElementPalette extends ConsumerWidget {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               border: Border(
-                bottom: BorderSide(
-                  color: theme.colorScheme.outlineVariant,
-                ),
+                bottom: BorderSide(color: theme.colorScheme.outlineVariant),
               ),
             ),
             child: Text(
@@ -41,8 +39,7 @@ class ElementPalette extends ConsumerWidget {
               padding: const EdgeInsets.all(8),
               children: [
                 const _PaletteSectionHeader(title: 'EventStorming'),
-                for (final type in ElementType.values)
-                  _PaletteItem(type: type),
+                for (final type in ElementType.values) _PaletteItem(type: type),
               ],
             ),
           ),
@@ -132,15 +129,9 @@ class _PaletteItemContent extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: type.backgroundColor,
                   borderRadius: BorderRadius.circular(6),
-                  border: Border.all(
-                    color: Colors.black.withOpacity(0.1),
-                  ),
+                  border: Border.all(color: Colors.black.withOpacity(0.1)),
                 ),
-                child: Icon(
-                  type.icon,
-                  size: 18,
-                  color: type.textColor,
-                ),
+                child: Icon(type.icon, size: 18, color: type.textColor),
               ),
               const SizedBox(width: 12),
               // Name and description

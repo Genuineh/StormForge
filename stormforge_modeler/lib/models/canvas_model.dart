@@ -80,8 +80,15 @@ class BoundedContext extends Equatable {
   bool containsPoint(Offset point) => bounds.contains(point);
 
   @override
-  List<Object?> get props =>
-      [id, name, namespace, description, color, bounds, isSelected];
+  List<Object?> get props => [
+    id,
+    name,
+    namespace,
+    description,
+    color,
+    bounds,
+    isSelected,
+  ];
 }
 
 /// The complete canvas model containing all elements and contexts.
@@ -118,27 +125,27 @@ class CanvasModel extends Equatable {
   CanvasElement? get selectedElement {
     if (selectedElementId == null) return null;
     return elements.cast<CanvasElement?>().firstWhere(
-          (e) => e?.id == selectedElementId,
-          orElse: () => null,
-        );
+      (e) => e?.id == selectedElementId,
+      orElse: () => null,
+    );
   }
 
   /// Gets the currently selected connection, if any.
   ConnectionElement? get selectedConnection {
     if (selectedConnectionId == null) return null;
     return connections.cast<ConnectionElement?>().firstWhere(
-          (c) => c?.id == selectedConnectionId,
-          orElse: () => null,
-        );
+      (c) => c?.id == selectedConnectionId,
+      orElse: () => null,
+    );
   }
 
   /// Gets the currently selected context, if any.
   BoundedContext? get selectedContext {
     if (selectedContextId == null) return null;
     return contexts.cast<BoundedContext?>().firstWhere(
-          (c) => c?.id == selectedContextId,
-          orElse: () => null,
-        );
+      (c) => c?.id == selectedContextId,
+      orElse: () => null,
+    );
   }
 
   /// Creates a copy with the given properties.
@@ -236,29 +243,26 @@ class CanvasModel extends Equatable {
   /// Gets an element by ID.
   CanvasElement? getElementById(String id) {
     return elements.cast<CanvasElement?>().firstWhere(
-          (e) => e?.id == id,
-          orElse: () => null,
-        );
+      (e) => e?.id == id,
+      orElse: () => null,
+    );
   }
 
   @override
   List<Object?> get props => [
-        elements,
-        connections,
-        contexts,
-        selectedElementId,
-        selectedConnectionId,
-        selectedContextId,
-      ];
+    elements,
+    connections,
+    contexts,
+    selectedElementId,
+    selectedConnectionId,
+    selectedContextId,
+  ];
 }
 
 /// The viewport state for the canvas.
 class CanvasViewport extends Equatable {
   /// Creates a canvas viewport.
-  const CanvasViewport({
-    this.offset = Offset.zero,
-    this.scale = 1.0,
-  });
+  const CanvasViewport({this.offset = Offset.zero, this.scale = 1.0});
 
   /// The current pan offset.
   final Offset offset;
@@ -273,10 +277,7 @@ class CanvasViewport extends Equatable {
   static const double maxScale = 4.0;
 
   /// Creates a copy with the given properties.
-  CanvasViewport copyWith({
-    Offset? offset,
-    double? scale,
-  }) {
+  CanvasViewport copyWith({Offset? offset, double? scale}) {
     return CanvasViewport(
       offset: offset ?? this.offset,
       scale: (scale ?? this.scale).clamp(minScale, maxScale),

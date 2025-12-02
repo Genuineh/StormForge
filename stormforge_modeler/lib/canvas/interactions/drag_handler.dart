@@ -6,9 +6,7 @@ import 'package:stormforge_modeler/models/models.dart';
 /// Handles drag interactions on the canvas.
 class DragHandler {
   /// Creates a drag handler.
-  DragHandler({
-    required this.ref,
-  });
+  DragHandler({required this.ref});
 
   /// The Riverpod ref for accessing providers.
   final Ref ref;
@@ -56,13 +54,13 @@ class DragHandler {
       final viewport = ref.read(canvasViewportProvider);
       final scaledDelta = delta / viewport.scale;
 
-      final element =
-          ref.read(canvasModelProvider).getElementById(_draggingElementId!);
+      final element = ref
+          .read(canvasModelProvider)
+          .getElementById(_draggingElementId!);
       if (element != null) {
-        ref.read(canvasModelProvider.notifier).moveElement(
-              _draggingElementId!,
-              element.position + scaledDelta,
-            );
+        ref
+            .read(canvasModelProvider.notifier)
+            .moveElement(_draggingElementId!, element.position + scaledDelta);
       }
     } else {
       // Pan the canvas
@@ -74,14 +72,14 @@ class DragHandler {
   void endDrag() {
     // Snap to grid if enabled
     if (_draggingElementId != null) {
-      final element =
-          ref.read(canvasModelProvider).getElementById(_draggingElementId!);
+      final element = ref
+          .read(canvasModelProvider)
+          .getElementById(_draggingElementId!);
       if (element != null) {
         final snappedPosition = _snapToGrid(element.position);
-        ref.read(canvasModelProvider.notifier).moveElement(
-              _draggingElementId!,
-              snappedPosition,
-            );
+        ref
+            .read(canvasModelProvider.notifier)
+            .moveElement(_draggingElementId!, snappedPosition);
       }
     }
 
@@ -94,10 +92,9 @@ class DragHandler {
   void cancelDrag() {
     // Restore initial position if we were dragging an element
     if (_draggingElementId != null && _initialElementPosition != null) {
-      ref.read(canvasModelProvider.notifier).moveElement(
-            _draggingElementId!,
-            _initialElementPosition!,
-          );
+      ref
+          .read(canvasModelProvider.notifier)
+          .moveElement(_draggingElementId!, _initialElementPosition!);
     }
 
     _draggingElementId = null;
@@ -123,9 +120,7 @@ class DragHandler {
 /// Handles selection interactions on the canvas.
 class SelectionHandler {
   /// Creates a selection handler.
-  SelectionHandler({
-    required this.ref,
-  });
+  SelectionHandler({required this.ref});
 
   /// The Riverpod ref for accessing providers.
   final Ref ref;
@@ -177,9 +172,7 @@ class SelectionHandler {
 /// Handles context menu interactions.
 class ContextMenuHandler {
   /// Creates a context menu handler.
-  ContextMenuHandler({
-    required this.ref,
-  });
+  ContextMenuHandler({required this.ref});
 
   /// The Riverpod ref for accessing providers.
   final Ref ref;
@@ -215,7 +208,11 @@ class ContextMenuHandler {
     showMenu(
       context: context,
       position: RelativeRect.fromLTRB(
-          position.dx, position.dy, position.dx, position.dy),
+        position.dx,
+        position.dy,
+        position.dx,
+        position.dy,
+      ),
       items: [
         PopupMenuItem(
           value: 'edit',
@@ -263,7 +260,11 @@ class ContextMenuHandler {
     showMenu(
       context: context,
       position: RelativeRect.fromLTRB(
-          position.dx, position.dy, position.dx, position.dy),
+        position.dx,
+        position.dy,
+        position.dx,
+        position.dy,
+      ),
       items: [
         for (final type in ElementType.values)
           PopupMenuItem(
@@ -274,10 +275,9 @@ class ContextMenuHandler {
               dense: true,
             ),
             onTap: () {
-              ref.read(canvasModelProvider.notifier).createElementFromDrag(
-                    type,
-                    canvasPosition,
-                  );
+              ref
+                  .read(canvasModelProvider.notifier)
+                  .createElementFromDrag(type, canvasPosition);
             },
           ),
       ],
@@ -290,10 +290,7 @@ class ContextMenuHandler {
       type: element.type,
       position: element.position + const Offset(20, 20),
       label: element.label,
-    ).copyWith(
-      description: element.description,
-      isSelected: false,
-    );
+    ).copyWith(description: element.description, isSelected: false);
     ref.read(canvasModelProvider.notifier).addElement(newElement);
   }
 }

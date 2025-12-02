@@ -24,9 +24,7 @@ class PropertyPanel extends ConsumerWidget {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               border: Border(
-                bottom: BorderSide(
-                  color: theme.colorScheme.outlineVariant,
-                ),
+                bottom: BorderSide(color: theme.colorScheme.outlineVariant),
               ),
             ),
             child: Text(
@@ -67,8 +65,9 @@ class _ElementPropertiesState extends ConsumerState<_ElementProperties> {
   void initState() {
     super.initState();
     _labelController = TextEditingController(text: widget.element.label);
-    _descriptionController =
-        TextEditingController(text: widget.element.description);
+    _descriptionController = TextEditingController(
+      text: widget.element.description,
+    );
   }
 
   @override
@@ -106,9 +105,7 @@ class _ElementPropertiesState extends ConsumerState<_ElementProperties> {
           decoration: BoxDecoration(
             color: element.type.backgroundColor.withOpacity(0.2),
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(
-              color: element.type.backgroundColor,
-            ),
+            border: Border.all(color: element.type.backgroundColor),
           ),
           child: Row(
             children: [
@@ -119,10 +116,7 @@ class _ElementPropertiesState extends ConsumerState<_ElementProperties> {
                   color: element.type.backgroundColor,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Icon(
-                  element.type.icon,
-                  color: element.type.textColor,
-                ),
+                child: Icon(element.type.icon, color: element.type.textColor),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -160,10 +154,9 @@ class _ElementPropertiesState extends ConsumerState<_ElementProperties> {
               border: OutlineInputBorder(),
             ),
             onChanged: (value) {
-              ref.read(canvasModelProvider.notifier).updateElementLabel(
-                    element.id,
-                    value,
-                  );
+              ref
+                  .read(canvasModelProvider.notifier)
+                  .updateElementLabel(element.id, value);
             },
           ),
         ),
@@ -181,10 +174,9 @@ class _ElementPropertiesState extends ConsumerState<_ElementProperties> {
             ),
             maxLines: 3,
             onChanged: (value) {
-              ref.read(canvasModelProvider.notifier).updateElementDescription(
-                    element.id,
-                    value,
-                  );
+              ref
+                  .read(canvasModelProvider.notifier)
+                  .updateElementDescription(element.id, value);
             },
           ),
         ),
@@ -276,10 +268,7 @@ class _ElementPropertiesState extends ConsumerState<_ElementProperties> {
 
 /// A property field with a label.
 class _PropertyField extends StatelessWidget {
-  const _PropertyField({
-    required this.label,
-    required this.child,
-  });
+  const _PropertyField({required this.label, required this.child});
 
   final String label;
   final Widget child;
@@ -306,10 +295,7 @@ class _PropertyField extends StatelessWidget {
 
 /// A read-only field for displaying values.
 class _ReadOnlyField extends StatelessWidget {
-  const _ReadOnlyField({
-    required this.label,
-    required this.value,
-  });
+  const _ReadOnlyField({required this.label, required this.value});
 
   final String label;
   final String value;
@@ -323,9 +309,7 @@ class _ReadOnlyField extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(4),
-        border: Border.all(
-          color: theme.colorScheme.outlineVariant,
-        ),
+        border: Border.all(color: theme.colorScheme.outlineVariant),
       ),
       child: Row(
         children: [
@@ -336,10 +320,7 @@ class _ReadOnlyField extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 4),
-          Text(
-            value,
-            style: theme.textTheme.bodySmall,
-          ),
+          Text(value, style: theme.textTheme.bodySmall),
         ],
       ),
     );

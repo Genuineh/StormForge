@@ -6,22 +6,22 @@ import 'package:uuid/uuid.dart';
 enum ElementType {
   /// Domain Event (Orange) - Things that have happened in the domain.
   domainEvent,
-  
+
   /// Command (Blue) - Actions that cause events.
   command,
-  
+
   /// Aggregate (Yellow) - Domain objects that handle commands.
   aggregate,
-  
+
   /// Policy (Purple) - Automated reactions to events.
   policy,
-  
+
   /// Read Model (Green) - Views/projections of data.
   readModel,
-  
+
   /// External System (Pink) - Third-party integrations.
   externalSystem,
-  
+
   /// UI (White) - User interface elements.
   ui,
 }
@@ -181,7 +181,8 @@ abstract class CanvasElement extends Equatable {
   bool containsPoint(Offset point) => bounds.contains(point);
 
   @override
-  List<Object?> get props => [id, type, position, size, label, description, isSelected];
+  List<Object?> get props =>
+      [id, type, position, size, label, description, isSelected];
 }
 
 /// A sticky note element on the canvas.

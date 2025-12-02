@@ -144,7 +144,7 @@ class CanvasViewportNotifier extends StateNotifier<CanvasViewport> {
       CanvasViewport.minScale,
       CanvasViewport.maxScale,
     );
-    
+
     if (newScale == state.scale) return;
 
     // Adjust offset to zoom toward the center point

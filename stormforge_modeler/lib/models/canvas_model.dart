@@ -80,7 +80,8 @@ class BoundedContext extends Equatable {
   bool containsPoint(Offset point) => bounds.contains(point);
 
   @override
-  List<Object?> get props => [id, name, namespace, description, color, bounds, isSelected];
+  List<Object?> get props =>
+      [id, name, namespace, description, color, bounds, isSelected];
 }
 
 /// The complete canvas model containing all elements and contexts.
@@ -156,9 +157,15 @@ class CanvasModel extends Equatable {
       elements: elements ?? this.elements,
       connections: connections ?? this.connections,
       contexts: contexts ?? this.contexts,
-      selectedElementId: clearElementSelection ? null : (selectedElementId ?? this.selectedElementId),
-      selectedConnectionId: clearConnectionSelection ? null : (selectedConnectionId ?? this.selectedConnectionId),
-      selectedContextId: clearContextSelection ? null : (selectedContextId ?? this.selectedContextId),
+      selectedElementId: clearElementSelection
+          ? null
+          : (selectedElementId ?? this.selectedElementId),
+      selectedConnectionId: clearConnectionSelection
+          ? null
+          : (selectedConnectionId ?? this.selectedConnectionId),
+      selectedContextId: clearContextSelection
+          ? null
+          : (selectedContextId ?? this.selectedContextId),
     );
   }
 

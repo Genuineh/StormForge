@@ -13,7 +13,8 @@ class EventStormingCanvas extends ConsumerStatefulWidget {
   const EventStormingCanvas({super.key});
 
   @override
-  ConsumerState<EventStormingCanvas> createState() => _EventStormingCanvasState();
+  ConsumerState<EventStormingCanvas> createState() =>
+      _EventStormingCanvasState();
 }
 
 class _EventStormingCanvasState extends ConsumerState<EventStormingCanvas> {
@@ -36,13 +37,14 @@ class _EventStormingCanvasState extends ConsumerState<EventStormingCanvas> {
           onAcceptWithDetails: (details) {
             // Convert screen position to canvas position
             final canvasPosition = viewport.screenToCanvas(
-              details.offset - Offset(constraints.maxWidth / 2, constraints.maxHeight / 2),
+              details.offset -
+                  Offset(constraints.maxWidth / 2, constraints.maxHeight / 2),
             );
-            
+
             ref.read(canvasModelProvider.notifier).createElementFromDrag(
-              details.data,
-              canvasPosition,
-            );
+                  details.data,
+                  canvasPosition,
+                );
             ref.read(draggedElementTypeProvider.notifier).state = null;
           },
           onLeave: (data) {
@@ -70,7 +72,8 @@ class _EventStormingCanvasState extends ConsumerState<EventStormingCanvas> {
                       dragPreviewPosition: _dragTargetPosition != null
                           ? viewport.screenToCanvas(
                               _dragTargetPosition! -
-                                  Offset(constraints.maxWidth / 2, constraints.maxHeight / 2),
+                                  Offset(constraints.maxWidth / 2,
+                                      constraints.maxHeight / 2),
                             )
                           : null,
                     ),
@@ -107,7 +110,7 @@ class _EventStormingCanvasState extends ConsumerState<EventStormingCanvas> {
   /// Handles pan start events.
   void _handlePanStart(DragStartDetails details) {
     _lastPanPosition = details.localPosition;
-    
+
     final viewport = ref.read(canvasViewportProvider);
     final canvasPosition = viewport.screenToCanvas(details.localPosition);
     final canvasModel = ref.read(canvasModelProvider);
@@ -135,13 +138,14 @@ class _EventStormingCanvasState extends ConsumerState<EventStormingCanvas> {
       // Drag the element
       final viewport = ref.read(canvasViewportProvider);
       final scaledDelta = delta / viewport.scale;
-      
-      final element = ref.read(canvasModelProvider).getElementById(_draggingElementId!);
+
+      final element =
+          ref.read(canvasModelProvider).getElementById(_draggingElementId!);
       if (element != null) {
         ref.read(canvasModelProvider.notifier).moveElement(
-          _draggingElementId!,
-          element.position + scaledDelta,
-        );
+              _draggingElementId!,
+              element.position + scaledDelta,
+            );
       }
     } else {
       // Pan the canvas
@@ -158,6 +162,8 @@ class _EventStormingCanvasState extends ConsumerState<EventStormingCanvas> {
   /// Handles scroll events for zooming.
   void _handleScroll(PointerScrollEvent event, CanvasViewport viewport) {
     final zoomFactor = event.scrollDelta.dy > 0 ? 0.9 : 1.1;
-    ref.read(canvasViewportProvider.notifier).zoom(zoomFactor, event.localPosition);
+    ref
+        .read(canvasViewportProvider.notifier)
+        .zoom(zoomFactor, event.localPosition);
   }
 }

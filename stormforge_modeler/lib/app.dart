@@ -50,7 +50,7 @@ class _ModelerHomePageState extends ConsumerState<ModelerHomePage> {
         children: [
           // Top toolbar
           const ModelerToolbar(),
-          
+
           // Main content area
           Expanded(
             child: Row(
@@ -60,18 +60,18 @@ class _ModelerHomePageState extends ConsumerState<ModelerHomePage> {
                   width: 250,
                   child: ElementPalette(),
                 ),
-                
+
                 // Vertical divider
                 const VerticalDivider(width: 1),
-                
+
                 // Center - Canvas
                 const Expanded(
                   child: EventStormingCanvas(),
                 ),
-                
+
                 // Vertical divider
                 const VerticalDivider(width: 1),
-                
+
                 // Right panel - Property panel
                 const SizedBox(
                   width: 300,
@@ -80,7 +80,7 @@ class _ModelerHomePageState extends ConsumerState<ModelerHomePage> {
               ],
             ),
           ),
-          
+
           // Bottom status bar
           const _StatusBar(),
         ],
@@ -96,7 +96,7 @@ class _StatusBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    
+
     return Container(
       height: 24,
       padding: const EdgeInsets.symmetric(horizontal: 16),

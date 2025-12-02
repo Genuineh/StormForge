@@ -4,7 +4,7 @@ import 'package:stormforge_modeler/app.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   runApp(
     const ProviderScope(
       child: StormForgeModelerApp(),

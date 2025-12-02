@@ -67,7 +67,8 @@ class _ElementPropertiesState extends ConsumerState<_ElementProperties> {
   void initState() {
     super.initState();
     _labelController = TextEditingController(text: widget.element.label);
-    _descriptionController = TextEditingController(text: widget.element.description);
+    _descriptionController =
+        TextEditingController(text: widget.element.description);
   }
 
   @override
@@ -75,10 +76,10 @@ class _ElementPropertiesState extends ConsumerState<_ElementProperties> {
     super.didUpdateWidget(oldWidget);
     // Update controllers when element changes or when same element's properties change externally
     if (oldWidget.element.id != widget.element.id ||
-        (oldWidget.element.label != widget.element.label && 
-         _labelController.text != widget.element.label) ||
+        (oldWidget.element.label != widget.element.label &&
+            _labelController.text != widget.element.label) ||
         (oldWidget.element.description != widget.element.description &&
-         _descriptionController.text != widget.element.description)) {
+            _descriptionController.text != widget.element.description)) {
       _labelController.text = widget.element.label;
       _descriptionController.text = widget.element.description;
     }

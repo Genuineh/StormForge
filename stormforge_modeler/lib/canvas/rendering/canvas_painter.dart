@@ -59,10 +59,11 @@ class CanvasPainter extends CustomPainter {
       ..strokeWidth = 1.0;
 
     const gridSize = 50.0;
-    
+
     // Calculate visible area in canvas coordinates
     final topLeft = viewport.screenToCanvas(Offset.zero);
-    final bottomRight = viewport.screenToCanvas(Offset(size.width, size.height));
+    final bottomRight =
+        viewport.screenToCanvas(Offset(size.width, size.height));
 
     final startX = (topLeft.dx / gridSize).floor() * gridSize;
     final startY = (topLeft.dy / gridSize).floor() * gridSize;
@@ -198,10 +199,10 @@ class CanvasPainter extends CustomPainter {
     // Draw curved line
     final path = Path();
     path.moveTo(sourcePoint.dx, sourcePoint.dy);
-    
+
     final midX = (sourcePoint.dx + targetPoint.dx) / 2;
     final midY = (sourcePoint.dy + targetPoint.dy) / 2;
-    
+
     // Simple quadratic curve
     path.quadraticBezierTo(
       midX,
@@ -245,7 +246,7 @@ class CanvasPainter extends CustomPainter {
   void _drawArrowHead(Canvas canvas, Offset point, Offset from, Paint paint) {
     final direction = (point - from);
     final normalized = direction / direction.distance;
-    
+
     const arrowLength = 10.0;
     const arrowAngle = 0.5;
 
@@ -256,12 +257,24 @@ class CanvasPainter extends CustomPainter {
     final path = Path();
     path.moveTo(point.dx, point.dy);
     path.lineTo(
-      point.dx - arrowLength * (normalized.dx * arrowAngle.cos() - normalized.dy * arrowAngle.sin()),
-      point.dy - arrowLength * (normalized.dx * arrowAngle.sin() + normalized.dy * arrowAngle.cos()),
+      point.dx -
+          arrowLength *
+              (normalized.dx * arrowAngle.cos() -
+                  normalized.dy * arrowAngle.sin()),
+      point.dy -
+          arrowLength *
+              (normalized.dx * arrowAngle.sin() +
+                  normalized.dy * arrowAngle.cos()),
     );
     path.lineTo(
-      point.dx - arrowLength * (normalized.dx * arrowAngle.cos() + normalized.dy * arrowAngle.sin()),
-      point.dy - arrowLength * (-normalized.dx * arrowAngle.sin() + normalized.dy * arrowAngle.cos()),
+      point.dx -
+          arrowLength *
+              (normalized.dx * arrowAngle.cos() +
+                  normalized.dy * arrowAngle.sin()),
+      point.dy -
+          arrowLength *
+              (-normalized.dx * arrowAngle.sin() +
+                  normalized.dy * arrowAngle.cos()),
     );
     path.close();
 
@@ -326,7 +339,7 @@ class CanvasPainter extends CustomPainter {
 extension DoubleExtension on double {
   /// Returns the cosine of this angle in radians.
   double cos() => math.cos(this);
-  
+
   /// Returns the sine of this angle in radians.
   double sin() => math.sin(this);
 }

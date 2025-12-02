@@ -193,7 +193,7 @@ class ModelerToolbar extends ConsumerWidget {
   void _exportYaml(BuildContext context, WidgetRef ref) {
     final model = ref.read(canvasModelProvider);
     final yaml = ref.read(yamlServiceProvider).exportToYaml(model);
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -238,7 +238,7 @@ class _ToolbarSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Container(
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,

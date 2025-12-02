@@ -19,11 +19,11 @@ class ZoomHandler {
   void handleScroll(PointerScrollEvent event) {
     final delta = event.scrollDelta.dy;
     final zoomChange = delta > 0 ? (1 - _zoomFactor) : (1 + _zoomFactor);
-    
+
     ref.read(canvasViewportProvider.notifier).zoom(
-      zoomChange,
-      event.localPosition,
-    );
+          zoomChange,
+          event.localPosition,
+        );
   }
 
   /// Handles pinch zoom.
@@ -52,9 +52,9 @@ class ZoomHandler {
   void fitToContent(Size viewportSize) {
     final canvasModel = ref.read(canvasModelProvider);
     ref.read(canvasViewportProvider.notifier).fitToContent(
-      canvasModel.elements,
-      viewportSize,
-    );
+          canvasModel.elements,
+          viewportSize,
+        );
   }
 }
 

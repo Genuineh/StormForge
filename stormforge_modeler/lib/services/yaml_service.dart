@@ -10,7 +10,7 @@ class YamlService {
   /// Exports a canvas model to YAML IR format.
   String exportToYaml(CanvasModel model) {
     final buffer = StringBuffer();
-    
+
     // Header
     buffer.writeln('# StormForge IR v1.0');
     buffer.writeln('# Auto-generated from StormForge Modeler');
@@ -26,15 +26,15 @@ class YamlService {
     buffer.writeln();
 
     // Aggregates
-    final aggregates = model.elements
-        .where((e) => e.type == ElementType.aggregate)
-        .toList();
+    final aggregates =
+        model.elements.where((e) => e.type == ElementType.aggregate).toList();
     if (aggregates.isNotEmpty) {
       buffer.writeln('aggregates:');
       for (final aggregate in aggregates) {
         buffer.writeln('  ${_sanitizeName(aggregate.label)}:');
         buffer.writeln('    name: "${aggregate.label}"');
-        buffer.writeln('    description: "${_escapeString(aggregate.description)}"');
+        buffer.writeln(
+            '    description: "${_escapeString(aggregate.description)}"');
         buffer.writeln('    root_entity:');
         buffer.writeln('      name: "${aggregate.label}"');
         buffer.writeln('      properties:');
@@ -46,9 +46,8 @@ class YamlService {
     }
 
     // Domain Events
-    final events = model.elements
-        .where((e) => e.type == ElementType.domainEvent)
-        .toList();
+    final events =
+        model.elements.where((e) => e.type == ElementType.domainEvent).toList();
     if (events.isNotEmpty) {
       buffer.writeln('events:');
       for (final event in events) {
@@ -61,24 +60,23 @@ class YamlService {
     }
 
     // Commands
-    final commands = model.elements
-        .where((e) => e.type == ElementType.command)
-        .toList();
+    final commands =
+        model.elements.where((e) => e.type == ElementType.command).toList();
     if (commands.isNotEmpty) {
       buffer.writeln('commands:');
       for (final command in commands) {
         buffer.writeln('  ${_sanitizeName(command.label)}:');
         buffer.writeln('    name: "${command.label}"');
-        buffer.writeln('    description: "${_escapeString(command.description)}"');
+        buffer
+            .writeln('    description: "${_escapeString(command.description)}"');
         buffer.writeln('    payload: []');
         buffer.writeln();
       }
     }
 
     // Policies
-    final policies = model.elements
-        .where((e) => e.type == ElementType.policy)
-        .toList();
+    final policies =
+        model.elements.where((e) => e.type == ElementType.policy).toList();
     if (policies.isNotEmpty) {
       buffer.writeln('# Policies');
       for (final policy in policies) {
@@ -88,15 +86,15 @@ class YamlService {
     }
 
     // Read Models
-    final readModels = model.elements
-        .where((e) => e.type == ElementType.readModel)
-        .toList();
+    final readModels =
+        model.elements.where((e) => e.type == ElementType.readModel).toList();
     if (readModels.isNotEmpty) {
       buffer.writeln('queries:');
       for (final readModel in readModels) {
         buffer.writeln('  Get${_sanitizeName(readModel.label)}:');
         buffer.writeln('    name: "Get${readModel.label}"');
-        buffer.writeln('    description: "${_escapeString(readModel.description)}"');
+        buffer.writeln(
+            '    description: "${_escapeString(readModel.description)}"');
         buffer.writeln('    parameters: []');
         buffer.writeln('    returns:');
         buffer.writeln('      type: "${readModel.label}"');
@@ -118,9 +116,8 @@ class YamlService {
     }
 
     // UI Elements
-    final uiElements = model.elements
-        .where((e) => e.type == ElementType.ui)
-        .toList();
+    final uiElements =
+        model.elements.where((e) => e.type == ElementType.ui).toList();
     if (uiElements.isNotEmpty) {
       buffer.writeln('# UI Elements');
       for (final ui in uiElements) {
@@ -230,9 +227,7 @@ class YamlService {
 
   /// Sanitizes a name for use as a YAML key.
   String _sanitizeName(String name) {
-    return name
-        .replaceAll(RegExp(r'[^a-zA-Z0-9]'), '')
-        .replaceFirstMapped(
+    return name.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '').replaceFirstMapped(
           RegExp(r'^.'),
           (m) => m.group(0)!.toUpperCase(),
         );

@@ -56,12 +56,13 @@ class DragHandler {
       final viewport = ref.read(canvasViewportProvider);
       final scaledDelta = delta / viewport.scale;
 
-      final element = ref.read(canvasModelProvider).getElementById(_draggingElementId!);
+      final element =
+          ref.read(canvasModelProvider).getElementById(_draggingElementId!);
       if (element != null) {
         ref.read(canvasModelProvider.notifier).moveElement(
-          _draggingElementId!,
-          element.position + scaledDelta,
-        );
+              _draggingElementId!,
+              element.position + scaledDelta,
+            );
       }
     } else {
       // Pan the canvas
@@ -73,13 +74,14 @@ class DragHandler {
   void endDrag() {
     // Snap to grid if enabled
     if (_draggingElementId != null) {
-      final element = ref.read(canvasModelProvider).getElementById(_draggingElementId!);
+      final element =
+          ref.read(canvasModelProvider).getElementById(_draggingElementId!);
       if (element != null) {
         final snappedPosition = _snapToGrid(element.position);
         ref.read(canvasModelProvider.notifier).moveElement(
-          _draggingElementId!,
-          snappedPosition,
-        );
+              _draggingElementId!,
+              snappedPosition,
+            );
       }
     }
 
@@ -93,9 +95,9 @@ class DragHandler {
     // Restore initial position if we were dragging an element
     if (_draggingElementId != null && _initialElementPosition != null) {
       ref.read(canvasModelProvider.notifier).moveElement(
-        _draggingElementId!,
-        _initialElementPosition!,
-      );
+            _draggingElementId!,
+            _initialElementPosition!,
+          );
     }
 
     _draggingElementId = null;
@@ -212,7 +214,8 @@ class ContextMenuHandler {
   ) {
     showMenu(
       context: context,
-      position: RelativeRect.fromLTRB(position.dx, position.dy, position.dx, position.dy),
+      position: RelativeRect.fromLTRB(
+          position.dx, position.dy, position.dx, position.dy),
       items: [
         PopupMenuItem(
           value: 'edit',
@@ -259,7 +262,8 @@ class ContextMenuHandler {
   ) {
     showMenu(
       context: context,
-      position: RelativeRect.fromLTRB(position.dx, position.dy, position.dx, position.dy),
+      position: RelativeRect.fromLTRB(
+          position.dx, position.dy, position.dx, position.dy),
       items: [
         for (final type in ElementType.values)
           PopupMenuItem(
@@ -271,9 +275,9 @@ class ContextMenuHandler {
             ),
             onTap: () {
               ref.read(canvasModelProvider.notifier).createElementFromDrag(
-                type,
-                canvasPosition,
-              );
+                    type,
+                    canvasPosition,
+                  );
             },
           ),
       ],

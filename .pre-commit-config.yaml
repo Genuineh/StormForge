@@ -1,0 +1,15 @@
+# Pre-commit configuration for StormForge
+# Install: pip install pre-commit && pre-commit install
+# Run manually: pre-commit run --all-files
+
+repos:
+  # Dart/Flutter formatting
+  - repo: local
+    hooks:
+      - id: dart-format
+        name: Dart Format
+        entry: dart format
+        language: system
+        types: [dart]
+        files: \.(dart)$
+        description: Formats Dart files using dart format

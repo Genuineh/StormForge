@@ -1,0 +1,42 @@
+#!/bin/bash
+# Git pre-commit hook for StormForge
+# Enforces dart format before commits
+#
+# Installation:
+#   Option 1 (recommended): pip install pre-commit && pre-commit install
+#   Option 2: cp scripts/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+
+# Get all staged Dart files
+DART_FILES=$(git diff --cached --name-only --diff-filter=ACMR | grep '\.dart$')
+
+if [ -z "$DART_FILES" ]; then
+    exit 0
+fi
+
+echo "Checking Dart formatting..."
+
+# Check if dart is available
+if ! command -v dart &> /dev/null; then
+    echo "Error: dart command not found. Please install Dart SDK."
+    exit 1
+fi
+
+# Format all staged Dart files
+for FILE in $DART_FILES; do
+    if [ -f "$FILE" ]; then
+        dart format "$FILE"
+        git add "$FILE"
+    fi
+done
+
+# Verify formatting
+UNFORMATTED=$(dart format --output=none --set-exit-if-changed $DART_FILES 2>&1)
+
+if [ $? -ne 0 ]; then
+    echo "Error: Some files could not be formatted correctly."
+    echo "$UNFORMATTED"
+    exit 1
+fi
+
+echo "✓ All Dart files are formatted correctly."
+exit 0

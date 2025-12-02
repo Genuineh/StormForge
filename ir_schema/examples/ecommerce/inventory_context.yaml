@@ -1,0 +1,272 @@
+# Acme E-commerce Inventory Context
+# StormForge IR v1.0
+
+version: "1.0"
+
+bounded_context:
+  name: "Inventory"
+  namespace: "acme.inventory"
+  description: "Inventory management bounded context"
+
+# Aggregate definitions
+aggregates:
+  Product:
+    name: "Product"
+    description: "Product inventory aggregate"
+    
+    root_entity:
+      name: "Product"
+      properties:
+        - name: "id"
+          type: "ProductId"
+          identifier: true
+        - name: "sku"
+          type: "String"
+          required: true
+        - name: "name"
+          type: "String"
+          required: true
+        - name: "availableQuantity"
+          type: "Integer"
+          required: true
+          default: 0
+        - name: "reservedQuantity"
+          type: "Integer"
+          required: true
+          default: 0
+        - name: "reorderLevel"
+          type: "Integer"
+          required: true
+          default: 10
+        - name: "updatedAt"
+          type: "DateTime"
+          required: true
+          
+    invariants:
+      - name: "AvailableQuantityNonNegative"
+        description: "Available quantity cannot be negative"
+        expression: "availableQuantity >= 0"
+      - name: "ReservedQuantityNonNegative"
+        description: "Reserved quantity cannot be negative"
+        expression: "reservedQuantity >= 0"
+
+# Value Objects
+value_objects:
+  ProductId:
+    name: "ProductId"
+    type: "identifier"
+    underlying_type: "String"
+    format: "uuid"
+    prefix: "prod_"
+    
+  OrderId:
+    name: "OrderId"
+    type: "identifier"
+    underlying_type: "String"
+    format: "uuid"
+    prefix: "ord_"
+    
+  ReservationId:
+    name: "ReservationId"
+    type: "identifier"
+    underlying_type: "String"
+    format: "uuid"
+    prefix: "res_"
+
+# Events
+events:
+  StockAdded:
+    name: "StockAdded"
+    description: "Stock has been added to inventory"
+    aggregate: "Product"
+    payload:
+      - name: "productId"
+        type: "ProductId"
+      - name: "quantity"
+        type: "Integer"
+      - name: "newAvailableQuantity"
+        type: "Integer"
+      - name: "addedAt"
+        type: "DateTime"
+        
+  StockReserved:
+    name: "StockReserved"
+    description: "Stock has been reserved for an order"
+    aggregate: "Product"
+    payload:
+      - name: "productId"
+        type: "ProductId"
+      - name: "orderId"
+        type: "OrderId"
+      - name: "reservationId"
+        type: "ReservationId"
+      - name: "quantity"
+        type: "Integer"
+      - name: "reservedAt"
+        type: "DateTime"
+        
+  StockReleased:
+    name: "StockReleased"
+    description: "Reserved stock has been released"
+    aggregate: "Product"
+    payload:
+      - name: "productId"
+        type: "ProductId"
+      - name: "reservationId"
+        type: "ReservationId"
+      - name: "quantity"
+        type: "Integer"
+      - name: "releasedAt"
+        type: "DateTime"
+        
+  StockDeducted:
+    name: "StockDeducted"
+    description: "Stock has been deducted (shipped)"
+    aggregate: "Product"
+    payload:
+      - name: "productId"
+        type: "ProductId"
+      - name: "reservationId"
+        type: "ReservationId"
+      - name: "quantity"
+        type: "Integer"
+      - name: "deductedAt"
+        type: "DateTime"
+        
+  LowStockAlert:
+    name: "LowStockAlert"
+    description: "Stock has fallen below reorder level"
+    aggregate: "Product"
+    payload:
+      - name: "productId"
+        type: "ProductId"
+      - name: "sku"
+        type: "String"
+      - name: "currentQuantity"
+        type: "Integer"
+      - name: "reorderLevel"
+        type: "Integer"
+      - name: "alertedAt"
+        type: "DateTime"
+
+# Commands
+commands:
+  AddStock:
+    name: "AddStock"
+    description: "Add stock to inventory"
+    aggregate: "Product"
+    payload:
+      - name: "productId"
+        type: "ProductId"
+        required: true
+      - name: "quantity"
+        type: "Integer"
+        required: true
+        validation:
+          min: 1
+    produces:
+      - "StockAdded"
+      
+  ReserveStock:
+    name: "ReserveStock"
+    description: "Reserve stock for an order"
+    aggregate: "Product"
+    payload:
+      - name: "productId"
+        type: "ProductId"
+        required: true
+      - name: "orderId"
+        type: "OrderId"
+        required: true
+      - name: "quantity"
+        type: "Integer"
+        required: true
+        validation:
+          min: 1
+    produces:
+      - "StockReserved"
+    preconditions:
+      - expression: "product.availableQuantity >= quantity"
+        message: "Insufficient stock available"
+        
+  ReleaseStock:
+    name: "ReleaseStock"
+    description: "Release reserved stock"
+    aggregate: "Product"
+    payload:
+      - name: "reservationId"
+        type: "ReservationId"
+        required: true
+    produces:
+      - "StockReleased"
+      
+  DeductStock:
+    name: "DeductStock"
+    description: "Deduct reserved stock (when order ships)"
+    aggregate: "Product"
+    payload:
+      - name: "reservationId"
+        type: "ReservationId"
+        required: true
+    produces:
+      - "StockDeducted"
+      - "LowStockAlert"
+
+# Queries
+queries:
+  GetProduct:
+    name: "GetProduct"
+    description: "Get product by ID"
+    parameters:
+      - name: "productId"
+        type: "ProductId"
+        required: true
+    returns:
+      type: "Product"
+      nullable: true
+      
+  GetProductBySku:
+    name: "GetProductBySku"
+    description: "Get product by SKU"
+    parameters:
+      - name: "sku"
+        type: "String"
+        required: true
+    returns:
+      type: "Product"
+      nullable: true
+      
+  CheckAvailability:
+    name: "CheckAvailability"
+    description: "Check if quantity is available"
+    parameters:
+      - name: "productId"
+        type: "ProductId"
+        required: true
+      - name: "quantity"
+        type: "Integer"
+        required: true
+    returns:
+      type: "Boolean"
+      
+  GetLowStockProducts:
+    name: "GetLowStockProducts"
+    description: "Get products below reorder level"
+    parameters: []
+    returns:
+      type: "List<Product>"
+
+# External event subscriptions
+external_events:
+  - context: "Order"
+    event: "OrderCreated"
+    handler: "handleOrderCreated"
+    description: "Reserve stock when order is created"
+  - context: "Order"
+    event: "OrderCancelled"
+    handler: "handleOrderCancelled"
+    description: "Release reserved stock when order is cancelled"
+  - context: "Order"
+    event: "OrderShipped"
+    handler: "handleOrderShipped"
+    description: "Deduct stock when order is shipped"

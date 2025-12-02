@@ -1,1 +1,174 @@
 # StormForge
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Flutter](https://img.shields.io/badge/Flutter-3.24+-blue.svg)](https://flutter.dev)
+[![Rust](https://img.shields.io/badge/Rust-1.75+-orange.svg)](https://www.rust-lang.org)
+
+**全球第一个「AI + EventStorming + 多微服务 + 同时生成 Rust 后端 + Flutter 前端专属 API 包」的企业级低代码平台**
+
+*The world's first enterprise-grade low-code platform combining AI + EventStorming + Multi-microservices + Automatic Rust Backend + Flutter API Package Generation*
+
+## 🎯 Core Vision
+
+- **All business modeling** done on Flutter cross-platform canvas (Web + Windows + macOS + iPad)
+- **Each Bounded Context** = 1 independent Rust microservice + 1 independent Flutter API package (Dart)
+- **Frontend integration**: Just `flutter pub add acme_order_service` → All domain interfaces, types, and real-time events ready, truly zero integration work
+- **Pure domain API packages** - No UI generation, only the cleanest, strongly-typed domain API packages
+
+## 🏗️ Architecture Overview
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                     StormForge Platform                              │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  ┌─────────────────────┐    ┌─────────────────────┐                │
+│  │   Flutter Modeler   │    │     AI Assistant    │                │
+│  │  (EventStorming     │◄──►│  (Claude/Grok/      │                │
+│  │   Canvas)           │    │   通义千问)          │                │
+│  └─────────┬───────────┘    └─────────────────────┘                │
+│            │                                                        │
+│            ▼                                                        │
+│  ┌─────────────────────┐                                           │
+│  │   IR (YAML Model)   │ ◄── Model as Code (Git Versioned)        │
+│  └─────────┬───────────┘                                           │
+│            │                                                        │
+│    ┌───────┴───────┐                                               │
+│    ▼               ▼                                               │
+│  ┌───────────┐  ┌───────────────┐                                  │
+│  │   Rust    │  │  Dart Package │                                  │
+│  │ Generator │  │   Generator   │                                  │
+│  └─────┬─────┘  └───────┬───────┘                                  │
+│        │                │                                          │
+│        ▼                ▼                                          │
+│  ┌───────────┐  ┌───────────────┐                                  │
+│  │   Axum    │  │ Flutter API   │                                  │
+│  │Microservice│  │   Package     │                                  │
+│  │(EventSource)│  │(Types+Events)│                                  │
+│  └───────────┘  └───────────────┘                                  │
+│                                                                      │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| Modeling Frontend | Flutter 3.24+ (Web + Desktop + iOS/Android) |
+| Canvas Engine | Custom EventStorming Canvas (CustomPainter + Impeller) |
+| Model Storage | Git + YAML (Model as Code) |
+| AI Models | Claude 3.5 → Grok 4 → 通义千问-max |
+| Backend Generator | Rust (Axum + sqlx + EventSourcing + utoipa) |
+| Frontend API Package | Dart Package (auto-generated, published to private pub or git) |
+| Cross-domain Events | Kafka / NATS / RabbitMQ (auto-generated publisher + subscriber) |
+| Global Event Bus | Dart lightweight event_bus + auto WebSocket/NATS connection |
+| Plugin System | VS Code Marketplace style (external systems, generators, adapters) |
+| Deployment | GitOps + ArgoCD + Helm + Sealos |
+
+## 📦 Project Structure
+
+```
+StormForge/
+├── stormforge_modeler/          # Flutter modeling application
+│   ├── lib/
+│   │   ├── canvas/              # EventStorming canvas
+│   │   ├── models/              # Domain models
+│   │   ├── widgets/             # UI components
+│   │   └── services/            # Business services
+│   └── test/
+├── stormforge_generator/         # Rust code generator
+│   ├── src/
+│   │   ├── rust/                # Rust microservice generator
+│   │   ├── templates/           # Code templates
+│   │   └── ir/                  # IR parser
+│   └── tests/
+├── stormforge_dart_generator/    # Flutter/Dart API package generator
+│   ├── lib/
+│   │   ├── generators/          # Package generators
+│   │   └── templates/           # Dart templates
+│   └── test/
+├── ir_schema/                    # Intermediate Representation schema
+│   ├── schema/                  # JSON Schema definitions
+│   └── examples/                # Example IR files
+├── examples/                     # Complete working examples
+│   ├── acme_ecommerce/          # E-commerce example
+│   └── hr_leave_system/         # HR leave system example
+└── docs/                         # Documentation
+    ├── ROADMAP.md               # Development roadmap
+    ├── ARCHITECTURE.md          # Architecture details
+    └── guides/                  # User guides
+```
+
+## 🚀 Quick Start
+
+> **Note**: This project is currently in the initialization phase. Code implementation will follow the development roadmap.
+
+### Prerequisites
+
+- Flutter SDK 3.24+
+- Rust 1.75+
+- Docker (for local development)
+- Git
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/Genuineh/StormForge.git
+cd StormForge
+
+# More installation steps will be added as the project develops
+```
+
+## 📅 Development Roadmap
+
+See [docs/ROADMAP.md](docs/ROADMAP.md) for the complete 68-sprint development plan.
+
+### Key Milestones
+
+| Phase | Timeline | Milestone | Description |
+|-------|----------|-----------|-------------|
+| 0 | 2025.10 | POC | Complete end-to-end flow in 30 minutes |
+| 1 | 2025.11-2026.04 | MVP | Rust + Flutter API Package MVP |
+| 2 | 2026.05-2026.10 | Ecosystem | Multi-microservice + Plugin ecosystem |
+| 3 | 2026.11-2027.04 | Enterprise | Enterprise-grade + Incremental + Reverse engineering |
+| 4 | 2027.05-2027.12 | Platform | Platform-level + Open source + Commercialization |
+
+## 🎨 Usage Example
+
+Once fully developed, the generated Flutter API package will work like this:
+
+```dart
+// pub add acme_order_service
+import 'package:acme_order_service/acme_order_service.dart';
+
+// Send commands
+await OrderCommand().createOrder(CreateOrderPayload(...));
+
+// Query data
+final order = await OrderQuery().getOrder('ord_123');
+final list = await OrderQuery().listOrders(status: 'paid');
+
+// Real-time events (auto-connected globally)
+EventBus().on<OrderPaid>((event) {
+  showToast('Payment successful: ${event.orderId}');
+  ref.invalidate(orderListProvider);
+});
+```
+
+## 🤝 Contributing
+
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 📞 Contact
+
+- **Project Lead**: Jerry
+- **Start Date**: October 9, 2025
+
+---
+
+*StormForge - Revolutionizing enterprise software development through AI-powered domain-driven design.*

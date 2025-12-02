@@ -1,0 +1,264 @@
+# Acme E-commerce Payment Context
+# StormForge IR v1.0
+
+version: "1.0"
+
+bounded_context:
+  name: "Payment"
+  namespace: "acme.payment"
+  description: "Payment processing bounded context"
+
+# Aggregate definitions
+aggregates:
+  Payment:
+    name: "Payment"
+    description: "Payment aggregate handling payment lifecycle"
+    
+    root_entity:
+      name: "Payment"
+      properties:
+        - name: "id"
+          type: "PaymentId"
+          identifier: true
+        - name: "orderId"
+          type: "OrderId"
+          required: true
+        - name: "amount"
+          type: "Money"
+          required: true
+        - name: "method"
+          type: "PaymentMethod"
+          required: true
+        - name: "status"
+          type: "PaymentStatus"
+          required: true
+          default: "PENDING"
+        - name: "transactionId"
+          type: "String"
+          required: false
+        - name: "createdAt"
+          type: "DateTime"
+          required: true
+        - name: "completedAt"
+          type: "DateTime"
+          required: false
+
+# Value Objects
+value_objects:
+  PaymentId:
+    name: "PaymentId"
+    type: "identifier"
+    underlying_type: "String"
+    format: "uuid"
+    prefix: "pay_"
+    
+  OrderId:
+    name: "OrderId"
+    type: "identifier"
+    underlying_type: "String"
+    format: "uuid"
+    prefix: "ord_"
+    
+  Money:
+    name: "Money"
+    properties:
+      - name: "amount"
+        type: "Decimal"
+        required: true
+        validation:
+          min: 0
+      - name: "currency"
+        type: "String"
+        required: true
+        default: "CNY"
+        
+  PaymentMethod:
+    name: "PaymentMethod"
+    type: "enum"
+    values:
+      - name: "ALIPAY"
+        description: "Alipay payment"
+      - name: "WECHAT_PAY"
+        description: "WeChat Pay"
+      - name: "CREDIT_CARD"
+        description: "Credit card payment"
+      - name: "BANK_TRANSFER"
+        description: "Bank transfer"
+        
+  PaymentStatus:
+    name: "PaymentStatus"
+    type: "enum"
+    values:
+      - name: "PENDING"
+        description: "Payment is pending"
+      - name: "PROCESSING"
+        description: "Payment is being processed"
+      - name: "COMPLETED"
+        description: "Payment completed successfully"
+      - name: "FAILED"
+        description: "Payment failed"
+      - name: "REFUNDED"
+        description: "Payment has been refunded"
+
+# Events
+events:
+  PaymentInitiated:
+    name: "PaymentInitiated"
+    description: "Payment has been initiated"
+    aggregate: "Payment"
+    payload:
+      - name: "paymentId"
+        type: "PaymentId"
+      - name: "orderId"
+        type: "OrderId"
+      - name: "amount"
+        type: "Money"
+      - name: "method"
+        type: "PaymentMethod"
+      - name: "createdAt"
+        type: "DateTime"
+        
+  PaymentCompleted:
+    name: "PaymentCompleted"
+    description: "Payment completed successfully"
+    aggregate: "Payment"
+    payload:
+      - name: "paymentId"
+        type: "PaymentId"
+      - name: "orderId"
+        type: "OrderId"
+      - name: "transactionId"
+        type: "String"
+      - name: "completedAt"
+        type: "DateTime"
+        
+  PaymentFailed:
+    name: "PaymentFailed"
+    description: "Payment has failed"
+    aggregate: "Payment"
+    payload:
+      - name: "paymentId"
+        type: "PaymentId"
+      - name: "orderId"
+        type: "OrderId"
+      - name: "reason"
+        type: "String"
+      - name: "failedAt"
+        type: "DateTime"
+        
+  PaymentRefunded:
+    name: "PaymentRefunded"
+    description: "Payment has been refunded"
+    aggregate: "Payment"
+    payload:
+      - name: "paymentId"
+        type: "PaymentId"
+      - name: "orderId"
+        type: "OrderId"
+      - name: "refundAmount"
+        type: "Money"
+      - name: "refundedAt"
+        type: "DateTime"
+
+# Commands
+commands:
+  InitiatePayment:
+    name: "InitiatePayment"
+    description: "Initiate a payment for an order"
+    aggregate: "Payment"
+    payload:
+      - name: "orderId"
+        type: "OrderId"
+        required: true
+      - name: "amount"
+        type: "Money"
+        required: true
+      - name: "method"
+        type: "PaymentMethod"
+        required: true
+    produces:
+      - "PaymentInitiated"
+      
+  CompletePayment:
+    name: "CompletePayment"
+    description: "Mark payment as completed"
+    aggregate: "Payment"
+    payload:
+      - name: "paymentId"
+        type: "PaymentId"
+        required: true
+      - name: "transactionId"
+        type: "String"
+        required: true
+    produces:
+      - "PaymentCompleted"
+    preconditions:
+      - expression: "payment.status in [PENDING, PROCESSING]"
+        message: "Can only complete pending or processing payments"
+        
+  FailPayment:
+    name: "FailPayment"
+    description: "Mark payment as failed"
+    aggregate: "Payment"
+    payload:
+      - name: "paymentId"
+        type: "PaymentId"
+        required: true
+      - name: "reason"
+        type: "String"
+        required: true
+    produces:
+      - "PaymentFailed"
+        
+  RefundPayment:
+    name: "RefundPayment"
+    description: "Refund a completed payment"
+    aggregate: "Payment"
+    payload:
+      - name: "paymentId"
+        type: "PaymentId"
+        required: true
+      - name: "refundAmount"
+        type: "Money"
+        required: false
+        description: "If not provided, full refund"
+    produces:
+      - "PaymentRefunded"
+    preconditions:
+      - expression: "payment.status == COMPLETED"
+        message: "Can only refund completed payments"
+
+# Queries
+queries:
+  GetPayment:
+    name: "GetPayment"
+    description: "Get payment by ID"
+    parameters:
+      - name: "paymentId"
+        type: "PaymentId"
+        required: true
+    returns:
+      type: "Payment"
+      nullable: true
+      
+  GetPaymentByOrder:
+    name: "GetPaymentByOrder"
+    description: "Get payment for an order"
+    parameters:
+      - name: "orderId"
+        type: "OrderId"
+        required: true
+    returns:
+      type: "Payment"
+      nullable: true
+
+# External event subscriptions
+external_events:
+  - context: "Order"
+    event: "OrderCreated"
+    handler: "handleOrderCreated"
+    description: "Create pending payment when order is created"
+  - context: "Order"
+    event: "OrderCancelled"
+    handler: "handleOrderCancelled"
+    description: "Refund payment when order is cancelled"

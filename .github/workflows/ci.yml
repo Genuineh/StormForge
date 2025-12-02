@@ -9,11 +9,17 @@ on:
   pull_request:
     branches: [main, develop]
 
+# Restrict permissions to read-only for security
+permissions:
+  contents: read
+
 jobs:
   # Flutter/Dart linting and testing
   flutter:
     name: Flutter CI
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     defaults:
       run:
         working-directory: stormforge_modeler
@@ -67,6 +73,8 @@ jobs:
   dart-generator:
     name: Dart Generator CI
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     
     steps:
       - uses: actions/checkout@v4
@@ -118,6 +126,8 @@ jobs:
   rust-generator:
     name: Rust Generator CI
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     
     steps:
       - uses: actions/checkout@v4
@@ -173,6 +183,8 @@ jobs:
   ir-schema:
     name: IR Schema Validation
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     
     steps:
       - uses: actions/checkout@v4

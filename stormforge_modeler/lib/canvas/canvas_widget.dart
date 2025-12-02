@@ -1,10 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:stormforge_modeler/canvas/canvas_controller.dart';
 import 'package:stormforge_modeler/canvas/rendering/canvas_painter.dart';
-import 'package:stormforge_modeler/canvas/interactions/drag_handler.dart';
-import 'package:stormforge_modeler/canvas/interactions/zoom_handler.dart';
 import 'package:stormforge_modeler/models/models.dart';
 
 /// The main EventStorming canvas widget.
@@ -52,9 +51,9 @@ class _EventStormingCanvasState extends ConsumerState<EventStormingCanvas> {
           builder: (context, candidateData, rejectedData) {
             return GestureDetector(
               onTapDown: (details) => _handleTapDown(details, viewport),
-              onPanStart: (details) => _handlePanStart(details),
-              onPanUpdate: (details) => _handlePanUpdate(details),
-              onPanEnd: (details) => _handlePanEnd(details),
+              onPanStart: _handlePanStart,
+              onPanUpdate: _handlePanUpdate,
+              onPanEnd: _handlePanEnd,
               child: Listener(
                 onPointerSignal: (event) {
                   if (event is PointerScrollEvent) {

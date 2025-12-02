@@ -245,13 +245,11 @@ class _ToolbarButton extends StatelessWidget {
     required this.icon,
     required this.tooltip,
     required this.onPressed,
-    this.isActive = false,
   });
 
   final IconData icon;
   final String tooltip;
   final VoidCallback onPressed;
-  final bool isActive;
 
   @override
   Widget build(BuildContext context) {
@@ -266,17 +264,12 @@ class _ToolbarButton extends StatelessWidget {
           width: 36,
           height: 36,
           decoration: BoxDecoration(
-            color: isActive
-                ? theme.colorScheme.primaryContainer
-                : Colors.transparent,
             borderRadius: BorderRadius.circular(6),
           ),
           child: Icon(
             icon,
             size: 20,
-            color: isActive
-                ? theme.colorScheme.onPrimaryContainer
-                : theme.colorScheme.onSurface,
+            color: theme.colorScheme.onSurface,
           ),
         ),
       ),

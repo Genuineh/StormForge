@@ -1,5 +1,8 @@
+import 'dart:ui';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:stormforge_modeler/canvas/canvas_controller.dart';
 
 /// Handles zoom interactions on the canvas.

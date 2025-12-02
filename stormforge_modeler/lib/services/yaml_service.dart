@@ -1,5 +1,8 @@
+import 'dart:ui';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yaml/yaml.dart';
+
 import 'package:stormforge_modeler/models/models.dart';
 
 /// Provider for the YAML service.
@@ -156,7 +159,7 @@ class YamlService {
   CanvasModel importFromYaml(String yamlContent) {
     final doc = loadYaml(yamlContent);
     if (doc is! YamlMap) {
-      throw FormatException('Invalid YAML format');
+      throw const FormatException('Invalid YAML format');
     }
 
     final elements = <CanvasElement>[];

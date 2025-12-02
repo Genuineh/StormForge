@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:stormforge_modeler/canvas/canvas_widget.dart';
-import 'package:stormforge_modeler/widgets/toolbar.dart';
 import 'package:stormforge_modeler/widgets/element_palette.dart';
 import 'package:stormforge_modeler/widgets/property_panel.dart';
+import 'package:stormforge_modeler/widgets/toolbar.dart';
 
 /// The main StormForge Modeler application.
 class StormForgeModelerApp extends StatelessWidget {
@@ -47,34 +48,34 @@ class _ModelerHomePageState extends ConsumerState<ModelerHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
-        children: [
+        children: const [
           // Top toolbar
-          const ModelerToolbar(),
+          ModelerToolbar(),
 
           // Main content area
           Expanded(
             child: Row(
               children: [
                 // Left panel - Element palette
-                const SizedBox(width: 250, child: ElementPalette()),
+                SizedBox(width: 250, child: ElementPalette()),
 
                 // Vertical divider
-                const VerticalDivider(width: 1),
+                VerticalDivider(width: 1),
 
                 // Center - Canvas
-                const Expanded(child: EventStormingCanvas()),
+                Expanded(child: EventStormingCanvas()),
 
                 // Vertical divider
-                const VerticalDivider(width: 1),
+                VerticalDivider(width: 1),
 
                 // Right panel - Property panel
-                const SizedBox(width: 300, child: PropertyPanel()),
+                SizedBox(width: 300, child: PropertyPanel()),
               ],
             ),
           ),
 
           // Bottom status bar
-          const _StatusBar(),
+          _StatusBar(),
         ],
       ),
     );

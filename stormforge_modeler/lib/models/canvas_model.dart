@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
+
 import 'package:stormforge_modeler/models/element_model.dart';
 
 /// Represents a bounded context on the canvas.

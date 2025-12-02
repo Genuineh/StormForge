@@ -80,11 +80,11 @@ void main() {
     });
 
     test('bounds returns correct rectangle', () {
-      final element = StickyNoteElement(
+      const element = StickyNoteElement(
         id: 'test-id',
         type: ElementType.aggregate,
-        position: const Offset(100, 200),
-        size: const Size(150, 100),
+        position: Offset(100, 200),
+        size: Size(150, 100),
         label: 'Test',
       );
 
@@ -92,11 +92,11 @@ void main() {
     });
 
     test('copyWith creates modified copy', () {
-      final element = StickyNoteElement(
+      const element = StickyNoteElement(
         id: 'test-id',
         type: ElementType.aggregate,
-        position: const Offset(100, 100),
-        size: const Size(150, 100),
+        position: Offset(100, 100),
+        size: Size(150, 100),
         label: 'Original',
         description: 'Original description',
         isSelected: false,
@@ -133,7 +133,7 @@ void main() {
     });
 
     test('copyWith creates modified copy', () {
-      final connection = ConnectionElement(
+      const connection = ConnectionElement(
         id: 'test-id',
         sourceId: 'source',
         targetId: 'target',

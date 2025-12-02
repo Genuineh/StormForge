@@ -1,0 +1,405 @@
+# Acme E-commerce Order Context
+# StormForge IR v1.0
+
+version: "1.0"
+
+bounded_context:
+  name: "Order"
+  namespace: "acme.order"
+  description: "Order management bounded context handling order lifecycle"
+
+# Aggregate definitions
+aggregates:
+  Order:
+    name: "Order"
+    description: "Order aggregate root managing order lifecycle"
+    
+    root_entity:
+      name: "Order"
+      properties:
+        - name: "id"
+          type: "OrderId"
+          identifier: true
+          description: "Unique order identifier"
+        - name: "customerId"
+          type: "CustomerId"
+          required: true
+          description: "Customer who placed the order"
+        - name: "items"
+          type: "List<OrderItem>"
+          required: true
+          description: "Order line items"
+        - name: "status"
+          type: "OrderStatus"
+          required: true
+          default: "CREATED"
+          description: "Current order status"
+        - name: "shippingAddress"
+          type: "Address"
+          required: true
+          description: "Delivery address"
+        - name: "totalAmount"
+          type: "Money"
+          required: true
+          description: "Order total"
+        - name: "createdAt"
+          type: "DateTime"
+          required: true
+        - name: "updatedAt"
+          type: "DateTime"
+          required: false
+          
+    invariants:
+      - name: "OrderMustHaveItems"
+        description: "Order must have at least one item"
+        expression: "items.length > 0"
+      - name: "TotalMustMatchItems"
+        description: "Total must equal sum of item subtotals"
+        expression: "totalAmount == sum(items.subtotal)"
+
+# Value Objects
+value_objects:
+  OrderId:
+    name: "OrderId"
+    type: "identifier"
+    underlying_type: "String"
+    format: "uuid"
+    prefix: "ord_"
+    
+  CustomerId:
+    name: "CustomerId"
+    type: "identifier"
+    underlying_type: "String"
+    format: "uuid"
+    prefix: "cust_"
+    
+  ProductId:
+    name: "ProductId"
+    type: "identifier"
+    underlying_type: "String"
+    format: "uuid"
+    prefix: "prod_"
+    
+  OrderItem:
+    name: "OrderItem"
+    description: "A line item in an order"
+    properties:
+      - name: "productId"
+        type: "ProductId"
+        required: true
+      - name: "productName"
+        type: "String"
+        required: true
+        validation:
+          maxLength: 255
+      - name: "quantity"
+        type: "Integer"
+        required: true
+        validation:
+          min: 1
+          max: 999
+      - name: "unitPrice"
+        type: "Money"
+        required: true
+      - name: "subtotal"
+        type: "Money"
+        required: true
+        computed: "quantity * unitPrice"
+        
+  Money:
+    name: "Money"
+    description: "Monetary value with currency"
+    properties:
+      - name: "amount"
+        type: "Decimal"
+        required: true
+        validation:
+          min: 0
+          precision: 2
+      - name: "currency"
+        type: "String"
+        required: true
+        default: "CNY"
+        validation:
+          pattern: "^[A-Z]{3}$"
+          
+  Address:
+    name: "Address"
+    description: "Physical address"
+    properties:
+      - name: "street"
+        type: "String"
+        required: true
+        validation:
+          maxLength: 255
+      - name: "city"
+        type: "String"
+        required: true
+        validation:
+          maxLength: 100
+      - name: "province"
+        type: "String"
+        required: true
+        validation:
+          maxLength: 100
+      - name: "postalCode"
+        type: "String"
+        required: true
+        validation:
+          pattern: "^[0-9]{6}$"
+      - name: "country"
+        type: "String"
+        required: true
+        default: "CN"
+        
+  OrderStatus:
+    name: "OrderStatus"
+    type: "enum"
+    values:
+      - name: "CREATED"
+        description: "Order has been created, awaiting payment"
+      - name: "PAID"
+        description: "Payment has been received"
+      - name: "PROCESSING"
+        description: "Order is being prepared"
+      - name: "SHIPPED"
+        description: "Order has been shipped"
+      - name: "DELIVERED"
+        description: "Order has been delivered"
+      - name: "CANCELLED"
+        description: "Order has been cancelled"
+      - name: "REFUNDED"
+        description: "Order has been refunded"
+
+# Domain Events
+events:
+  OrderCreated:
+    name: "OrderCreated"
+    description: "Emitted when a new order is created"
+    aggregate: "Order"
+    payload:
+      - name: "orderId"
+        type: "OrderId"
+      - name: "customerId"
+        type: "CustomerId"
+      - name: "items"
+        type: "List<OrderItem>"
+      - name: "shippingAddress"
+        type: "Address"
+      - name: "totalAmount"
+        type: "Money"
+      - name: "createdAt"
+        type: "DateTime"
+        
+  OrderPaid:
+    name: "OrderPaid"
+    description: "Emitted when an order payment is confirmed"
+    aggregate: "Order"
+    payload:
+      - name: "orderId"
+        type: "OrderId"
+      - name: "paymentId"
+        type: "String"
+      - name: "paidAmount"
+        type: "Money"
+      - name: "paidAt"
+        type: "DateTime"
+        
+  OrderShipped:
+    name: "OrderShipped"
+    description: "Emitted when an order is shipped"
+    aggregate: "Order"
+    payload:
+      - name: "orderId"
+        type: "OrderId"
+      - name: "trackingNumber"
+        type: "String"
+      - name: "carrier"
+        type: "String"
+      - name: "shippedAt"
+        type: "DateTime"
+        
+  OrderDelivered:
+    name: "OrderDelivered"
+    description: "Emitted when an order is delivered"
+    aggregate: "Order"
+    payload:
+      - name: "orderId"
+        type: "OrderId"
+      - name: "deliveredAt"
+        type: "DateTime"
+      - name: "signedBy"
+        type: "String"
+        
+  OrderCancelled:
+    name: "OrderCancelled"
+    description: "Emitted when an order is cancelled"
+    aggregate: "Order"
+    payload:
+      - name: "orderId"
+        type: "OrderId"
+      - name: "reason"
+        type: "String"
+      - name: "cancelledAt"
+        type: "DateTime"
+
+# Commands
+commands:
+  CreateOrder:
+    name: "CreateOrder"
+    description: "Create a new order"
+    aggregate: "Order"
+    payload:
+      - name: "customerId"
+        type: "CustomerId"
+        required: true
+      - name: "items"
+        type: "List<CreateOrderItem>"
+        required: true
+      - name: "shippingAddress"
+        type: "Address"
+        required: true
+    produces:
+      - "OrderCreated"
+    validation:
+      - expression: "items.length > 0"
+        message: "Order must have at least one item"
+      - expression: "items.length <= 50"
+        message: "Order cannot have more than 50 items"
+        
+  ConfirmPayment:
+    name: "ConfirmPayment"
+    description: "Confirm order payment"
+    aggregate: "Order"
+    payload:
+      - name: "orderId"
+        type: "OrderId"
+        required: true
+      - name: "paymentId"
+        type: "String"
+        required: true
+    produces:
+      - "OrderPaid"
+    preconditions:
+      - expression: "order.status == CREATED"
+        message: "Can only confirm payment for orders in CREATED status"
+        
+  ShipOrder:
+    name: "ShipOrder"
+    description: "Ship the order"
+    aggregate: "Order"
+    payload:
+      - name: "orderId"
+        type: "OrderId"
+        required: true
+      - name: "trackingNumber"
+        type: "String"
+        required: true
+      - name: "carrier"
+        type: "String"
+        required: true
+    produces:
+      - "OrderShipped"
+    preconditions:
+      - expression: "order.status == PAID"
+        message: "Can only ship orders that have been paid"
+        
+  DeliverOrder:
+    name: "DeliverOrder"
+    description: "Mark order as delivered"
+    aggregate: "Order"
+    payload:
+      - name: "orderId"
+        type: "OrderId"
+        required: true
+      - name: "signedBy"
+        type: "String"
+        required: false
+    produces:
+      - "OrderDelivered"
+    preconditions:
+      - expression: "order.status == SHIPPED"
+        message: "Can only deliver orders that have been shipped"
+        
+  CancelOrder:
+    name: "CancelOrder"
+    description: "Cancel the order"
+    aggregate: "Order"
+    payload:
+      - name: "orderId"
+        type: "OrderId"
+        required: true
+      - name: "reason"
+        type: "String"
+        required: true
+    produces:
+      - "OrderCancelled"
+    preconditions:
+      - expression: "order.status in [CREATED, PAID]"
+        message: "Can only cancel orders that have not been shipped"
+
+# Queries
+queries:
+  GetOrder:
+    name: "GetOrder"
+    description: "Get order by ID"
+    parameters:
+      - name: "orderId"
+        type: "OrderId"
+        required: true
+    returns:
+      type: "Order"
+      nullable: true
+      
+  ListOrders:
+    name: "ListOrders"
+    description: "List orders with filters"
+    parameters:
+      - name: "customerId"
+        type: "CustomerId"
+        required: false
+      - name: "status"
+        type: "OrderStatus"
+        required: false
+      - name: "fromDate"
+        type: "DateTime"
+        required: false
+      - name: "toDate"
+        type: "DateTime"
+        required: false
+      - name: "page"
+        type: "Integer"
+        required: false
+        default: 1
+        validation:
+          min: 1
+      - name: "pageSize"
+        type: "Integer"
+        required: false
+        default: 20
+        validation:
+          min: 1
+          max: 100
+    returns:
+      type: "PagedResult<Order>"
+      
+  GetOrdersByStatus:
+    name: "GetOrdersByStatus"
+    description: "Get all orders with a specific status"
+    parameters:
+      - name: "status"
+        type: "OrderStatus"
+        required: true
+    returns:
+      type: "List<Order>"
+
+# External event subscriptions
+external_events:
+  - context: "Payment"
+    event: "PaymentCompleted"
+    handler: "handlePaymentCompleted"
+    description: "When payment is completed, confirm the order payment"
+  - context: "Inventory"
+    event: "StockReserved"
+    handler: "handleStockReserved"
+    description: "When stock is reserved, proceed with order processing"

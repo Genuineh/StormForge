@@ -1,0 +1,326 @@
+# HR Leave Management Context
+# StormForge IR v1.0
+
+version: "1.0"
+
+bounded_context:
+  name: "Leave"
+  namespace: "hr.leave"
+  description: "Employee leave management bounded context"
+
+# Aggregate definitions
+aggregates:
+  LeaveRequest:
+    name: "LeaveRequest"
+    description: "Leave request aggregate"
+    
+    root_entity:
+      name: "LeaveRequest"
+      properties:
+        - name: "id"
+          type: "LeaveRequestId"
+          identifier: true
+        - name: "employeeId"
+          type: "EmployeeId"
+          required: true
+        - name: "leaveType"
+          type: "LeaveType"
+          required: true
+        - name: "startDate"
+          type: "Date"
+          required: true
+        - name: "endDate"
+          type: "Date"
+          required: true
+        - name: "reason"
+          type: "String"
+          required: false
+        - name: "status"
+          type: "LeaveStatus"
+          required: true
+          default: "PENDING"
+        - name: "approverId"
+          type: "EmployeeId"
+          required: false
+        - name: "approvalComment"
+          type: "String"
+          required: false
+        - name: "createdAt"
+          type: "DateTime"
+          required: true
+        - name: "updatedAt"
+          type: "DateTime"
+          required: false
+          
+    invariants:
+      - name: "EndDateAfterStartDate"
+        description: "End date must be on or after start date"
+        expression: "endDate >= startDate"
+      - name: "MaxLeaveDuration"
+        description: "Leave cannot exceed 30 days"
+        expression: "daysBetween(startDate, endDate) <= 30"
+
+# Value Objects
+value_objects:
+  LeaveRequestId:
+    name: "LeaveRequestId"
+    type: "identifier"
+    underlying_type: "String"
+    format: "uuid"
+    prefix: "leave_"
+    
+  EmployeeId:
+    name: "EmployeeId"
+    type: "identifier"
+    underlying_type: "String"
+    format: "uuid"
+    prefix: "emp_"
+    
+  LeaveType:
+    name: "LeaveType"
+    type: "enum"
+    values:
+      - name: "ANNUAL"
+        description: "Annual leave"
+      - name: "SICK"
+        description: "Sick leave"
+      - name: "PERSONAL"
+        description: "Personal leave"
+      - name: "MATERNITY"
+        description: "Maternity leave"
+      - name: "PATERNITY"
+        description: "Paternity leave"
+      - name: "BEREAVEMENT"
+        description: "Bereavement leave"
+      - name: "UNPAID"
+        description: "Unpaid leave"
+        
+  LeaveStatus:
+    name: "LeaveStatus"
+    type: "enum"
+    values:
+      - name: "PENDING"
+        description: "Awaiting approval"
+      - name: "APPROVED"
+        description: "Leave approved"
+      - name: "REJECTED"
+        description: "Leave rejected"
+      - name: "CANCELLED"
+        description: "Leave cancelled by employee"
+
+# Events
+events:
+  LeaveRequested:
+    name: "LeaveRequested"
+    description: "A leave request has been submitted"
+    aggregate: "LeaveRequest"
+    payload:
+      - name: "leaveRequestId"
+        type: "LeaveRequestId"
+      - name: "employeeId"
+        type: "EmployeeId"
+      - name: "leaveType"
+        type: "LeaveType"
+      - name: "startDate"
+        type: "Date"
+      - name: "endDate"
+        type: "Date"
+      - name: "reason"
+        type: "String"
+      - name: "requestedAt"
+        type: "DateTime"
+        
+  LeaveApproved:
+    name: "LeaveApproved"
+    description: "Leave request has been approved"
+    aggregate: "LeaveRequest"
+    payload:
+      - name: "leaveRequestId"
+        type: "LeaveRequestId"
+      - name: "employeeId"
+        type: "EmployeeId"
+      - name: "approverId"
+        type: "EmployeeId"
+      - name: "comment"
+        type: "String"
+      - name: "approvedAt"
+        type: "DateTime"
+        
+  LeaveRejected:
+    name: "LeaveRejected"
+    description: "Leave request has been rejected"
+    aggregate: "LeaveRequest"
+    payload:
+      - name: "leaveRequestId"
+        type: "LeaveRequestId"
+      - name: "employeeId"
+        type: "EmployeeId"
+      - name: "approverId"
+        type: "EmployeeId"
+      - name: "reason"
+        type: "String"
+      - name: "rejectedAt"
+        type: "DateTime"
+        
+  LeaveCancelled:
+    name: "LeaveCancelled"
+    description: "Leave request has been cancelled"
+    aggregate: "LeaveRequest"
+    payload:
+      - name: "leaveRequestId"
+        type: "LeaveRequestId"
+      - name: "employeeId"
+        type: "EmployeeId"
+      - name: "cancelledAt"
+        type: "DateTime"
+
+# Commands
+commands:
+  RequestLeave:
+    name: "RequestLeave"
+    description: "Submit a leave request"
+    aggregate: "LeaveRequest"
+    payload:
+      - name: "employeeId"
+        type: "EmployeeId"
+        required: true
+      - name: "leaveType"
+        type: "LeaveType"
+        required: true
+      - name: "startDate"
+        type: "Date"
+        required: true
+      - name: "endDate"
+        type: "Date"
+        required: true
+      - name: "reason"
+        type: "String"
+        required: false
+    produces:
+      - "LeaveRequested"
+    validation:
+      - expression: "endDate >= startDate"
+        message: "End date must be on or after start date"
+      - expression: "startDate >= today()"
+        message: "Leave cannot start in the past"
+        
+  ApproveLeave:
+    name: "ApproveLeave"
+    description: "Approve a leave request"
+    aggregate: "LeaveRequest"
+    payload:
+      - name: "leaveRequestId"
+        type: "LeaveRequestId"
+        required: true
+      - name: "approverId"
+        type: "EmployeeId"
+        required: true
+      - name: "comment"
+        type: "String"
+        required: false
+    produces:
+      - "LeaveApproved"
+    preconditions:
+      - expression: "leaveRequest.status == PENDING"
+        message: "Can only approve pending leave requests"
+      - expression: "approverId != leaveRequest.employeeId"
+        message: "Cannot approve own leave request"
+        
+  RejectLeave:
+    name: "RejectLeave"
+    description: "Reject a leave request"
+    aggregate: "LeaveRequest"
+    payload:
+      - name: "leaveRequestId"
+        type: "LeaveRequestId"
+        required: true
+      - name: "approverId"
+        type: "EmployeeId"
+        required: true
+      - name: "reason"
+        type: "String"
+        required: true
+    produces:
+      - "LeaveRejected"
+    preconditions:
+      - expression: "leaveRequest.status == PENDING"
+        message: "Can only reject pending leave requests"
+        
+  CancelLeave:
+    name: "CancelLeave"
+    description: "Cancel a leave request"
+    aggregate: "LeaveRequest"
+    payload:
+      - name: "leaveRequestId"
+        type: "LeaveRequestId"
+        required: true
+      - name: "employeeId"
+        type: "EmployeeId"
+        required: true
+    produces:
+      - "LeaveCancelled"
+    preconditions:
+      - expression: "leaveRequest.status in [PENDING, APPROVED]"
+        message: "Can only cancel pending or approved leave requests"
+      - expression: "leaveRequest.employeeId == employeeId"
+        message: "Only the employee can cancel their own leave"
+      - expression: "leaveRequest.startDate > today()"
+        message: "Cannot cancel leave that has already started"
+
+# Queries
+queries:
+  GetLeaveRequest:
+    name: "GetLeaveRequest"
+    description: "Get leave request by ID"
+    parameters:
+      - name: "leaveRequestId"
+        type: "LeaveRequestId"
+        required: true
+    returns:
+      type: "LeaveRequest"
+      nullable: true
+      
+  GetEmployeeLeaves:
+    name: "GetEmployeeLeaves"
+    description: "Get all leave requests for an employee"
+    parameters:
+      - name: "employeeId"
+        type: "EmployeeId"
+        required: true
+      - name: "year"
+        type: "Integer"
+        required: false
+      - name: "status"
+        type: "LeaveStatus"
+        required: false
+    returns:
+      type: "List<LeaveRequest>"
+      
+  GetPendingApprovals:
+    name: "GetPendingApprovals"
+    description: "Get pending leave requests for approval"
+    parameters:
+      - name: "approverId"
+        type: "EmployeeId"
+        required: true
+    returns:
+      type: "List<LeaveRequest>"
+      
+  GetLeaveBalance:
+    name: "GetLeaveBalance"
+    description: "Get remaining leave balance for an employee"
+    parameters:
+      - name: "employeeId"
+        type: "EmployeeId"
+        required: true
+      - name: "leaveType"
+        type: "LeaveType"
+        required: true
+      - name: "year"
+        type: "Integer"
+        required: false
+    returns:
+      type: "LeaveBalance"
+
+# External event subscriptions (none for this simple example)
+external_events: []

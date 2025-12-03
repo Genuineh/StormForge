@@ -34,15 +34,13 @@ impl ApiGenerator {
     
     fn generate_imports(context_name: &str) -> String {
         format!(r#"use axum::{{
-    extract::{{Path, Query, State}},
     http::StatusCode,
     response::{{IntoResponse, Json}},
-    routing::{{get, post, put, delete}},
+    routing::{{get, post}},
     Router,
 }};
 use serde::{{Deserialize, Serialize}};
 use utoipa::{{ToSchema, OpenApi}};
-use std::sync::Arc;
 
 use crate::domain::{{entities::*, commands::*, events::*}};
 

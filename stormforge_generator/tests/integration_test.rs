@@ -13,7 +13,8 @@ fn test_generator_order_context() {
     
     // Create temporary output directory
     let temp_dir = TempDir::new().expect("Failed to create temp dir");
-    let output_path = temp_dir.path().to_str().unwrap();
+    let output_path = temp_dir.path().to_str()
+        .expect("Output path contains invalid UTF-8 characters");
     
     // Build the generator in debug mode
     let build_status = Command::new("cargo")
@@ -91,7 +92,8 @@ fn test_validate_command() {
     let validate_status = Command::new("./target/debug/stormforge-generator")
         .args(&[
             "validate",
-            "--input", input_path.to_str().unwrap(),
+            "--input", input_path.to_str()
+                .expect("Input path contains invalid UTF-8 characters"),
         ])
         .status()
         .expect("Failed to run validator");

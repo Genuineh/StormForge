@@ -33,11 +33,13 @@ pub fn to_rust_type(ir_type: &str) -> String {
         "Uuid" => "uuid::Uuid".to_string(),
         // Handle common command DTOs that might not be defined
         // by mapping them to their entity equivalents
-        t if t.starts_with("Create") || t.starts_with("Update") => {
-            // Try to map CreateOrderItem -> OrderItem
-            t.trim_start_matches("Create")
-                .trim_start_matches("Update")
-                .to_string()
+        t if t.starts_with("Create") => {
+            // Map CreateOrderItem -> OrderItem
+            t.trim_start_matches("Create").to_string()
+        }
+        t if t.starts_with("Update") => {
+            // Map UpdateOrderItem -> OrderItem
+            t.trim_start_matches("Update").to_string()
         }
         // Custom types remain as-is (they are aggregate or value object names)
         _ => ir_type.to_string(),

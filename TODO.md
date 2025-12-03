@@ -64,7 +64,7 @@
 5. AI一键模型生成
 6. 一键Git + 一键部署
 
-**并行开发**: 生成器开发 (Sprint S03-S13) 与 Modeler 2.0升级 (Sprint M1-M9) 并行进行
+**并行开发**: 生成器开发 (Sprint S05-S13) 与 Modeler 2.0升级 (Sprint M1-M9) 并行进行
 
 ### Sprint S03: Rust Single Microservice Generator ✅ (2025.11.06 - 2025.11.19)
 - [x] Initialize Rust generator project (stormforge_generator)
@@ -452,12 +452,16 @@ Modeler正在升级为完整的企业级建模和项目管理平台，新增6大
 
 由于Modeler 2.0升级计划的加入，原Phase 1的部分Sprint时间略有调整：
 
-- **S05-S10**: 继续按原计划进行，但与M1-M6并行开发
-- **M1-M9**: 新增的Modeler 2.0升级Sprint，18周完成
-- **S11-S13**: 在M9完成后进行，包含新功能的集成测试
+- **S03-S04**: 已完成，为Modeler 2.0升级做准备
+- **S05-S13**: 继续按原计划进行，与M1-M9并行开发
+- **M1-M9**: 新增的Modeler 2.0升级Sprint，18周完成（2025.12.04 - 2026.04.22）
+- **集成时间点**: 
+  - M8 (2026.03.26-04.08): 统一更新IR Schema v2.0，两个团队协调
+  - M9 + S11-S13 (2026.04.09-04.30): 综合集成测试，包含新功能
 
 这种并行开发方式允许：
-- 生成器团队继续推进代码生成功能
+- 生成器团队继续推进代码生成功能（S05-S13）
+- Modeler团队同时升级建模平台（M1-M9）
 - Modeler团队同时升级建模平台
 - 在M8中统一更新IR Schema v2.0
 - 在M9和S11-S13中进行综合测试

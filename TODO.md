@@ -45,6 +45,149 @@
 - [x] Model diff visualization
 - [x] Support 20+ Bounded Contexts per project
 
+### Sprint S04.5: Modeler Upgrade Planning ✅ (2025.12.03)
+- [x] Analyze upgrade requirements
+- [x] Design comprehensive improvement plan
+- [x] Create MODELER_UPGRADE_PLAN.md document
+- [x] Define project management features
+- [x] Design component connectivity system
+- [x] Design entity modeling system
+- [x] Design read model field selection
+- [x] Design command data model management
+- [x] Plan enterprise global library
+- [x] Update TODO.md with upgrade roadmap
+
+---
+
+## 📋 Phase 1.5: Modeler 2.0 Upgrade (2025.12 - 2026.06)
+
+> **Goal**: Transform Modeler into a complete enterprise-grade modeling and project management platform
+> **Reference**: See [docs/MODELER_UPGRADE_PLAN.md](docs/MODELER_UPGRADE_PLAN.md) for detailed design
+
+### Sprint M1: Project Management Foundation (2025.12.04 - 2025.12.17)
+- [ ] Design and implement database schema (PostgreSQL)
+- [ ] User authentication system (JWT)
+- [ ] User management UI
+- [ ] Project CRUD operations
+- [ ] Project persistence layer (SQLite local + PostgreSQL cloud)
+- [ ] Team member management
+- [ ] Role-based permission system
+- [ ] Project settings interface
+- [ ] Git integration for project versioning
+
+### Sprint M2: Component Connection System (2025.12.18 - 2025.12.31)
+- [ ] Connection model implementation
+- [ ] Connection types definition (8 types)
+- [ ] Visual connection drawing on canvas
+- [ ] Connection validation logic
+- [ ] Connection properties panel
+- [ ] Auto-routing algorithm (orthogonal/curved)
+- [ ] Connection mode toolbar
+- [ ] Connection editing/deletion
+- [ ] Connection styling system
+
+### Sprint M3: Entity Modeling System (2026.01.01 - 2026.01.21)
+- [ ] Entity definition model
+- [ ] Entity property model with validations
+- [ ] Entity method model
+- [ ] Entity invariant system
+- [ ] Entity editor UI (tree + detail panel)
+- [ ] Property grid editor
+- [ ] Type selector with library integration
+- [ ] Validation rule builder
+- [ ] Method/behavior editor
+- [ ] Entity-aggregate linking
+- [ ] Entity relationship diagram view
+- [ ] Entity import/export
+
+### Sprint M4: Read Model Designer (2026.01.22 - 2026.02.04)
+- [ ] Read model definition model
+- [ ] Field source tracking
+- [ ] Data source model (multi-entity)
+- [ ] Join condition builder
+- [ ] Field selection UI
+- [ ] Entity tree browser
+- [ ] Drag & drop field selection
+- [ ] Field transformation expressions
+- [ ] Field renaming interface
+- [ ] Computed fields support
+- [ ] Real-time preview generation
+- [ ] Read model validation
+
+### Sprint M5: Command Data Model Designer (2026.02.05 - 2026.02.18)
+- [ ] Command definition model
+- [ ] Command payload model
+- [ ] Command field sources
+- [ ] Command designer UI
+- [ ] Payload field editor
+- [ ] Data source mapping interface
+- [ ] Field validation rules
+- [ ] Precondition builder
+- [ ] Event linkage system
+- [ ] Command-aggregate linking
+- [ ] Command from read model mapping
+- [ ] Custom DTO support
+
+### Sprint M6: Enterprise Global Library (2026.02.19 - 2026.03.11)
+- [ ] Library component model
+- [ ] Library scope hierarchy (enterprise/org/project)
+- [ ] Component versioning system
+- [ ] Library storage backend
+- [ ] Library browser UI
+- [ ] Component search and filter
+- [ ] Component details view
+- [ ] Component publishing workflow
+- [ ] Import to project
+- [ ] Reference vs copy modes
+- [ ] Usage tracking and statistics
+- [ ] Dependency management
+- [ ] Impact analysis tool
+- [ ] Library component templates
+- [ ] Standard library components (Money, Address, etc.)
+
+### Sprint M7: Enhanced Canvas Integration (2026.03.12 - 2026.03.25)
+- [ ] Update element models with references
+- [ ] Aggregate-entity synchronization
+- [ ] Read model-definition linking
+- [ ] Command-definition linking
+- [ ] Canvas-model bidirectional sync
+- [ ] Enhanced property panel
+- [ ] Context menu improvements
+- [ ] Multi-panel layout (Project tree + Canvas + Properties)
+- [ ] Project navigation tree
+- [ ] Quick actions and keyboard shortcuts
+- [ ] Element template system
+- [ ] Bulk operations support
+
+### Sprint M8: IR Schema v2.0 (2026.03.26 - 2026.04.08)
+- [ ] Design IR v2.0 schema
+- [ ] Add entity definitions to IR
+- [ ] Add read model definitions to IR
+- [ ] Add command data models to IR
+- [ ] Add library references to IR
+- [ ] Add canvas metadata (connections) to IR
+- [ ] Implement v2.0 serialization
+- [ ] Implement v2.0 deserialization
+- [ ] Create v1.0 to v2.0 migration tool
+- [ ] Update IR validation
+- [ ] Update JSON schema files
+- [ ] Update generators for v2.0 support
+
+### Sprint M9: Testing, Polish & Documentation (2026.04.09 - 2026.04.22)
+- [ ] Unit tests for all new models
+- [ ] Integration tests for workflows
+- [ ] UI/UX testing and improvements
+- [ ] Performance optimization (1000+ elements at 60fps)
+- [ ] Auto-save functionality (30-second interval)
+- [ ] Error handling and recovery
+- [ ] User guide documentation
+- [ ] Admin guide documentation
+- [ ] API documentation
+- [ ] Migration guide (v1.0 to v2.0)
+- [ ] Video tutorials
+- [ ] Beta testing (50+ users)
+- [ ] Bug fixes and refinement
+
 ---
 
 ## 📋 Phase 1: Rust + Flutter API Package MVP (2025.11 - 2026.04)
@@ -61,11 +204,11 @@
 - [x] utoipa/Swagger documentation
 - [x] cargo run verification
 
-### Sprint S04: Flutter API Package Generator v0.9 (2025.11.20 - 2025.12.03)
-- [ ] Initialize Dart generator project (stormforge_dart_generator)
-- [ ] Dart type generation from IR
-- [ ] Command classes generation
-- [ ] Query classes generation
+### Sprint S04: Flutter API Package Generator v0.9 (2025.11.20 - 2025.12.03) 🚧
+- [x] Initialize Dart generator project (stormforge_dart_generator)
+- [x] Dart type generation from IR
+- [x] Command classes generation
+- [x] Query classes generation
 - [ ] HTTP client wrapper
 - [ ] Error handling types
 - [ ] event_bus integration
@@ -199,6 +342,7 @@
 |-------|----------|--------|
 | Phase 0: POC | 100% | ✅ Completed |
 | Phase 1: MVP | 17% | 🚧 In Progress |
+| Phase 1.5: Modeler 2.0 | 0% | 📋 Planned |
 | Phase 2: Ecosystem | 0% | ⏳ Planned |
 | Phase 3: Enterprise | 0% | ⏳ Planned |
 | Phase 4: Platform | 0% | ⏳ Planned |
@@ -206,6 +350,21 @@
 ---
 
 ## 📝 Notes
+
+### Modeler 2.0 Upgrade (Added 2025-12-03)
+
+The Modeler is being upgraded to a complete enterprise-grade modeling and project management platform with the following key features:
+
+1. **Project Management**: Full project lifecycle with user management, permissions, and team collaboration
+2. **Component Connectivity**: Visual connection system allowing EventStorming components to be linked (Command→Aggregate, Aggregate→Event, etc.)
+3. **Entity Modeling**: Dedicated entity editor where aggregates reference fully-defined entity objects with properties, methods, and invariants
+4. **Read Model Designer**: Visual tool to select fields from entities, supporting multi-entity joins and transformations
+5. **Command Data Models**: Proper data model management for commands with field source tracking (from read models, entities, or custom DTOs)
+6. **Enterprise Global Library**: Three-tier library system (Enterprise/Organization/Project) for reusable components with versioning
+
+See [docs/MODELER_UPGRADE_PLAN.md](docs/MODELER_UPGRADE_PLAN.md) for complete design details.
+
+This upgrade will run parallel to Phase 1 development and is scheduled for completion by Q2 2026.
 
 ### Key Decisions
 1. **Flutter-first approach**: All modeling done in Flutter for true cross-platform support

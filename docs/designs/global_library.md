@@ -424,14 +424,14 @@ class ComponentCard extends StatelessWidget {
                 children: [
                   Text(
                     'v${component.version}',
-                    style: Theme.of(context).textTheme.caption,
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
                   Spacer(),
                   Icon(Icons.projects, size: 12),
                   SizedBox(width: 4),
                   Text(
                     '${component.usageStats.projectCount}',
-                    style: Theme.of(context).textTheme.caption,
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ],
               ),
@@ -479,7 +479,7 @@ class ComponentDetailsDialog extends StatelessWidget {
                         SizedBox(height: 4),
                         Text(
                           component.namespace,
-                          style: Theme.of(context).textTheme.caption,
+                          style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ],
                     ),

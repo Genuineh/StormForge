@@ -1,11 +1,10 @@
 # StormForge CI/CD Pipeline
 # Continuous Integration workflow for the StormForge platform
+# Pipeline runs only on pull requests (during merge), not after merge to main
 
 name: CI
 
 on:
-  push:
-    branches: [main, develop]
   pull_request:
     branches: [main, develop]
 

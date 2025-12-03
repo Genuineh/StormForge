@@ -97,6 +97,24 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
    dart test
    ```
 
+5. **Set Up Pre-commit Hooks** (Recommended)
+   
+   Pre-commit hooks ensure code is formatted before each commit:
+   
+   **Option 1: Using pre-commit (Recommended)**
+   ```bash
+   pip install pre-commit
+   pre-commit install
+   ```
+   
+   **Option 2: Manual Hook Installation**
+   ```bash
+   cp scripts/pre-commit .git/hooks/pre-commit
+   chmod +x .git/hooks/pre-commit
+   ```
+   
+   After installation, `dart format` will run automatically on all staged Dart files before each commit.
+
 ### Running Tests
 
 ```bash

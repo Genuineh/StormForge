@@ -51,10 +51,10 @@ flutter run
 ## Development Status
 
 - [x] Project structure defined
-- [ ] Basic canvas implementation
-- [ ] Element types implementation
-- [ ] Drag and drop functionality
-- [ ] YAML export/import
+- [x] Basic canvas implementation
+- [x] Element types implementation
+- [x] Drag and drop functionality
+- [x] YAML export/import
 - [ ] Git integration
 - [ ] AI integration
 

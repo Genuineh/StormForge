@@ -1,0 +1,437 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stormforge.dev/schemas/ir/v1.0/ir.schema.json",
+  "title": "StormForge IR Schema v1.0",
+  "description": "Intermediate Representation schema for StormForge domain models",
+  "type": "object",
+  "required": ["version", "bounded_context"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "IR schema version",
+      "pattern": "^\\d+\\.\\d+$",
+      "examples": ["1.0"]
+    },
+    "bounded_context": {
+      "$ref": "#/$defs/BoundedContext"
+    },
+    "aggregates": {
+      "type": "object",
+      "description": "Aggregate definitions keyed by name",
+      "additionalProperties": {
+        "$ref": "#/$defs/Aggregate"
+      }
+    },
+    "value_objects": {
+      "type": "object",
+      "description": "Value object definitions keyed by name",
+      "additionalProperties": {
+        "$ref": "#/$defs/ValueObject"
+      }
+    },
+    "events": {
+      "type": "object",
+      "description": "Domain event definitions keyed by name",
+      "additionalProperties": {
+        "$ref": "#/$defs/Event"
+      }
+    },
+    "commands": {
+      "type": "object",
+      "description": "Command definitions keyed by name",
+      "additionalProperties": {
+        "$ref": "#/$defs/Command"
+      }
+    },
+    "queries": {
+      "type": "object",
+      "description": "Query definitions keyed by name",
+      "additionalProperties": {
+        "$ref": "#/$defs/Query"
+      }
+    },
+    "external_events": {
+      "type": "array",
+      "description": "External event subscriptions",
+      "items": {
+        "$ref": "#/$defs/ExternalEventSubscription"
+      }
+    }
+  },
+  "$defs": {
+    "BoundedContext": {
+      "type": "object",
+      "description": "A bounded context representing a domain boundary",
+      "required": ["name", "namespace"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the bounded context",
+          "pattern": "^[A-Z][a-zA-Z0-9]*$"
+        },
+        "namespace": {
+          "type": "string",
+          "description": "Namespace for generated code",
+          "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)*$"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the bounded context"
+        }
+      }
+    },
+    "Aggregate": {
+      "type": "object",
+      "description": "An aggregate root with its entity and value objects",
+      "required": ["name", "root_entity"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the aggregate",
+          "pattern": "^[A-Z][a-zA-Z0-9]*$"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the aggregate"
+        },
+        "root_entity": {
+          "$ref": "#/$defs/Entity"
+        },
+        "invariants": {
+          "type": "array",
+          "description": "Business invariants for this aggregate",
+          "items": {
+            "$ref": "#/$defs/Invariant"
+          }
+        }
+      }
+    },
+    "Entity": {
+      "type": "object",
+      "description": "A domain entity with properties",
+      "required": ["name", "properties"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the entity",
+          "pattern": "^[A-Z][a-zA-Z0-9]*$"
+        },
+        "properties": {
+          "type": "array",
+          "description": "Properties of the entity",
+          "items": {
+            "$ref": "#/$defs/Property"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "Property": {
+      "type": "object",
+      "description": "A property of an entity or value object",
+      "required": ["name", "type"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Property name (camelCase)",
+          "pattern": "^[a-z][a-zA-Z0-9]*$"
+        },
+        "type": {
+          "type": "string",
+          "description": "Property type"
+        },
+        "identifier": {
+          "type": "boolean",
+          "description": "Whether this property is the identifier",
+          "default": false
+        },
+        "required": {
+          "type": "boolean",
+          "description": "Whether this property is required",
+          "default": true
+        },
+        "default": {
+          "description": "Default value for the property"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the property"
+        },
+        "validation": {
+          "$ref": "#/$defs/Validation"
+        },
+        "computed": {
+          "type": "string",
+          "description": "Expression for computed properties"
+        }
+      }
+    },
+    "Validation": {
+      "type": "object",
+      "description": "Validation rules for a property",
+      "properties": {
+        "min": {
+          "type": "number",
+          "description": "Minimum value (for numbers)"
+        },
+        "max": {
+          "type": "number",
+          "description": "Maximum value (for numbers)"
+        },
+        "minLength": {
+          "type": "integer",
+          "description": "Minimum length (for strings)"
+        },
+        "maxLength": {
+          "type": "integer",
+          "description": "Maximum length (for strings)"
+        },
+        "pattern": {
+          "type": "string",
+          "description": "Regex pattern (for strings)"
+        },
+        "precision": {
+          "type": "integer",
+          "description": "Decimal precision"
+        }
+      }
+    },
+    "Invariant": {
+      "type": "object",
+      "description": "A business invariant/rule",
+      "required": ["name", "expression"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the invariant"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the invariant"
+        },
+        "expression": {
+          "type": "string",
+          "description": "Boolean expression for the invariant"
+        }
+      }
+    },
+    "ValueObject": {
+      "type": "object",
+      "description": "A value object definition",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the value object",
+          "pattern": "^[A-Z][a-zA-Z0-9]*$"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the value object"
+        },
+        "type": {
+          "type": "string",
+          "description": "Type of value object (identifier, enum, or complex)",
+          "enum": ["identifier", "enum"]
+        },
+        "underlying_type": {
+          "type": "string",
+          "description": "Underlying type for identifier value objects"
+        },
+        "format": {
+          "type": "string",
+          "description": "Format specification (e.g., uuid)"
+        },
+        "prefix": {
+          "type": "string",
+          "description": "Prefix for identifier values"
+        },
+        "properties": {
+          "type": "array",
+          "description": "Properties for complex value objects",
+          "items": {
+            "$ref": "#/$defs/Property"
+          }
+        },
+        "values": {
+          "type": "array",
+          "description": "Values for enum value objects",
+          "items": {
+            "$ref": "#/$defs/EnumValue"
+          }
+        }
+      }
+    },
+    "EnumValue": {
+      "type": "object",
+      "description": "A value in an enumeration",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the enum value (SCREAMING_SNAKE_CASE)",
+          "pattern": "^[A-Z][A-Z0-9_]*$"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the enum value"
+        }
+      }
+    },
+    "Event": {
+      "type": "object",
+      "description": "A domain event",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the event (PastTense)",
+          "pattern": "^[A-Z][a-zA-Z0-9]*$"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the event"
+        },
+        "aggregate": {
+          "type": "string",
+          "description": "Aggregate that emits this event"
+        },
+        "payload": {
+          "type": "array",
+          "description": "Event payload properties",
+          "items": {
+            "$ref": "#/$defs/Property"
+          }
+        }
+      }
+    },
+    "Command": {
+      "type": "object",
+      "description": "A command that can be executed",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the command (VerbNoun)",
+          "pattern": "^[A-Z][a-zA-Z0-9]*$"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the command"
+        },
+        "aggregate": {
+          "type": "string",
+          "description": "Aggregate that handles this command"
+        },
+        "payload": {
+          "type": "array",
+          "description": "Command payload properties",
+          "items": {
+            "$ref": "#/$defs/Property"
+          }
+        },
+        "produces": {
+          "type": "array",
+          "description": "Events produced by this command",
+          "items": {
+            "type": "string"
+          }
+        },
+        "preconditions": {
+          "type": "array",
+          "description": "Preconditions that must be met",
+          "items": {
+            "$ref": "#/$defs/Condition"
+          }
+        },
+        "validation": {
+          "type": "array",
+          "description": "Validation rules for the command",
+          "items": {
+            "$ref": "#/$defs/Condition"
+          }
+        }
+      }
+    },
+    "Query": {
+      "type": "object",
+      "description": "A query for retrieving data",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the query",
+          "pattern": "^[A-Z][a-zA-Z0-9]*$"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the query"
+        },
+        "parameters": {
+          "type": "array",
+          "description": "Query parameters",
+          "items": {
+            "$ref": "#/$defs/Property"
+          }
+        },
+        "returns": {
+          "$ref": "#/$defs/ReturnType"
+        }
+      }
+    },
+    "ReturnType": {
+      "type": "object",
+      "description": "Return type specification",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "The return type"
+        },
+        "nullable": {
+          "type": "boolean",
+          "description": "Whether the return can be null",
+          "default": false
+        }
+      }
+    },
+    "Condition": {
+      "type": "object",
+      "description": "A condition/rule with expression and message",
+      "required": ["expression", "message"],
+      "properties": {
+        "expression": {
+          "type": "string",
+          "description": "Boolean expression"
+        },
+        "message": {
+          "type": "string",
+          "description": "Error message when condition fails"
+        }
+      }
+    },
+    "ExternalEventSubscription": {
+      "type": "object",
+      "description": "Subscription to an event from another bounded context",
+      "required": ["context", "event", "handler"],
+      "properties": {
+        "context": {
+          "type": "string",
+          "description": "Source bounded context name"
+        },
+        "event": {
+          "type": "string",
+          "description": "Event name to subscribe to"
+        },
+        "handler": {
+          "type": "string",
+          "description": "Handler method name"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the subscription"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,37 @@
+[package]
+name = "stormforge-generator"
+version = "0.1.0"
+edition = "2021"
+authors = ["StormForge Team"]
+description = "Code generator for StormForge platform - generates Rust microservices from IR models"
+license = "MIT"
+
+[[bin]]
+name = "stormforge-generator"
+path = "src/main.rs"
+
+[dependencies]
+# CLI and argument parsing
+clap = { version = "4.5", features = ["derive"] }
+
+# YAML parsing for IR files
+serde = { version = "1.0", features = ["derive"] }
+serde_yaml = "0.9"
+serde_json = "1.0"
+
+# Template engine for code generation
+tera = "1.20"
+
+# Error handling
+anyhow = "1.0"
+thiserror = "1.0"
+
+# File system operations
+walkdir = "2.5"
+
+# String manipulation
+heck = "0.5"  # For case conversion (snake_case, PascalCase, etc.)
+regex = "1.10"
+
+[dev-dependencies]
+tempfile = "3.10"

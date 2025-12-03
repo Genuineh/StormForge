@@ -1012,70 +1012,67 @@ component:
           pattern: "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
 ```
 
-## Database Schema
+## Database Schema (MongoDB Collections)
 
-```sql
--- Library components table
-CREATE TABLE library_components (
-    id UUID PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    namespace VARCHAR(500) NOT NULL UNIQUE,
-    scope VARCHAR(20) NOT NULL,
-    type VARCHAR(50) NOT NULL,
-    version VARCHAR(20) NOT NULL,
-    description TEXT NOT NULL,
-    author VARCHAR(255),
-    organization_id UUID,
-    tags TEXT[],
-    definition JSONB NOT NULL,
-    metadata JSONB NOT NULL DEFAULT '{}',
-    status VARCHAR(20) NOT NULL DEFAULT 'active',
-    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
-);
+```javascript
+// Library components collection
+{
+  _id: ObjectId,
+  name: String,
+  namespace: String,  // unique
+  scope: String,  // 'enterprise' | 'organization' | 'project'
+  type: String,  // 'entity' | 'valueObject' | 'enumType' | etc.
+  version: String,
+  description: String,
+  author: String,
+  organization_id: ObjectId,
+  tags: [String],
+  definition: Object,  // BSON document
+  metadata: Object,
+  status: String,  // 'draft' | 'active' | 'deprecated' | 'archived'
+  created_at: ISODate,
+  updated_at: ISODate
+}
+// Unique index: { namespace: 1 }
+// Index: { scope: 1 }
+// Index: { type: 1 }
+// Index: { organization_id: 1 }
+// Text index: { name: "text", description: "text" }
 
--- Component versions table
-CREATE TABLE component_versions (
-    id UUID PRIMARY KEY,
-    component_id UUID NOT NULL REFERENCES library_components(id) ON DELETE CASCADE,
-    version VARCHAR(20) NOT NULL,
-    definition JSONB NOT NULL,
-    change_notes TEXT NOT NULL,
-    author VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    UNIQUE(component_id, version)
-);
+// Component versions collection
+{
+  _id: ObjectId,
+  component_id: ObjectId,
+  version: String,
+  definition: Object,
+  change_notes: String,
+  author: String,
+  created_at: ISODate
+}
+// Unique index: { component_id: 1, version: 1 }
 
--- Component references table (project usage)
-CREATE TABLE component_references (
-    id UUID PRIMARY KEY,
-    project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
-    component_id UUID NOT NULL REFERENCES library_components(id),
-    version VARCHAR(20) NOT NULL,
-    mode VARCHAR(20) NOT NULL,
-    added_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    UNIQUE(project_id, component_id)
-);
+// Component references collection (project usage)
+{
+  _id: ObjectId,
+  project_id: ObjectId,
+  component_id: ObjectId,
+  version: String,
+  mode: String,  // 'reference' | 'copy' | 'inherit'
+  added_at: ISODate
+}
+// Unique index: { project_id: 1, component_id: 1 }
+// Index: { project_id: 1 }
+// Index: { component_id: 1 }
 
--- Usage statistics table
-CREATE TABLE component_usage_stats (
-    component_id UUID PRIMARY KEY REFERENCES library_components(id) ON DELETE CASCADE,
-    project_count INTEGER NOT NULL DEFAULT 0,
-    reference_count INTEGER NOT NULL DEFAULT 0,
-    last_used TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
-);
-
--- Indexes
-CREATE INDEX idx_library_components_scope ON library_components(scope);
-CREATE INDEX idx_library_components_type ON library_components(type);
-CREATE INDEX idx_library_components_namespace ON library_components(namespace);
-CREATE INDEX idx_library_components_org ON library_components(organization_id);
-CREATE INDEX idx_component_references_project ON component_references(project_id);
-CREATE INDEX idx_component_references_component ON component_references(component_id);
-
--- Full text search index
-CREATE INDEX idx_library_components_search ON library_components USING gin(to_tsvector('english', name || ' ' || description));
+// Component usage stats collection
+{
+  _id: ObjectId,  // Same as component_id for easy lookup
+  component_id: ObjectId,
+  project_count: Number,
+  reference_count: Number,
+  last_used: ISODate,
+  updated_at: ISODate
+}
 ```
 
 ---

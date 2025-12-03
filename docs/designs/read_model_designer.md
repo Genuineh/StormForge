@@ -490,61 +490,55 @@ class ReadModelService {
 }
 ```
 
-## Database Schema
+## Database Schema (MongoDB Collections)
 
-```sql
--- Read models table
-CREATE TABLE read_models (
-    id UUID PRIMARY KEY,
-    project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
-    name VARCHAR(255) NOT NULL,
-    description TEXT,
-    metadata JSONB NOT NULL DEFAULT '{}',
-    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    UNIQUE(project_id, name)
-);
+```javascript
+// Read models collection
+{
+  _id: ObjectId,
+  project_id: ObjectId,
+  name: String,
+  description: String,
+  metadata: Object,
+  created_at: ISODate,
+  updated_at: ISODate
+}
+// Unique index: { project_id: 1, name: 1 }
 
--- Read model sources table
-CREATE TABLE read_model_sources (
-    id UUID PRIMARY KEY,
-    read_model_id UUID NOT NULL REFERENCES read_models(id) ON DELETE CASCADE,
-    entity_id UUID NOT NULL REFERENCES entities(id),
-    alias VARCHAR(100) NOT NULL,
-    join_type VARCHAR(20),
-    join_condition JSONB,
-    display_order INTEGER NOT NULL DEFAULT 0
-);
-
--- Read model fields table
-CREATE TABLE read_model_fields (
-    id UUID PRIMARY KEY,
-    read_model_id UUID NOT NULL REFERENCES read_models(id) ON DELETE CASCADE,
-    name VARCHAR(255) NOT NULL,
-    type VARCHAR(255) NOT NULL,
-    source_type VARCHAR(50) NOT NULL,
-    source_path TEXT NOT NULL,
-    transform JSONB,
-    nullable BOOLEAN NOT NULL DEFAULT false,
-    description TEXT,
-    display_order INTEGER NOT NULL DEFAULT 0,
-    UNIQUE(read_model_id, name)
-);
-
--- Read model events table (which events update this read model)
-CREATE TABLE read_model_events (
-    id UUID PRIMARY KEY,
-    read_model_id UUID NOT NULL REFERENCES read_models(id) ON DELETE CASCADE,
-    event_id VARCHAR(255) NOT NULL, -- Reference to canvas event
-    UNIQUE(read_model_id, event_id)
-);
-
--- Indexes
-CREATE INDEX idx_read_models_project ON read_models(project_id);
-CREATE INDEX idx_read_model_sources_rm ON read_model_sources(read_model_id);
-CREATE INDEX idx_read_model_sources_entity ON read_model_sources(entity_id);
-CREATE INDEX idx_read_model_fields_rm ON read_model_fields(read_model_id);
-CREATE INDEX idx_read_model_events_rm ON read_model_events(read_model_id);
+// Read model sources sub-document (embedded in read_models)
+{
+  _id: ObjectId,
+  project_id: ObjectId,
+  name: String,
+  description: String,
+  sources: [
+    {
+      entity_id: ObjectId,
+      alias: String,
+      join_type: String,  // 'inner' | 'left' | 'right'
+      join_condition: Object,
+      display_order: Number
+    }
+  ],
+  fields: [
+    {
+      name: String,
+      type: String,
+      source_type: String,  // 'direct' | 'computed' | 'aggregated'
+      source_path: String,
+      transform: Object,
+      nullable: Boolean,
+      description: String,
+      display_order: Number
+    }
+  ],
+  updated_by_events: [String],  // Array of event IDs
+  metadata: Object,
+  created_at: ISODate,
+  updated_at: ISODate
+}
+// Unique index: { project_id: 1, name: 1 }
+// Index: { project_id: 1 }
 ```
 
 ## Integration with Canvas

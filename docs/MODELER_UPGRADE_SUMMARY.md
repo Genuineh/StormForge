@@ -133,7 +133,7 @@ All code examples in design documents are **illustrative** and contain:
 ### Technology Stack
 - **Frontend**: Flutter 3.24+ with Riverpod
 - **Local DB**: Drift (SQLite)
-- **Backend**: Rust + Axum + PostgreSQL
+- **Backend**: Rust + Axum + MongoDB
 - **Auth**: JWT tokens
 - **Storage**: Git + S3/MinIO
 
@@ -156,7 +156,7 @@ All code examples in design documents are **illustrative** and contain:
 1. **Review & Approve**: Team reviews all design documents
 2. **Allocate Resources**: Assign 4-6 developers
 3. **Sprint M1 Setup**: Initialize project management infrastructure
-4. **Database Design**: Finalize PostgreSQL schema
+4. **Database Design**: Finalize MongoDB schema and collections
 5. **Authentication**: Set up JWT and user management
 
 ## 🤝 Contributing

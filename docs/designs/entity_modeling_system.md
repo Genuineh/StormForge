@@ -102,61 +102,72 @@ class EntityInvariant {
 4. **Add Validation**: Select property → Add validation rule
 5. **Define Invariant**: Switch to Invariants tab → Add rule
 
-## Database Schema
+## Database Schema (MongoDB Collections)
 
-```sql
-CREATE TABLE entities (
-    id UUID PRIMARY KEY,
-    project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
-    name VARCHAR(255) NOT NULL,
-    description TEXT,
-    aggregate_id VARCHAR(255), -- Canvas aggregate reference
-    entity_type VARCHAR(50) NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    UNIQUE(project_id, name)
-);
+```javascript
+// Entities collection
+{
+  _id: ObjectId,
+  project_id: ObjectId,
+  name: String,
+  description: String,
+  aggregate_id: String,  // Canvas aggregate reference
+  entity_type: String,  // 'entity' | 'aggregateRoot' | 'valueObject'
+  created_at: ISODate,
+  updated_at: ISODate
+}
+// Unique index: { project_id: 1, name: 1 }
 
-CREATE TABLE entity_properties (
-    id UUID PRIMARY KEY,
-    entity_id UUID NOT NULL REFERENCES entities(id) ON DELETE CASCADE,
-    name VARCHAR(255) NOT NULL,
-    type VARCHAR(255) NOT NULL,
-    required BOOLEAN NOT NULL DEFAULT false,
-    is_identifier BOOLEAN NOT NULL DEFAULT false,
-    is_read_only BOOLEAN NOT NULL DEFAULT false,
-    default_value JSONB,
-    description TEXT,
-    display_order INTEGER NOT NULL DEFAULT 0,
-    UNIQUE(entity_id, name)
-);
+// Entity properties collection
+{
+  _id: ObjectId,
+  entity_id: ObjectId,
+  name: String,
+  type: String,
+  required: Boolean,
+  is_identifier: Boolean,
+  is_read_only: Boolean,
+  default_value: Mixed,
+  description: String,
+  display_order: Number,
+  validations: [
+    {
+      validation_type: String,
+      value: Mixed,
+      error_message: String
+    }
+  ]
+}
+// Unique index: { entity_id: 1, name: 1 }
 
-CREATE TABLE property_validations (
-    id UUID PRIMARY KEY,
-    property_id UUID NOT NULL REFERENCES entity_properties(id) ON DELETE CASCADE,
-    validation_type VARCHAR(50) NOT NULL,
-    value JSONB,
-    error_message TEXT
-);
+// Entity methods collection
+{
+  _id: ObjectId,
+  entity_id: ObjectId,
+  name: String,
+  method_type: String,  // 'constructor' | 'command' | 'query' | 'domainLogic'
+  return_type: String,
+  description: String,
+  parameters: [
+    {
+      name: String,
+      type: String,
+      required: Boolean,
+      default_value: Mixed
+    }
+  ]
+}
+// Unique index: { entity_id: 1, name: 1 }
 
-CREATE TABLE entity_methods (
-    id UUID PRIMARY KEY,
-    entity_id UUID NOT NULL REFERENCES entities(id) ON DELETE CASCADE,
-    name VARCHAR(255) NOT NULL,
-    method_type VARCHAR(50) NOT NULL,
-    return_type VARCHAR(255) NOT NULL,
-    description TEXT,
-    UNIQUE(entity_id, name)
-);
-
-CREATE TABLE entity_invariants (
-    id UUID PRIMARY KEY,
-    entity_id UUID NOT NULL REFERENCES entities(id) ON DELETE CASCADE,
-    name VARCHAR(255) NOT NULL,
-    expression TEXT NOT NULL,
-    error_message TEXT NOT NULL,
-    enabled BOOLEAN NOT NULL DEFAULT true
-);
+// Entity invariants collection
+{
+  _id: ObjectId,
+  entity_id: ObjectId,
+  name: String,
+  expression: String,
+  error_message: String,
+  enabled: Boolean
+}
 ```
 
 ## Integration with Canvas

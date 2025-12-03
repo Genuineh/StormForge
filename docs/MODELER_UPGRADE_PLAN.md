@@ -83,58 +83,62 @@ team_member:
 
 **Storage Strategy**:
 1. **Local Storage**: SQLite for metadata, file system for models
-2. **Cloud Storage**: PostgreSQL for metadata, S3/MinIO for models
+2. **Cloud Storage**: MongoDB for metadata, S3/MinIO for models
 3. **Git Integration**: All models stored in Git for versioning
 
-**Database Schema**:
-```sql
--- Projects table
-CREATE TABLE projects (
-    id UUID PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    namespace VARCHAR(255) NOT NULL UNIQUE,
-    description TEXT,
-    owner_id UUID NOT NULL REFERENCES users(id),
-    visibility VARCHAR(20) NOT NULL DEFAULT 'private',
-    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    settings JSONB
-);
+**Database Schema (MongoDB Collections)**:
+```javascript
+// Projects collection
+{
+  _id: ObjectId,
+  name: String,
+  namespace: String,  // unique index
+  description: String,
+  owner_id: ObjectId,
+  visibility: String,  // 'private' | 'public' | 'team'
+  created_at: ISODate,
+  updated_at: ISODate,
+  settings: {
+    git_integration: Object,
+    ai_settings: Object,
+    // ... other settings
+  }
+}
 
--- Project members table
-CREATE TABLE project_members (
-    id UUID PRIMARY KEY,
-    project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    role VARCHAR(20) NOT NULL,
-    permissions JSONB,
-    joined_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    UNIQUE(project_id, user_id)
-);
+// Project members collection
+{
+  _id: ObjectId,
+  project_id: ObjectId,
+  user_id: ObjectId,
+  role: String,  // 'owner' | 'admin' | 'editor' | 'viewer'
+  permissions: [String],
+  joined_at: ISODate
+}
+// Compound unique index: { project_id: 1, user_id: 1 }
 
--- Project models table
-CREATE TABLE project_models (
-    id UUID PRIMARY KEY,
-    project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
-    name VARCHAR(255) NOT NULL,
-    type VARCHAR(50) NOT NULL, -- 'canvas', 'entity', 'command', etc.
-    content JSONB NOT NULL,
-    version INTEGER NOT NULL DEFAULT 1,
-    created_by UUID NOT NULL REFERENCES users(id),
-    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
-);
+// Project models collection
+{
+  _id: ObjectId,
+  project_id: ObjectId,
+  name: String,
+  type: String,  // 'canvas' | 'entity' | 'command' | etc.
+  content: Object,  // BSON document
+  version: Number,
+  created_by: ObjectId,
+  created_at: ISODate,
+  updated_at: ISODate
+}
 
--- Model versions table (audit trail)
-CREATE TABLE model_versions (
-    id UUID PRIMARY KEY,
-    model_id UUID NOT NULL REFERENCES project_models(id) ON DELETE CASCADE,
-    version INTEGER NOT NULL,
-    content JSONB NOT NULL,
-    changed_by UUID NOT NULL REFERENCES users(id),
-    change_description TEXT,
-    created_at TIMESTAMP NOT NULL DEFAULT NOW()
-);
+// Model versions collection (audit trail)
+{
+  _id: ObjectId,
+  model_id: ObjectId,
+  version: Number,
+  content: Object,  // BSON document
+  changed_by: ObjectId,
+  change_description: String,
+  created_at: ISODate
+}
 ```
 
 ---
@@ -864,7 +868,7 @@ canvas:
 
 **Backend (New)**:
 - API Server: Rust + Axum
-- Database: PostgreSQL
+- Database: MongoDB
 - Authentication: JWT tokens
 - Storage: S3/MinIO for models
 

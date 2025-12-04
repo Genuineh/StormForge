@@ -248,6 +248,39 @@ class ConnectionStyle extends Equatable {
   /// The style of the arrow.
   final ArrowStyle arrowStyle;
 
+  /// Converts the color to hex string format for backend API.
+  String colorToHex() {
+    return '#${color.value.toRadixString(16).substring(2).toUpperCase()}';
+  }
+
+  /// Creates a ConnectionStyle from a hex color string.
+  factory ConnectionStyle.fromHex({
+    required String hexColor,
+    required double strokeWidth,
+    required LineStyle lineStyle,
+    required ArrowStyle arrowStyle,
+  }) {
+    Color color = Colors.grey;
+    try {
+      if (hexColor.startsWith('#')) {
+        final hex = hexColor.substring(1);
+        if (hex.length == 6) {
+          color = Color(int.parse('FF$hex', radix: 16));
+        } else if (hex.length == 8) {
+          color = Color(int.parse(hex, radix: 16));
+        }
+      }
+    } catch (e) {
+      // Use default grey color
+    }
+    return ConnectionStyle(
+      color: color,
+      strokeWidth: strokeWidth,
+      lineStyle: lineStyle,
+      arrowStyle: arrowStyle,
+    );
+  }
+
   /// Creates a copy with the given properties.
   ConnectionStyle copyWith({
     Color? color,

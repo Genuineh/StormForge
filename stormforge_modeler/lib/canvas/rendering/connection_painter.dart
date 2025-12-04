@@ -306,7 +306,6 @@ class ConnectionPainter {
       }
     } catch (e) {
       // Fallback to grey if parsing fails
-      return Colors.grey;
     }
     return Colors.grey;
   }

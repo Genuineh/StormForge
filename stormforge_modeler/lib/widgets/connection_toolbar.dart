@@ -63,7 +63,7 @@ class ConnectionToolbar extends ConsumerWidget {
                       ),
                       child: Icon(
                         type.icon,
-                        color: _parseColor(type.defaultStyle.color),
+                        color: type.defaultStyle.color,
                         size: 24,
                       ),
                     ),
@@ -118,22 +118,5 @@ class ConnectionToolbar extends ConsumerWidget {
     ref.read(canvasModeProvider.notifier).state = CanvasMode.select;
     ref.read(pendingConnectionTypeProvider.notifier).state = null;
     ref.read(connectionSourceProvider.notifier).state = null;
-  }
-
-  /// Parses a color string to a Color object.
-  Color _parseColor(String colorStr) {
-    try {
-      if (colorStr.startsWith('#')) {
-        final hexColor = colorStr.substring(1);
-        if (hexColor.length == 6) {
-          return Color(int.parse('FF$hexColor', radix: 16));
-        } else if (hexColor.length == 8) {
-          return Color(int.parse(hexColor, radix: 16));
-        }
-      }
-    } catch (e) {
-      return Colors.grey;
-    }
-    return Colors.grey;
   }
 }

@@ -5,19 +5,14 @@ use uuid::Uuid;
 
 use super::Permission;
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, ToSchema, Default)]
 #[serde(rename_all = "lowercase")]
 pub enum TeamRole {
     Owner,
     Admin,
+    #[default]
     Editor,
     Viewer,
-}
-
-impl Default for TeamRole {
-    fn default() -> Self {
-        Self::Editor
-    }
 }
 
 impl TeamRole {
@@ -87,18 +82,22 @@ impl TeamMember {
         }
     }
 
+    #[allow(dead_code)]
     pub fn has_permission(&self, permission: &Permission) -> bool {
         self.permissions.contains(permission)
     }
 
+    #[allow(dead_code)]
     pub fn can_manage_team(&self) -> bool {
         self.has_permission(&Permission::TeamManage)
     }
 
+    #[allow(dead_code)]
     pub fn can_edit_project(&self) -> bool {
         self.has_permission(&Permission::ProjectEdit)
     }
 
+    #[allow(dead_code)]
     pub fn can_delete_project(&self) -> bool {
         matches!(self.role, TeamRole::Owner) && self.has_permission(&Permission::ProjectDelete)
     }
@@ -116,5 +115,6 @@ pub struct AddTeamMemberRequest {
 #[serde(rename_all = "camelCase")]
 pub struct UpdateTeamMemberRequest {
     pub role: Option<TeamRole>,
+    #[allow(dead_code)]
     pub permissions: Option<Vec<Permission>>,
 }

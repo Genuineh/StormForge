@@ -30,6 +30,8 @@ impl MongoDbService {
             "project_models",
             "model_versions",
             "project_activities",
+            "entities",
+            "connections",
         ];
 
         for collection_name in collections {
@@ -111,6 +113,36 @@ impl MongoDbService {
                             .unique(true)
                             .build(),
                     )
+                    .build(),
+                None,
+            )
+            .await?;
+
+        // Entities indexes
+        let entities = self.db.collection::<Document>("entities");
+        entities
+            .create_index(
+                IndexModel::builder()
+                    .keys(doc! { "project_id": 1, "name": 1 })
+                    .options(
+                        mongodb::options::IndexOptions::builder()
+                            .unique(true)
+                            .build(),
+                    )
+                    .build(),
+                None,
+            )
+            .await?;
+        entities
+            .create_index(
+                IndexModel::builder().keys(doc! { "project_id": 1 }).build(),
+                None,
+            )
+            .await?;
+        entities
+            .create_index(
+                IndexModel::builder()
+                    .keys(doc! { "aggregate_id": 1 })
                     .build(),
                 None,
             )

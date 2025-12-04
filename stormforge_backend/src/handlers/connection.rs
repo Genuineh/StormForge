@@ -6,7 +6,7 @@ use axum::{
 };
 use serde_json::json;
 
-use crate::models::{Connection, CreateConnectionRequest, UpdateConnectionRequest};
+use crate::models::{CreateConnectionRequest, UpdateConnectionRequest};
 use crate::services::ConnectionService;
 
 /// Creates a new connection.

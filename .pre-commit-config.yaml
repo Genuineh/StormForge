@@ -13,3 +13,43 @@ repos:
         types: [dart]
         files: \.(dart)$
         description: Formats Dart files using dart format
+  
+  # Rust formatting
+  - repo: local
+    hooks:
+      - id: rust-fmt
+        name: Rust Format (cargo fmt)
+        entry: bash -c 'cd stormforge_backend && cargo fmt --all -- --check || (cargo fmt --all && exit 1)'
+        language: system
+        types: [rust]
+        files: ^stormforge_backend/.*\.rs$
+        description: Formats Rust files in stormforge_backend using cargo fmt
+      
+      - id: rust-fmt-generator
+        name: Rust Format Generator (cargo fmt)
+        entry: bash -c 'cd stormforge_generator && cargo fmt --all -- --check || (cargo fmt --all && exit 1)'
+        language: system
+        types: [rust]
+        files: ^stormforge_generator/.*\.rs$
+        description: Formats Rust files in stormforge_generator using cargo fmt
+  
+  # Rust linting
+  - repo: local
+    hooks:
+      - id: rust-clippy
+        name: Rust Clippy (backend)
+        entry: bash -c 'cd stormforge_backend && cargo clippy --all-targets --all-features -- -D warnings'
+        language: system
+        types: [rust]
+        files: ^stormforge_backend/.*\.rs$
+        description: Runs clippy on stormforge_backend
+        pass_filenames: false
+      
+      - id: rust-clippy-generator
+        name: Rust Clippy (generator)
+        entry: bash -c 'cd stormforge_generator && cargo clippy --all-targets --all-features -- -D warnings'
+        language: system
+        types: [rust]
+        files: ^stormforge_generator/.*\.rs$
+        description: Runs clippy on stormforge_generator
+        pass_filenames: false

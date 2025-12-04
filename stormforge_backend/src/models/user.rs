@@ -4,18 +4,13 @@ use std::fmt;
 use utoipa::ToSchema;
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, ToSchema, Default)]
 #[serde(rename_all = "lowercase")]
 pub enum UserRole {
     Admin,
+    #[default]
     Developer,
     Viewer,
-}
-
-impl Default for UserRole {
-    fn default() -> Self {
-        Self::Developer
-    }
 }
 
 impl fmt::Display for UserRole {
@@ -122,6 +117,7 @@ impl User {
         }
     }
 
+    #[allow(dead_code)]
     pub fn has_permission(&self, permission: &Permission) -> bool {
         self.permissions.contains(permission)
     }

@@ -1,4 +1,4 @@
-use heck::{ToSnakeCase, ToPascalCase, ToKebabCase};
+use heck::{ToKebabCase, ToPascalCase, ToSnakeCase};
 
 /// Convert a type name to Rust type
 pub fn to_rust_type(ir_type: &str) -> String {
@@ -10,17 +10,19 @@ pub fn to_rust_type(ir_type: &str) -> String {
             .trim_end_matches('>');
         return format!("Vec<{}>", to_rust_type(inner));
     }
-    
+
     if ir_type.starts_with("Option<") {
         let inner = ir_type.trim_start_matches("Option<").trim_end_matches('>');
         return format!("Option<{}>", to_rust_type(inner));
     }
-    
+
     if ir_type.starts_with("PagedResult<") {
-        let inner = ir_type.trim_start_matches("PagedResult<").trim_end_matches('>');
+        let inner = ir_type
+            .trim_start_matches("PagedResult<")
+            .trim_end_matches('>');
         return format!("PagedResult<{}>", to_rust_type(inner));
     }
-    
+
     // Map primitive types
     match ir_type {
         "String" => "String".to_string(),
@@ -74,7 +76,7 @@ pub fn generate_file_path(base: &str, name: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[test]
     fn test_to_rust_type() {
         assert_eq!(to_rust_type("String"), "String");
@@ -82,7 +84,7 @@ mod tests {
         assert_eq!(to_rust_type("List<String>"), "Vec<String>");
         assert_eq!(to_rust_type("DateTime"), "chrono::DateTime<chrono::Utc>");
     }
-    
+
     #[test]
     fn test_case_conversions() {
         assert_eq!(to_snake_case("OrderId"), "order_id");

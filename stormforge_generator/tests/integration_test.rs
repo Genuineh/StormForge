@@ -1,5 +1,5 @@
-use std::process::Command;
 use std::path::Path;
+use std::process::Command;
 use tempfile::TempDir;
 
 #[test]
@@ -10,32 +10,36 @@ fn test_generator_order_context() {
         println!("Skipping test: example file not found");
         return;
     }
-    
+
     // Create temporary output directory
     let temp_dir = TempDir::new().expect("Failed to create temp dir");
-    let output_path = temp_dir.path().to_str()
+    let output_path = temp_dir
+        .path()
+        .to_str()
         .expect("Output path contains invalid UTF-8 characters");
-    
+
     // Build the generator in debug mode
     let build_status = Command::new("cargo")
         .args(&["build"])
         .status()
         .expect("Failed to build generator");
-    
+
     assert!(build_status.success(), "Generator build failed");
-    
+
     // Run the generator
     let generate_status = Command::new("./target/debug/stormforge-generator")
         .args(&[
             "generate",
-            "--input", input_path.to_str().unwrap(),
-            "--output", output_path,
+            "--input",
+            input_path.to_str().unwrap(),
+            "--output",
+            output_path,
         ])
         .status()
         .expect("Failed to run generator");
-    
+
     assert!(generate_status.success(), "Generator execution failed");
-    
+
     // Verify key files were created
     let generated_files = vec![
         "Cargo.toml",
@@ -49,23 +53,19 @@ fn test_generator_order_context() {
         "src/repository/mod.rs",
         "src/infrastructure/event_store.rs",
     ];
-    
+
     for file in generated_files {
         let file_path = Path::new(output_path).join(file);
-        assert!(
-            file_path.exists(),
-            "Expected file not found: {}",
-            file
-        );
+        assert!(file_path.exists(), "Expected file not found: {}", file);
     }
-    
+
     // Try to build the generated service
     let build_generated_status = Command::new("cargo")
         .args(&["build"])
         .current_dir(output_path)
         .status()
         .expect("Failed to build generated service");
-    
+
     assert!(
         build_generated_status.success(),
         "Generated service build failed"
@@ -79,24 +79,26 @@ fn test_validate_command() {
         println!("Skipping test: example file not found");
         return;
     }
-    
+
     // Build the generator
     let build_status = Command::new("cargo")
         .args(&["build"])
         .status()
         .expect("Failed to build generator");
-    
+
     assert!(build_status.success(), "Generator build failed");
-    
+
     // Run validate command
     let validate_status = Command::new("./target/debug/stormforge-generator")
         .args(&[
             "validate",
-            "--input", input_path.to_str()
+            "--input",
+            input_path
+                .to_str()
                 .expect("Input path contains invalid UTF-8 characters"),
         ])
         .status()
         .expect("Failed to run validator");
-    
+
     assert!(validate_status.success(), "Validation failed");
 }

@@ -65,6 +65,7 @@ impl ConnectionService {
     }
 
     /// Lists connections by source element ID.
+    #[allow(dead_code)]
     pub async fn list_by_source(
         &self,
         project_id: &str,
@@ -86,6 +87,7 @@ impl ConnectionService {
     }
 
     /// Lists connections by target element ID.
+    #[allow(dead_code)]
     pub async fn list_by_target(
         &self,
         project_id: &str,
@@ -171,6 +173,7 @@ impl ConnectionService {
     }
 
     /// Deletes all connections for a project.
+    #[allow(dead_code)]
     pub async fn delete_by_project(&self, project_id: &str) -> Result<u64> {
         let result = self
             .connections
@@ -181,6 +184,7 @@ impl ConnectionService {
     }
 
     /// Deletes all connections for an element (when element is deleted).
+    #[allow(dead_code)]
     pub async fn delete_by_element(&self, project_id: &str, element_id: &str) -> Result<u64> {
         let result = self
             .connections

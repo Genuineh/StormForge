@@ -1,5 +1,7 @@
+use crate::generators::{
+    api_generator::*, command_generator::*, entity_generator::*, event_generator::*, utils::*,
+};
 use crate::ir::IRModel;
-use crate::generators::{entity_generator::*, command_generator::*, event_generator::*, api_generator::*, utils::*};
 use anyhow::{Context, Result};
 use std::fs;
 
@@ -11,17 +13,20 @@ impl RustGenerator {
     pub fn new(output_dir: String) -> Self {
         Self { output_dir }
     }
-    
+
     /// Generate a complete Rust microservice from an IR model
     pub fn generate(&self, model: &IRModel) -> Result<()> {
-        println!("🚀 Generating Rust microservice for '{}'...", model.bounded_context.name);
-        
+        println!(
+            "🚀 Generating Rust microservice for '{}'...",
+            model.bounded_context.name
+        );
+
         // Create output directory structure
         self.create_directory_structure()?;
-        
+
         // Generate Cargo.toml
         self.generate_cargo_toml(model)?;
-        
+
         // Generate source files
         self.generate_domain_entities(model)?;
         self.generate_domain_commands(model)?;
@@ -29,21 +34,21 @@ impl RustGenerator {
         self.generate_api_routes(model)?;
         self.generate_main(model)?;
         self.generate_lib(model)?;
-        
+
         // Generate repository layer
         self.generate_repository(model)?;
-        
+
         // Generate event store
         self.generate_event_store(model)?;
-        
+
         // Generate README
         self.generate_readme(model)?;
-        
+
         println!("✅ Generation complete! Output at: {}", self.output_dir);
-        
+
         Ok(())
     }
-    
+
     fn create_directory_structure(&self) -> Result<()> {
         let dirs = vec![
             format!("{}/src", self.output_dir),
@@ -53,19 +58,20 @@ impl RustGenerator {
             format!("{}/src/repository", self.output_dir),
             format!("{}/tests", self.output_dir),
         ];
-        
+
         for dir in dirs {
             fs::create_dir_all(&dir)
                 .with_context(|| format!("Failed to create directory: {}", dir))?;
         }
-        
+
         Ok(())
     }
-    
+
     fn generate_cargo_toml(&self, model: &IRModel) -> Result<()> {
         let package_name = to_kebab_case(&model.bounded_context.name);
-        
-        let content = format!(r#"[package]
+
+        let content = format!(
+            r#"[package]
 name = "{}"
 version = "0.1.0"
 edition = "2021"
@@ -117,64 +123,64 @@ sqlx = ["dep:sqlx"]
 opt-level = 3
 lto = true
 codegen-units = 1
-"#, package_name);
-        
+"#,
+            package_name
+        );
+
         let path = format!("{}/Cargo.toml", self.output_dir);
         fs::write(&path, content)
             .with_context(|| format!("Failed to write Cargo.toml to {}", path))?;
-        
+
         Ok(())
     }
-    
+
     fn generate_domain_entities(&self, model: &IRModel) -> Result<()> {
         let code = EntityGenerator::generate(model)?;
-        
+
         let path = format!("{}/src/domain/entities.rs", self.output_dir);
-        fs::write(&path, code)
-            .with_context(|| format!("Failed to write entities to {}", path))?;
-        
+        fs::write(&path, code).with_context(|| format!("Failed to write entities to {}", path))?;
+
         Ok(())
     }
-    
+
     fn generate_domain_commands(&self, model: &IRModel) -> Result<()> {
         let code = CommandGenerator::generate(model)?;
-        
+
         let path = format!("{}/src/domain/commands.rs", self.output_dir);
-        fs::write(&path, code)
-            .with_context(|| format!("Failed to write commands to {}", path))?;
-        
+        fs::write(&path, code).with_context(|| format!("Failed to write commands to {}", path))?;
+
         Ok(())
     }
-    
+
     fn generate_domain_events(&self, model: &IRModel) -> Result<()> {
         let code = EventGenerator::generate(model)?;
-        
+
         let path = format!("{}/src/domain/events.rs", self.output_dir);
-        fs::write(&path, code)
-            .with_context(|| format!("Failed to write events to {}", path))?;
-        
+        fs::write(&path, code).with_context(|| format!("Failed to write events to {}", path))?;
+
         Ok(())
     }
-    
+
     fn generate_api_routes(&self, model: &IRModel) -> Result<()> {
         let code = ApiGenerator::generate(model)?;
-        
+
         let path = format!("{}/src/api/routes.rs", self.output_dir);
         fs::write(&path, code)
             .with_context(|| format!("Failed to write API routes to {}", path))?;
-        
+
         // Generate api mod.rs
         let mod_content = "pub mod routes;\n\npub use routes::*;\n";
         let mod_path = format!("{}/src/api/mod.rs", self.output_dir);
         fs::write(&mod_path, mod_content)?;
-        
+
         Ok(())
     }
-    
+
     fn generate_main(&self, model: &IRModel) -> Result<()> {
         let context_name = &model.bounded_context.name;
-        
-        let content = format!(r#"use axum::Router;
+
+        let content = format!(
+            r#"use axum::Router;
 use std::net::SocketAddr;
 use tower_http::cors::CorsLayer;
 use tracing_subscriber::{{layer::SubscriberExt, util::SubscriberInitExt}};
@@ -224,28 +230,30 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {{
 
     Ok(())
 }}
-"#, context_name);
-        
+"#,
+            context_name
+        );
+
         let path = format!("{}/src/main.rs", self.output_dir);
         fs::write(&path, content)
             .with_context(|| format!("Failed to write main.rs to {}", path))?;
-        
+
         Ok(())
     }
-    
+
     fn generate_lib(&self, _model: &IRModel) -> Result<()> {
         let content = r#"pub mod api;
 pub mod domain;
 pub mod infrastructure;
 pub mod repository;
 "#;
-        
+
         let path = format!("{}/src/lib.rs", self.output_dir);
         fs::write(&path, content)?;
-        
+
         Ok(())
     }
-    
+
     fn generate_repository(&self, _model: &IRModel) -> Result<()> {
         let content = r#"//! Repository layer for data persistence
 //!
@@ -300,13 +308,13 @@ impl<T: Send + Sync> Repository<T> for InMemoryRepository<T> {
     }
 }
 "#;
-        
+
         let path = format!("{}/src/repository/mod.rs", self.output_dir);
         fs::write(&path, content)?;
-        
+
         Ok(())
     }
-    
+
     fn generate_event_store(&self, _model: &IRModel) -> Result<()> {
         let content = r#"//! Event sourcing infrastructure
 //!
@@ -381,15 +389,15 @@ impl EventStore for InMemoryEventStore {
     }
 }
 "#;
-        
+
         let path = format!("{}/src/infrastructure/event_store.rs", self.output_dir);
         fs::write(&path, content)?;
-        
+
         // Generate infrastructure mod.rs
         let mod_content = "pub mod event_store;\n\npub use event_store::*;\n";
         let mod_path = format!("{}/src/infrastructure/mod.rs", self.output_dir);
         fs::write(&mod_path, mod_content)?;
-        
+
         // Generate domain mod.rs
         let domain_mod = r#"pub mod entities;
 pub mod commands;
@@ -401,15 +409,16 @@ pub use events::*;
 "#;
         let domain_mod_path = format!("{}/src/domain/mod.rs", self.output_dir);
         fs::write(&domain_mod_path, domain_mod)?;
-        
+
         Ok(())
     }
-    
+
     fn generate_readme(&self, model: &IRModel) -> Result<()> {
         let context_name = &model.bounded_context.name;
         let package_name = to_kebab_case(context_name);
-        
-        let content = format!(r#"# {} Service
+
+        let content = format!(
+            r#"# {} Service
 
 Generated by StormForge Generator
 
@@ -492,15 +501,19 @@ cargo watch -x run
 ## License
 
 MIT
-"#, 
+"#,
             context_name,
-            model.bounded_context.description.as_deref().unwrap_or("Microservice generated from IR model"),
+            model
+                .bounded_context
+                .description
+                .as_deref()
+                .unwrap_or("Microservice generated from IR model"),
             package_name
         );
-        
+
         let path = format!("{}/README.md", self.output_dir);
         fs::write(&path, content)?;
-        
+
         Ok(())
     }
 }

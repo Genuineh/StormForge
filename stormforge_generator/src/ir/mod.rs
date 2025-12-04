@@ -1,5 +1,5 @@
-pub mod types;
 pub mod parser;
+pub mod types;
 
-pub use types::*;
 pub use parser::IRParser;
+pub use types::*;

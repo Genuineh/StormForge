@@ -1,7 +1,6 @@
 use anyhow::Result;
 use r2d2::Pool;
 use r2d2_sqlite::SqliteConnectionManager;
-use rusqlite::{params, Connection, Result as SqliteResult};
 
 pub type SqlitePool = Pool<SqliteConnectionManager>;
 
@@ -21,6 +20,7 @@ impl SqliteService {
         Ok(service)
     }
 
+    #[allow(dead_code)]
     pub fn pool(&self) -> &SqlitePool {
         &self.pool
     }

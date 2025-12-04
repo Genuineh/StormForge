@@ -18,6 +18,12 @@ use crate::{
     db::{MongoDbService, SqliteService},
     handlers::{
         auth::{login, register, AppStateInner},
+        command::{
+            add_field as add_command_field, add_precondition, add_validation,
+            create_command, delete_command, get_command, list_commands_for_project,
+            remove_field as remove_command_field, remove_precondition, remove_validation,
+            update_command, update_field as update_command_field,
+        },
         entity::{
             add_invariant, add_method, add_property, create_entity, delete_entity, find_references,
             get_entity, list_entities_by_aggregate, list_entities_for_project, remove_invariant,
@@ -41,8 +47,8 @@ use crate::{
     },
     models::*,
     services::{
-        AuthService, ConnectionService, EntityService, ProjectService, ReadModelService,
-        TeamMemberService, UserService,
+        AuthService, CommandService, ConnectionService, EntityService, ProjectService,
+        ReadModelService, TeamMemberService, UserService,
     },
 };
 
@@ -96,6 +102,18 @@ use crate::{
         handlers::read_model::add_field,
         handlers::read_model::update_field,
         handlers::read_model::remove_field,
+        handlers::command::create_command,
+        handlers::command::get_command,
+        handlers::command::list_commands_for_project,
+        handlers::command::update_command,
+        handlers::command::delete_command,
+        handlers::command::add_field,
+        handlers::command::update_field,
+        handlers::command::remove_field,
+        handlers::command::add_validation,
+        handlers::command::remove_validation,
+        handlers::command::add_precondition,
+        handlers::command::remove_precondition,
     ),
     components(
         schemas(
@@ -110,6 +128,10 @@ use crate::{
             ReadModelDefinition, ReadModelField, ReadModelMetadata, DataSource, JoinCondition, JoinType, JoinOperator,
             FieldSourceType, TransformType, FieldTransform,
             CreateReadModelRequest, UpdateReadModelRequest, DataSourceRequest, FieldRequest,
+            CommandDefinition, CommandPayload, CommandField, CommandMetadata,
+            FieldSource, ValidationOperator, CommandValidationRule, PreconditionOperator, Precondition,
+            CreateCommandRequest, UpdateCommandRequest, CommandFieldRequest,
+            CommandValidationRuleRequest, PreconditionRequest,
         )
     ),
     tags(
@@ -119,7 +141,8 @@ use crate::{
         (name = "team", description = "Team member management endpoints"),
         (name = "connections", description = "Connection management endpoints"),
         (name = "entities", description = "Entity modeling endpoints"),
-        (name = "read-models", description = "Read model designer endpoints")
+        (name = "read-models", description = "Read model designer endpoints"),
+        (name = "commands", description = "Command data model designer endpoints")
     )
 )]
 struct ApiDoc;
@@ -171,6 +194,7 @@ async fn main() -> Result<()> {
     let connection_service = ConnectionService::new(mongodb.db());
     let entity_service = EntityService::new(mongodb.db());
     let read_model_service = ReadModelService::new(mongodb.db());
+    let command_service = CommandService::new(mongodb.db());
 
     // Create application states
     let auth_state = Arc::new(AppStateInner {
@@ -325,6 +349,41 @@ async fn main() -> Result<()> {
             delete(remove_field),
         )
         .with_state(read_model_service)
+        // Command routes
+        .route("/api/commands", post(create_command))
+        .route("/api/commands/:id", get(get_command))
+        .route("/api/commands/:id", put(update_command))
+        .route("/api/commands/:id", delete(delete_command))
+        .route(
+            "/api/projects/:project_id/commands",
+            get(list_commands_for_project),
+        )
+        .route("/api/commands/:command_id/fields", post(add_command_field))
+        .route(
+            "/api/commands/:command_id/fields/:field_id",
+            put(update_command_field),
+        )
+        .route(
+            "/api/commands/:command_id/fields/:field_id",
+            delete(remove_command_field),
+        )
+        .route(
+            "/api/commands/:command_id/validations",
+            post(add_validation),
+        )
+        .route(
+            "/api/commands/:command_id/validations/:validation_index",
+            delete(remove_validation),
+        )
+        .route(
+            "/api/commands/:command_id/preconditions",
+            post(add_precondition),
+        )
+        .route(
+            "/api/commands/:command_id/preconditions/:precondition_index",
+            delete(remove_precondition),
+        )
+        .with_state(command_service)
         // Swagger UI
         .merge(SwaggerUi::new("/swagger-ui").url("/api-docs/openapi.json", ApiDoc::openapi()))
         // Health check

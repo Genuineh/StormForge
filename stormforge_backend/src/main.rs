@@ -28,6 +28,11 @@ use crate::{
             create_project, delete_project, get_project, list_projects_by_owner, update_project,
             ProjectStateInner,
         },
+        read_model::{
+            add_field, add_source, create_read_model, delete_read_model, get_read_model,
+            list_read_models_for_project, remove_field, remove_source, update_field,
+            update_read_model, update_source,
+        },
         team_member::{
             add_team_member, list_team_members, remove_team_member, update_team_member,
             TeamStateInner,
@@ -36,8 +41,8 @@ use crate::{
     },
     models::*,
     services::{
-        AuthService, ConnectionService, EntityService, ProjectService, TeamMemberService,
-        UserService,
+        AuthService, ConnectionService, EntityService, ProjectService, ReadModelService,
+        TeamMemberService, UserService,
     },
 };
 
@@ -80,6 +85,17 @@ use crate::{
         handlers::entity::update_invariant,
         handlers::entity::remove_invariant,
         handlers::entity::find_references,
+        handlers::read_model::create_read_model,
+        handlers::read_model::get_read_model,
+        handlers::read_model::list_read_models_for_project,
+        handlers::read_model::update_read_model,
+        handlers::read_model::delete_read_model,
+        handlers::read_model::add_source,
+        handlers::read_model::update_source,
+        handlers::read_model::remove_source,
+        handlers::read_model::add_field,
+        handlers::read_model::update_field,
+        handlers::read_model::remove_field,
     ),
     components(
         schemas(
@@ -91,6 +107,9 @@ use crate::{
             EntityDefinition, EntityType, EntityProperty, EntityMethod, EntityInvariant,
             MethodType, MethodParameter, ValidationType, ValidationRule,
             CreateEntityRequest, UpdateEntityRequest, PropertyRequest, MethodRequest, InvariantRequest,
+            ReadModelDefinition, ReadModelField, ReadModelMetadata, DataSource, JoinCondition, JoinType, JoinOperator,
+            FieldSourceType, TransformType, FieldTransform,
+            CreateReadModelRequest, UpdateReadModelRequest, DataSourceRequest, FieldRequest,
         )
     ),
     tags(
@@ -99,7 +118,8 @@ use crate::{
         (name = "projects", description = "Project management endpoints"),
         (name = "team", description = "Team member management endpoints"),
         (name = "connections", description = "Connection management endpoints"),
-        (name = "entities", description = "Entity modeling endpoints")
+        (name = "entities", description = "Entity modeling endpoints"),
+        (name = "read-models", description = "Read model designer endpoints")
     )
 )]
 struct ApiDoc;
@@ -150,6 +170,7 @@ async fn main() -> Result<()> {
     let team_member_service = TeamMemberService::new(mongodb.db());
     let connection_service = ConnectionService::new(mongodb.db());
     let entity_service = EntityService::new(mongodb.db());
+    let read_model_service = ReadModelService::new(mongodb.db());
 
     // Create application states
     let auth_state = Arc::new(AppStateInner {
@@ -273,6 +294,37 @@ async fn main() -> Result<()> {
         )
         .route("/api/entities/:entity_id/references", get(find_references))
         .with_state(entity_state)
+        // Read model routes
+        .route("/api/read-models", post(create_read_model))
+        .route("/api/read-models/:id", get(get_read_model))
+        .route("/api/read-models/:id", put(update_read_model))
+        .route("/api/read-models/:id", delete(delete_read_model))
+        .route(
+            "/api/projects/:project_id/read-models",
+            get(list_read_models_for_project),
+        )
+        .route(
+            "/api/read-models/:read_model_id/sources",
+            post(add_source),
+        )
+        .route(
+            "/api/read-models/:read_model_id/sources/:source_index",
+            put(update_source),
+        )
+        .route(
+            "/api/read-models/:read_model_id/sources/:source_index",
+            delete(remove_source),
+        )
+        .route("/api/read-models/:read_model_id/fields", post(add_field))
+        .route(
+            "/api/read-models/:read_model_id/fields/:field_id",
+            put(update_field),
+        )
+        .route(
+            "/api/read-models/:read_model_id/fields/:field_id",
+            delete(remove_field),
+        )
+        .with_state(read_model_service)
         // Swagger UI
         .merge(SwaggerUi::new("/swagger-ui").url("/api-docs/openapi.json", ApiDoc::openapi()))
         // Health check

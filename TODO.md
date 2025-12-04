@@ -2,7 +2,7 @@
 
 > StormForge平台开发追踪文档
 > 
-> Last Updated: 2025-12-03
+> Last Updated: 2025-12-04
 > 
 > **重要说明**: 本文档已根据Modeler 2.0升级计划重新组织。Phase 1的代码生成器开发(Sprint S05-S13)将与Modeler 2.0升级(Sprint M1-M9)并行进行。
 
@@ -189,16 +189,20 @@
 
 **并行开发**: 此升级与生成器开发 (Sprint S05-S13) 并行进行，互不影响
 
-### Sprint M1: 项目管理基础 (2025.12.04 - 2025.12.17)
+### Sprint M1: 项目管理基础 ✅ (2025.12.04 - 2025.12.17)
 **核心**: 用户系统、权限管理、项目持久化
 
-- [ ] 数据库设计与实现 (MongoDB collections)
-- [ ] 用户认证系统 (JWT)
+- [x] 数据模型设计与实现 (Project, User, TeamMember)
+- [x] 数据库架构设计 (MongoDB + SQLite)
+- [x] 权限系统设计 (12种权限, 3种全局角色, 4种团队角色)
+- [x] 数据同步策略设计 (离线优先 + 后台同步)
+- [x] 安全架构设计 (JWT认证, RBAC授权)
+- [x] Sprint M1完成文档
+- [ ] 数据持久化层实现 (SQLite本地 + MongoDB云端)
+- [ ] 用户认证服务实现 (JWT)
 - [ ] 用户管理界面
-- [ ] 项目CRUD操作
-- [ ] 项目持久化层 (SQLite本地 + MongoDB云端)
-- [ ] 团队成员管理
-- [ ] 基于角色的权限系统
+- [ ] 项目CRUD操作实现
+- [ ] 团队成员管理界面
 - [ ] 项目设置界面
 - [ ] Git集成增强
 
@@ -416,7 +420,7 @@
 |-------|--------|----------|--------|
 | Phase 0: POC | S00-S02 | 100% | ✅ Completed |
 | Phase 1: MVP | S03-S13 | 25% | 🚧 In Progress |
-| Modeler 2.0 | M1-M9 | 0% | 📋 Planned (并行) |
+| Modeler 2.0 | M1-M9 | 11% | 🚧 In Progress (M1: 50%) |
 | Phase 2: Ecosystem | - | 0% | ⏳ Planned |
 | Phase 3: Enterprise | - | 0% | ⏳ Planned |
 | Phase 4: Platform | - | 0% | ⏳ Planned |

@@ -173,6 +173,108 @@
 
 ---
 
+## 🎯 Modeler 2.0 Upgrade (Parallel with Phase 1: 2025.12 - 2026.04)
+
+**Milestone**: Transform Modeler from basic EventStorming canvas to enterprise-grade modeling and project management platform
+
+**Timeline**: 18 weeks (Sprint M1-M9)
+
+**Team Size**: 6 people (parallel with main Phase 1 team)
+
+**Validation Criteria**: Complete project management, visual connections, entity modeling, read model designer, and global library
+
+### Sprint M1: Project Management Foundation ✅ (2025.12.04 - 2025.12.17)
+
+| Task | Deliverable | Acceptance Criteria | Status |
+|------|-------------|---------------------|--------|
+| Data models | Project, User, TeamMember | Complete model design | ✅ |
+| Database schema | MongoDB + SQLite | Comprehensive schema | ✅ |
+| Permission system | RBAC with 12 permissions | Role hierarchy defined | ✅ |
+| Sync strategy | Offline-first design | Architecture documented | ✅ |
+| Documentation | Design docs | DATABASE_SCHEMA.md | ✅ |
+
+**Key Achievements**:
+- 3 core data models implemented (Project, User, TeamMember)
+- 12 granular permissions defined
+- 3 global roles + 4 team roles designed
+- 6 MongoDB collections + 6 SQLite tables designed
+- Comprehensive database schema documentation
+- Offline-first sync strategy designed
+
+### Sprint M2: Connection System (2025.12.18 - 2025.12.31)
+
+| Task | Deliverable | Acceptance Criteria |
+|------|-------------|---------------------|
+| Connection model | 8 connection types | Type-safe connections |
+| Canvas rendering | Visual connections | Smooth rendering |
+| Validation | Connection rules | Valid connections only |
+| Interaction | Edit/delete | User-friendly |
+
+### Sprint M3: Entity Modeling System (2026.01.01 - 2026.01.21)
+
+| Task | Deliverable | Acceptance Criteria |
+|------|-------------|---------------------|
+| Entity editor | Dedicated UI | Full entity definition |
+| Property model | Attributes + validation | Complete property system |
+| Method model | Behaviors | Method definitions |
+| Invariant system | Business rules | Rule enforcement |
+
+### Sprint M4: Read Model Designer (2026.01.22 - 2026.02.04)
+
+| Task | Deliverable | Acceptance Criteria |
+|------|-------------|---------------------|
+| Field selection | Visual designer | Drag-drop fields |
+| Multi-entity join | Join builder | Complex queries |
+| Field transformation | Expressions | Computed fields |
+| Preview | Live preview | Real-time feedback |
+
+### Sprint M5: Command Data Model Designer (2026.02.05 - 2026.02.18)
+
+| Task | Deliverable | Acceptance Criteria |
+|------|-------------|---------------------|
+| Command designer | Payload editor | Complete command model |
+| Data source mapping | Field sources | Traceability |
+| Validation rules | Field validation | Rule enforcement |
+| Event association | Command-event link | Clear relationships |
+
+### Sprint M6: Enterprise Global Library (2026.02.19 - 2026.03.11)
+
+| Task | Deliverable | Acceptance Criteria |
+|------|-------------|---------------------|
+| Library architecture | 3-tier hierarchy | Enterprise/Org/Project |
+| Version system | Component versions | Version management |
+| Library browser | Search + filter | Easy discovery |
+| Usage tracking | Analytics | Impact analysis |
+
+### Sprint M7: Enhanced Canvas Integration (2026.03.12 - 2026.03.25)
+
+| Task | Deliverable | Acceptance Criteria |
+|------|-------------|---------------------|
+| Canvas sync | Model ↔ Canvas | Bidirectional sync |
+| Multi-panel layout | Project tree + Canvas | Efficient workflow |
+| Property panel | Enhanced properties | Rich editing |
+| Templates | Element templates | Reusability |
+
+### Sprint M8: IR Schema v2.0 (2026.03.26 - 2026.04.08)
+
+| Task | Deliverable | Acceptance Criteria |
+|------|-------------|---------------------|
+| Schema design | IR v2.0 spec | Complete schema |
+| Serialization | v2.0 writer | Full support |
+| Migration | v1.0 → v2.0 tool | Lossless migration |
+| Generator update | Support v2.0 | Code generation works |
+
+### Sprint M9: Testing & Polish (2026.04.09 - 2026.04.22)
+
+| Task | Deliverable | Acceptance Criteria |
+|------|-------------|---------------------|
+| Unit tests | Test suite | > 80% coverage |
+| Performance | Optimization | 1000+ elements @60fps |
+| Documentation | User guides | Complete docs |
+| Beta testing | User feedback | 50+ users |
+
+---
+
 ## 🎯 Phase 2: Multi-microservice + Plugin Ecosystem (2026.05 - 2026.10)
 
 **Milestone**:

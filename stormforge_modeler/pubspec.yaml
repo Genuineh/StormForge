@@ -31,6 +31,15 @@ dependencies:
   collection: ^1.18.0
   equatable: ^2.0.5
   
+  # HTTP client
+  http: ^1.2.0
+  
+  # Navigation
+  go_router: ^14.3.0
+  
+  # Secure storage
+  flutter_secure_storage: ^9.2.2
+  
   # Git integration (future)
   # git2dart: ^0.2.0
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:stormforge_modeler/canvas/canvas_widget.dart';
+import 'package:stormforge_modeler/router.dart';
 import 'package:stormforge_modeler/widgets/element_palette.dart';
 import 'package:stormforge_modeler/widgets/property_panel.dart';
 import 'package:stormforge_modeler/widgets/toolbar.dart';
@@ -12,7 +13,7 @@ class StormForgeModelerApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'StormForge Modeler',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -30,7 +31,7 @@ class StormForgeModelerApp extends StatelessWidget {
         ),
       ),
       themeMode: ThemeMode.system,
-      home: const ModelerHomePage(),
+      routerConfig: router,
     );
   }
 }

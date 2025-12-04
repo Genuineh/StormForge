@@ -29,7 +29,7 @@ use crate::{
         user::{get_user, list_users, update_user},
     },
     models::*,
-    services::{AuthService, ProjectService, TeamMemberService, UserService},
+    services::{AuthService, ConnectionService, ProjectService, TeamMemberService, UserService},
 };
 
 #[derive(OpenApi)]
@@ -49,19 +49,28 @@ use crate::{
         handlers::team_member::list_team_members,
         handlers::team_member::update_team_member,
         handlers::team_member::remove_team_member,
+        handlers::connection::create_connection,
+        handlers::connection::get_connection,
+        handlers::connection::list_connections,
+        handlers::connection::list_element_connections,
+        handlers::connection::update_connection,
+        handlers::connection::delete_connection,
     ),
     components(
         schemas(
             User, UserRole, Permission, CreateUserRequest, LoginRequest, LoginResponse, UpdateUserRequest,
             Project, ProjectVisibility, GitSettings, AiSettings, ProjectSettings, CreateProjectRequest, UpdateProjectRequest,
             TeamMember, TeamRole, AddTeamMemberRequest, UpdateTeamMemberRequest,
+            Connection, ConnectionType, LineStyle, ArrowStyle, ConnectionStyle,
+            CreateConnectionRequest, UpdateConnectionRequest,
         )
     ),
     tags(
         (name = "auth", description = "Authentication endpoints"),
         (name = "users", description = "User management endpoints"),
         (name = "projects", description = "Project management endpoints"),
-        (name = "team", description = "Team member management endpoints")
+        (name = "team", description = "Team member management endpoints"),
+        (name = "connections", description = "Connection management endpoints")
     )
 )]
 struct ApiDoc;
@@ -111,6 +120,7 @@ async fn main() -> Result<()> {
     let user_service = UserService::new(mongodb.db());
     let project_service = ProjectService::new(mongodb.db());
     let team_member_service = TeamMemberService::new(mongodb.db());
+    let connection_service = ConnectionService::new(mongodb.db());
 
     // Create application states
     let auth_state = Arc::new(AppStateInner {
@@ -156,6 +166,14 @@ async fn main() -> Result<()> {
         .route("/api/projects/:project_id/members/:user_id", put(update_team_member))
         .route("/api/projects/:project_id/members/:user_id", delete(remove_team_member))
         .with_state(team_state)
+        // Connection routes
+        .route("/api/projects/:project_id/connections", post(handlers::connection::create_connection))
+        .route("/api/projects/:project_id/connections", get(handlers::connection::list_connections))
+        .route("/api/projects/:project_id/connections/:connection_id", get(handlers::connection::get_connection))
+        .route("/api/projects/:project_id/connections/:connection_id", put(handlers::connection::update_connection))
+        .route("/api/projects/:project_id/connections/:connection_id", delete(handlers::connection::delete_connection))
+        .route("/api/projects/:project_id/elements/:element_id/connections", get(handlers::connection::list_element_connections))
+        .with_state(connection_service)
         // Swagger UI
         .merge(SwaggerUi::new("/swagger-ui").url("/api-docs/openapi.json", ApiDoc::openapi()))
         // Health check

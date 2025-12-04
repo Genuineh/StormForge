@@ -5,6 +5,7 @@ import 'package:stormforge_modeler/screens/auth/register_screen.dart';
 import 'package:stormforge_modeler/screens/entities/entity_editor_screen.dart';
 import 'package:stormforge_modeler/screens/projects/project_form_screen.dart';
 import 'package:stormforge_modeler/screens/projects/projects_list_screen.dart';
+import 'package:stormforge_modeler/screens/read_models/read_model_designer_screen.dart';
 import 'package:stormforge_modeler/screens/settings/project_settings_screen.dart';
 import 'package:stormforge_modeler/screens/users/team_members_screen.dart';
 
@@ -57,6 +58,13 @@ final router = GoRouter(
       builder: (context, state) {
         final projectId = state.pathParameters['id']!;
         return EntityEditorScreen(projectId: projectId);
+      },
+    ),
+    GoRoute(
+      path: '/projects/:id/read-models',
+      builder: (context, state) {
+        final projectId = state.pathParameters['id']!;
+        return ReadModelDesignerScreen(projectId: projectId);
       },
     ),
 

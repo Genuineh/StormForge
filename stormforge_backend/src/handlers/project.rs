@@ -38,7 +38,8 @@ pub async fn create_project(
     // Solution: Add JWT verification middleware that extracts user_id from token claims
     let owner_id = "placeholder_owner_id".to_string();
 
-    let project = state.project_service
+    let project = state
+        .project_service
         .create_project(
             payload.name,
             payload.namespace,
@@ -74,15 +75,12 @@ pub async fn get_project(
     State(state): State<ProjectState>,
     Path(id): Path<String>,
 ) -> Result<Json<Project>, (StatusCode, Json<Value>)> {
-    let project = state.project_service
-        .find_by_id(&id)
-        .await
-        .map_err(|e| {
-            (
-                StatusCode::NOT_FOUND,
-                Json(json!({ "error": e.to_string() })),
-            )
-        })?;
+    let project = state.project_service.find_by_id(&id).await.map_err(|e| {
+        (
+            StatusCode::NOT_FOUND,
+            Json(json!({ "error": e.to_string() })),
+        )
+    })?;
 
     Ok(Json(project))
 }
@@ -103,7 +101,8 @@ pub async fn list_projects_by_owner(
     State(state): State<ProjectState>,
     Path(owner_id): Path<String>,
 ) -> Result<Json<Vec<Project>>, (StatusCode, Json<Value>)> {
-    let projects = state.project_service
+    let projects = state
+        .project_service
         .list_by_owner(&owner_id)
         .await
         .map_err(|e| {
@@ -135,7 +134,8 @@ pub async fn update_project(
     Path(id): Path<String>,
     Json(payload): Json<UpdateProjectRequest>,
 ) -> Result<Json<Project>, (StatusCode, Json<Value>)> {
-    let project = state.project_service
+    let project = state
+        .project_service
         .update_project(
             &id,
             payload.name,
@@ -171,7 +171,8 @@ pub async fn delete_project(
     State(state): State<ProjectState>,
     Path(id): Path<String>,
 ) -> Result<StatusCode, (StatusCode, Json<Value>)> {
-    state.project_service
+    state
+        .project_service
         .delete_project(&id)
         .await
         .map_err(|e| {

@@ -1,8 +1,4 @@
-use axum::{
-    extract::State,
-    http::StatusCode,
-    Json,
-};
+use axum::{extract::State, http::StatusCode, Json};
 use serde_json::{json, Value};
 
 use crate::{
@@ -34,7 +30,8 @@ pub async fn register(
     Json(payload): Json<CreateUserRequest>,
 ) -> Result<(StatusCode, Json<LoginResponse>), (StatusCode, Json<Value>)> {
     // Hash password
-    let password_hash = state.auth_service
+    let password_hash = state
+        .auth_service
         .hash_password(&payload.password)
         .map_err(|e| {
             (
@@ -44,7 +41,8 @@ pub async fn register(
         })?;
 
     // Create user
-    let user = state.user_service
+    let user = state
+        .user_service
         .create_user(
             payload.username.clone(),
             payload.email,
@@ -61,7 +59,8 @@ pub async fn register(
         })?;
 
     // Generate token
-    let token = state.auth_service
+    let token = state
+        .auth_service
         .generate_token(&user.id, &user.username, &user.role.to_string())
         .map_err(|e| {
             (
@@ -70,10 +69,7 @@ pub async fn register(
             )
         })?;
 
-    Ok((
-        StatusCode::CREATED,
-        Json(LoginResponse { token, user }),
-    ))
+    Ok((StatusCode::CREATED, Json(LoginResponse { token, user })))
 }
 
 /// Login with username/email and password
@@ -92,7 +88,8 @@ pub async fn login(
     Json(payload): Json<LoginRequest>,
 ) -> Result<Json<LoginResponse>, (StatusCode, Json<Value>)> {
     // Find user
-    let user = state.user_service
+    let user = state
+        .user_service
         .find_by_username_or_email(&payload.username_or_email)
         .await
         .map_err(|_| {
@@ -110,7 +107,8 @@ pub async fn login(
         )
     })?;
 
-    let valid = state.auth_service
+    let valid = state
+        .auth_service
         .verify_password(&payload.password, password_hash)
         .map_err(|e| {
             (
@@ -130,7 +128,8 @@ pub async fn login(
     let _ = state.user_service.update_last_login(&user.id).await;
 
     // Generate token
-    let token = state.auth_service
+    let token = state
+        .auth_service
         .generate_token(&user.id, &user.username, &user.role.to_string())
         .map_err(|e| {
             (

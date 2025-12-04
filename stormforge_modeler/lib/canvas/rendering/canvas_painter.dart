@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:stormforge_modeler/models/models.dart';
+import 'package:stormforge_modeler/canvas/rendering/connection_painter.dart';
 
 /// Custom painter for rendering the EventStorming canvas.
 class CanvasPainter extends CustomPainter {
@@ -34,10 +35,9 @@ class CanvasPainter extends CustomPainter {
     // Draw grid
     _drawGrid(canvas, size);
 
-    // Draw connections
-    for (final connection in model.connections) {
-      _drawConnection(canvas, connection);
-    }
+    // Draw connections using ConnectionPainter
+    final connectionPainter = ConnectionPainter(model: model, viewport: viewport);
+    connectionPainter.paint(canvas);
 
     // Draw elements
     for (final element in model.elements) {

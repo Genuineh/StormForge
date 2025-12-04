@@ -1,5 +1,5 @@
-use mongodb::{Client, Database};
 use anyhow::Result;
+use mongodb::{Client, Database};
 
 #[derive(Clone)]
 pub struct MongoDbService {
@@ -10,10 +10,10 @@ impl MongoDbService {
     pub async fn new(connection_string: &str, database_name: &str) -> Result<Self> {
         let client = Client::with_uri_str(connection_string).await?;
         let db = client.database(database_name);
-        
+
         // Test connection
         db.list_collection_names(None).await?;
-        
+
         Ok(Self { db })
     }
 
@@ -46,51 +46,75 @@ impl MongoDbService {
     }
 
     async fn create_indexes(&self) -> Result<()> {
-        use mongodb::IndexModel;
         use mongodb::bson::{doc, Document};
+        use mongodb::IndexModel;
 
         // Users indexes
         let users = self.db.collection::<Document>("users");
-        users.create_index(
-            IndexModel::builder()
-                .keys(doc! { "username": 1 })
-                .options(mongodb::options::IndexOptions::builder().unique(true).build())
-                .build(),
-            None
-        ).await?;
-        users.create_index(
-            IndexModel::builder()
-                .keys(doc! { "email": 1 })
-                .options(mongodb::options::IndexOptions::builder().unique(true).build())
-                .build(),
-            None
-        ).await?;
+        users
+            .create_index(
+                IndexModel::builder()
+                    .keys(doc! { "username": 1 })
+                    .options(
+                        mongodb::options::IndexOptions::builder()
+                            .unique(true)
+                            .build(),
+                    )
+                    .build(),
+                None,
+            )
+            .await?;
+        users
+            .create_index(
+                IndexModel::builder()
+                    .keys(doc! { "email": 1 })
+                    .options(
+                        mongodb::options::IndexOptions::builder()
+                            .unique(true)
+                            .build(),
+                    )
+                    .build(),
+                None,
+            )
+            .await?;
 
         // Projects indexes
         let projects = self.db.collection::<Document>("projects");
-        projects.create_index(
-            IndexModel::builder()
-                .keys(doc! { "namespace": 1 })
-                .options(mongodb::options::IndexOptions::builder().unique(true).build())
-                .build(),
-            None
-        ).await?;
-        projects.create_index(
-            IndexModel::builder()
-                .keys(doc! { "owner_id": 1 })
-                .build(),
-            None
-        ).await?;
+        projects
+            .create_index(
+                IndexModel::builder()
+                    .keys(doc! { "namespace": 1 })
+                    .options(
+                        mongodb::options::IndexOptions::builder()
+                            .unique(true)
+                            .build(),
+                    )
+                    .build(),
+                None,
+            )
+            .await?;
+        projects
+            .create_index(
+                IndexModel::builder().keys(doc! { "owner_id": 1 }).build(),
+                None,
+            )
+            .await?;
 
         // Project members indexes
         let members = self.db.collection::<Document>("project_members");
-        members.create_index(
-            IndexModel::builder()
-                .keys(doc! { "project_id": 1, "user_id": 1 })
-                .options(mongodb::options::IndexOptions::builder().unique(true).build())
-                .build(),
-            None
-        ).await?;
+        members
+            .create_index(
+                IndexModel::builder()
+                    .keys(doc! { "project_id": 1, "user_id": 1 })
+                    .options(
+                        mongodb::options::IndexOptions::builder()
+                            .unique(true)
+                            .build(),
+                    )
+                    .build(),
+                None,
+            )
+            .await?;
 
         Ok(())
     }

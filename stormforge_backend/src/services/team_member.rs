@@ -1,6 +1,6 @@
 use anyhow::{anyhow, Result};
-use mongodb::{bson::doc, Collection, Database};
 use futures_util::stream::TryStreamExt;
+use mongodb::{bson::doc, Collection, Database};
 
 use crate::models::{TeamMember, TeamRole};
 
@@ -35,11 +35,9 @@ impl TeamMemberService {
     }
 
     pub async fn find_member(&self, project_id: &str, user_id: &str) -> Result<TeamMember> {
-        let member = self.members
-            .find_one(
-                doc! { "project_id": project_id, "user_id": user_id },
-                None,
-            )
+        let member = self
+            .members
+            .find_one(doc! { "project_id": project_id, "user_id": user_id }, None)
             .await?
             .ok_or_else(|| anyhow!("Member not found"))?;
 
@@ -47,7 +45,8 @@ impl TeamMemberService {
     }
 
     pub async fn list_project_members(&self, project_id: &str) -> Result<Vec<TeamMember>> {
-        let cursor = self.members
+        let cursor = self
+            .members
             .find(doc! { "project_id": project_id }, None)
             .await?;
         let members = cursor.try_collect().await?;
@@ -56,9 +55,7 @@ impl TeamMemberService {
     }
 
     pub async fn list_user_projects(&self, user_id: &str) -> Result<Vec<String>> {
-        let cursor = self.members
-            .find(doc! { "user_id": user_id }, None)
-            .await?;
+        let cursor = self.members.find(doc! { "user_id": user_id }, None).await?;
         let members: Vec<TeamMember> = cursor.try_collect().await?;
 
         Ok(members.into_iter().map(|m| m.project_id).collect())
@@ -90,11 +87,9 @@ impl TeamMemberService {
     }
 
     pub async fn remove_member(&self, project_id: &str, user_id: &str) -> Result<()> {
-        let result = self.members
-            .delete_one(
-                doc! { "project_id": project_id, "user_id": user_id },
-                None,
-            )
+        let result = self
+            .members
+            .delete_one(doc! { "project_id": project_id, "user_id": user_id }, None)
             .await?;
 
         if result.deleted_count == 0 {

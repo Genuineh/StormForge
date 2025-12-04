@@ -40,7 +40,8 @@ pub async fn add_team_member(
     // Solution: Add JWT verification middleware that extracts user_id from token claims
     let invited_by = Some("placeholder_inviter_id".to_string());
 
-    let member = state.team_member_service
+    let member = state
+        .team_member_service
         .add_member(project_id, payload.user_id, payload.role, invited_by)
         .await
         .map_err(|e| {
@@ -69,7 +70,8 @@ pub async fn list_team_members(
     State(state): State<TeamState>,
     Path(project_id): Path<String>,
 ) -> Result<Json<Vec<TeamMember>>, (StatusCode, Json<Value>)> {
-    let members = state.team_member_service
+    let members = state
+        .team_member_service
         .list_project_members(&project_id)
         .await
         .map_err(|e| {
@@ -102,7 +104,8 @@ pub async fn update_team_member(
     Path((project_id, user_id)): Path<(String, String)>,
     Json(payload): Json<UpdateTeamMemberRequest>,
 ) -> Result<Json<TeamMember>, (StatusCode, Json<Value>)> {
-    let member = state.team_member_service
+    let member = state
+        .team_member_service
         .update_member(&project_id, &user_id, payload.role)
         .await
         .map_err(|e| {
@@ -133,7 +136,8 @@ pub async fn remove_team_member(
     State(state): State<TeamState>,
     Path((project_id, user_id)): Path<(String, String)>,
 ) -> Result<StatusCode, (StatusCode, Json<Value>)> {
-    state.team_member_service
+    state
+        .team_member_service
         .remove_member(&project_id, &user_id)
         .await
         .map_err(|e| {

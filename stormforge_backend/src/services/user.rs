@@ -1,7 +1,7 @@
 use anyhow::{anyhow, Result};
-use mongodb::{bson::doc, Collection, Database};
 use chrono::Utc;
 use futures_util::stream::TryStreamExt;
+use mongodb::{bson::doc, Collection, Database};
 
 use crate::models::{User, UserRole};
 
@@ -42,7 +42,8 @@ impl UserService {
     }
 
     pub async fn find_by_id(&self, id: &str) -> Result<User> {
-        let user = self.users
+        let user = self
+            .users
             .find_one(doc! { "id": id }, None)
             .await?
             .ok_or_else(|| anyhow!("User not found"))?;
@@ -51,7 +52,8 @@ impl UserService {
     }
 
     pub async fn find_by_username(&self, username: &str) -> Result<User> {
-        let user = self.users
+        let user = self
+            .users
             .find_one(doc! { "username": username }, None)
             .await?
             .ok_or_else(|| anyhow!("User not found"))?;
@@ -60,7 +62,8 @@ impl UserService {
     }
 
     pub async fn find_by_email(&self, email: &str) -> Result<User> {
-        let user = self.users
+        let user = self
+            .users
             .find_one(doc! { "email": email }, None)
             .await?
             .ok_or_else(|| anyhow!("User not found"))?;
@@ -69,7 +72,8 @@ impl UserService {
     }
 
     pub async fn find_by_username_or_email(&self, username_or_email: &str) -> Result<User> {
-        let user = self.users
+        let user = self
+            .users
             .find_one(
                 doc! {
                     "$or": [
@@ -111,11 +115,7 @@ impl UserService {
         }
 
         self.users
-            .update_one(
-                doc! { "id": id },
-                doc! { "$set": update_doc },
-                None,
-            )
+            .update_one(doc! { "id": id }, doc! { "$set": update_doc }, None)
             .await?;
 
         self.find_by_id(id).await

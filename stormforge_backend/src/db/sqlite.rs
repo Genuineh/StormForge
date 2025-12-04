@@ -1,7 +1,7 @@
+use anyhow::Result;
 use r2d2::Pool;
 use r2d2_sqlite::SqliteConnectionManager;
 use rusqlite::{params, Connection, Result as SqliteResult};
-use anyhow::Result;
 
 pub type SqlitePool = Pool<SqliteConnectionManager>;
 
@@ -14,10 +14,10 @@ impl SqliteService {
     pub fn new(database_path: &str) -> Result<Self> {
         let manager = SqliteConnectionManager::file(database_path);
         let pool = Pool::new(manager)?;
-        
+
         let service = Self { pool };
         service.initialize_schema()?;
-        
+
         Ok(service)
     }
 
@@ -27,7 +27,7 @@ impl SqliteService {
 
     fn initialize_schema(&self) -> Result<()> {
         let conn = self.pool.get()?;
-        
+
         // Create users table
         conn.execute(
             "CREATE TABLE IF NOT EXISTS users (

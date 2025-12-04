@@ -202,3 +202,60 @@ jobs:
           else
             echo "No IR examples to validate"
           fi
+
+  # Backend (Rust) linting and testing
+  backend:
+    name: Backend CI
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Check if Backend project exists
+        id: check_backend
+        run: |
+          if [ -f "stormforge_backend/Cargo.toml" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Setup Rust
+        if: steps.check_backend.outputs.exists == 'true'
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      
+      - name: Cache cargo
+        if: steps.check_backend.outputs.exists == 'true'
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            stormforge_backend/target/
+          key: ${{ runner.os }}-cargo-backend-${{ hashFiles('stormforge_backend/Cargo.lock') }}
+      
+      - name: Check formatting
+        if: steps.check_backend.outputs.exists == 'true'
+        run: cargo fmt --all -- --check
+        working-directory: stormforge_backend
+      
+      - name: Run clippy
+        if: steps.check_backend.outputs.exists == 'true'
+        run: cargo clippy --all-targets --all-features -- -D warnings
+        working-directory: stormforge_backend
+      
+      - name: Build
+        if: steps.check_backend.outputs.exists == 'true'
+        run: cargo build --verbose
+        working-directory: stormforge_backend
+      
+      - name: Run tests
+        if: steps.check_backend.outputs.exists == 'true'
+        run: cargo test --verbose
+        working-directory: stormforge_backend

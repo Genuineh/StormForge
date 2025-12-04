@@ -492,6 +492,197 @@ plugin:
 
 ---
 
+## 🗂️ Project Management System (Modeler 2.0)
+
+### Architecture Overview
+
+The Modeler 2.0 upgrade introduces a comprehensive project management layer built on an offline-first architecture with cloud synchronization.
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    Flutter Modeler UI                           │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────┐ │
+│  │  User Management │  │  Project Manager │  │  Team Manager│ │
+│  └────────┬─────────┘  └────────┬─────────┘  └──────┬───────┘ │
+│           │                     │                    │         │
+│           ▼                     ▼                    ▼         │
+│  ┌─────────────────────────────────────────────────────────┐  │
+│  │               Business Logic Layer                       │  │
+│  │  ┌────────────┐  ┌────────────┐  ┌─────────────────┐   │  │
+│  │  │   Auth     │  │  RBAC      │  │  Sync Manager   │   │  │
+│  │  │  Service   │  │  Service   │  │                 │   │  │
+│  │  └─────┬──────┘  └─────┬──────┘  └────────┬────────┘   │  │
+│  └────────┼───────────────┼──────────────────┼────────────┘  │
+│           │               │                  │                │
+│           ▼               ▼                  ▼                │
+│  ┌─────────────────────────────────────────────────────────┐  │
+│  │              Data Access Layer                           │  │
+│  │  ┌────────────────────────────┐  ┌──────────────────┐   │  │
+│  │  │     SQLite Repository      │  │  MongoDB Client  │   │  │
+│  │  │    (Local First)           │  │  (Cloud Sync)    │   │  │
+│  │  └─────────┬──────────────────┘  └────────┬─────────┘   │  │
+│  └────────────┼─────────────────────────────┼─────────────┘  │
+│               │                             │                 │
+│               ▼                             ▼                 │
+│  ┌─────────────────────┐      ┌──────────────────────────┐   │
+│  │   SQLite Database   │      │   MongoDB Atlas          │   │
+│  │   (Local Storage)   │◄────►│   (Cloud Storage)        │   │
+│  └─────────────────────┘      └──────────────────────────┘   │
+│         Offline-First              Background Sync            │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Data Models
+
+**Core Entities**:
+- **Project**: Project metadata, settings, ownership
+- **User**: User accounts, global roles, permissions
+- **TeamMember**: Project-specific roles and permissions
+- **ProjectModel**: Canvas models, entities, definitions
+- **ModelVersion**: Version history and audit trail
+
+**Permission System**:
+```
+Global Roles:
+├── Admin (all permissions)
+├── Developer (create, edit, generate)
+└── Viewer (read-only)
+
+Team Roles (per project):
+├── Owner (full control)
+├── Admin (manage team + edit)
+├── Editor (edit models + generate)
+└── Viewer (read-only)
+
+Permissions (12 total):
+├── Project: create, edit, delete, view, export
+├── Model: edit, view, export
+├── Code: generate
+├── Team: manage
+└── Library: edit, view
+```
+
+### Storage Strategy
+
+**Offline-First Approach**:
+1. All operations execute on local SQLite first
+2. Changes queued for cloud sync
+3. Background sync when online
+4. Conflict resolution with version tracking
+
+**Database Schema**:
+
+**MongoDB Collections**:
+- `users` - User accounts and authentication
+- `projects` - Project metadata and settings
+- `project_members` - Team membership
+- `project_models` - Model data (BSON)
+- `model_versions` - Version history
+- `project_activities` - Activity timeline
+
+**SQLite Tables**:
+- Local mirror of MongoDB schema
+- `sync_queue` - Pending changes to sync
+- Optimized for offline operation
+
+### Authentication & Security
+
+**Authentication Flow**:
+```
+User Login
+    │
+    ▼
+┌──────────────┐
+│  JWT Token   │
+│  Generation  │
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐     ┌──────────────┐
+│ Secure Store │────▶│  API Calls   │
+│   (Token)    │     │ (Authorized) │
+└──────────────┘     └──────────────┘
+       │
+       ▼
+┌──────────────┐
+│ Auto Refresh │
+│  (< 1 hour)  │
+└──────────────┘
+```
+
+**Security Measures**:
+- JWT token-based authentication
+- bcrypt password hashing (12 rounds)
+- Role-Based Access Control (RBAC)
+- Permission checks at multiple layers
+- Audit trail for all operations
+- TLS/SSL for all network traffic
+- Database encryption at rest
+
+### Sync Architecture
+
+**Sync Flow**:
+```
+Local Change
+    │
+    ▼
+┌──────────────┐
+│  SQLite      │
+│  Write       │
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐
+│ Sync Queue   │
+│  Entry       │
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐
+│ Background   │
+│ Sync Service │
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐     ┌──────────────┐
+│  MongoDB     │────▶│  Broadcast   │
+│  Update      │     │  to Team     │
+└──────────────┘     └──────────────┘
+```
+
+**Conflict Resolution**:
+- Version number tracking
+- Timestamp comparison
+- Last-write-wins for metadata
+- User-prompted resolution for model conflicts
+- Automatic merge for compatible changes
+
+### Performance Optimization
+
+**Caching Strategy**:
+- User session cache (memory)
+- Project metadata cache (5-min TTL)
+- Recent models cache (LRU, 10MB limit)
+- Library component cache (persistent)
+
+**Query Optimization**:
+- Strategic indexes on all collections
+- Composite indexes for common patterns
+- Projection to fetch only needed fields
+- Cursor-based pagination
+- Aggregation pipeline for complex queries
+
+**UI Performance**:
+- Virtual scrolling for large lists
+- Lazy loading for project contents
+- Incremental rendering for canvas
+- Debounced auto-save (30s interval)
+- Optimistic UI updates
+
+---
+
 ## 🔗 External Integrations
 
 ### AI Services

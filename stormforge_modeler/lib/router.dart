@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:stormforge_modeler/app.dart';
 import 'package:stormforge_modeler/screens/auth/login_screen.dart';
 import 'package:stormforge_modeler/screens/auth/register_screen.dart';
+import 'package:stormforge_modeler/screens/entities/entity_editor_screen.dart';
 import 'package:stormforge_modeler/screens/projects/project_form_screen.dart';
 import 'package:stormforge_modeler/screens/projects/projects_list_screen.dart';
 import 'package:stormforge_modeler/screens/settings/project_settings_screen.dart';
@@ -49,6 +50,13 @@ final router = GoRouter(
       builder: (context, state) {
         final projectId = state.pathParameters['id']!;
         return TeamMembersScreen(projectId: projectId);
+      },
+    ),
+    GoRoute(
+      path: '/projects/:id/entities',
+      builder: (context, state) {
+        final projectId = state.pathParameters['id']!;
+        return EntityEditorScreen(projectId: projectId);
       },
     ),
 

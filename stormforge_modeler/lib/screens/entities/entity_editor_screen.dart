@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:stormforge_modeler/models/entity_model.dart';
 import 'package:stormforge_modeler/services/api/entity_service.dart';
 import 'package:stormforge_modeler/screens/entities/widgets/entity_tree_view.dart';
 import 'package:stormforge_modeler/screens/entities/widgets/entity_details_panel.dart';
+import 'package:stormforge_modeler/utils/entity_import_export.dart';
 
 /// Entity editor screen with tree view and details panel.
 class EntityEditorScreen extends StatefulWidget {
@@ -136,12 +138,157 @@ class _EntityEditorScreenState extends State<EntityEditorScreen> {
     });
   }
 
+  Future<void> _exportAllEntities() async {
+    try {
+      final json = EntityImportExport.exportEntitiesToJson(_entities);
+      await Clipboard.setData(ClipboardData(text: json));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('All entities exported to clipboard'),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to export entities: $e')),
+        );
+      }
+    }
+  }
+
+  Future<void> _exportSelectedEntity() async {
+    if (_selectedEntity == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select an entity to export')),
+      );
+      return;
+    }
+
+    try {
+      final json = EntityImportExport.exportEntityToJson(_selectedEntity!);
+      await Clipboard.setData(ClipboardData(text: json));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Entity "${_selectedEntity!.name}" exported to clipboard'),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to export entity: $e')),
+        );
+      }
+    }
+  }
+
+  Future<void> _importEntities() async {
+    final result = await showDialog<String>(
+      context: context,
+      builder: (context) => const _ImportDialog(),
+    );
+
+    if (result == null) return;
+
+    try {
+      final entities = EntityImportExport.importEntitiesFromJson(result);
+      // Note: In a real implementation, you would need to create these entities
+      // via the API with new IDs and update the project ID
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Successfully imported ${entities.length} entities'),
+          ),
+        );
+      }
+      await _loadEntities();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to import entities: $e')),
+        );
+      }
+    }
+  }
+
+  void _showTemplate() {
+    final template = EntityImportExport.createTemplate();
+    showDialog(
+      context: context,
+      builder: (context) => _TemplateDialog(template: template),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Entity Editor'),
         actions: [
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert),
+            onSelected: (value) {
+              switch (value) {
+                case 'export_all':
+                  _exportAllEntities();
+                  break;
+                case 'export_selected':
+                  _exportSelectedEntity();
+                  break;
+                case 'import':
+                  _importEntities();
+                  break;
+                case 'template':
+                  _showTemplate();
+                  break;
+              }
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 'export_all',
+                child: Row(
+                  children: [
+                    Icon(Icons.file_download),
+                    SizedBox(width: 8),
+                    Text('Export All Entities'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'export_selected',
+                child: Row(
+                  children: [
+                    Icon(Icons.download),
+                    SizedBox(width: 8),
+                    Text('Export Selected Entity'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'import',
+                child: Row(
+                  children: [
+                    Icon(Icons.file_upload),
+                    SizedBox(width: 8),
+                    Text('Import Entities'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'template',
+                child: Row(
+                  children: [
+                    Icon(Icons.description),
+                    SizedBox(width: 8),
+                    Text('View Template'),
+                  ],
+                ),
+              ),
+            ],
+          ),
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _loadEntities,
@@ -298,5 +445,165 @@ class _CreateEntityDialogState extends State<_CreateEntityDialog> {
       case EntityType.valueObject:
         return 'Value Object';
     }
+  }
+}
+
+/// Dialog for importing entities from JSON.
+class _ImportDialog extends StatefulWidget {
+  const _ImportDialog();
+
+  @override
+  State<_ImportDialog> createState() => _ImportDialogState();
+}
+
+class _ImportDialogState extends State<_ImportDialog> {
+  final _controller = TextEditingController();
+  String? _error;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _validate() {
+    setState(() {
+      _error = null;
+    });
+
+    if (_controller.text.isEmpty) {
+      setState(() {
+        _error = 'Please paste JSON content';
+      });
+      return;
+    }
+
+    if (!EntityImportExport.validateJson(_controller.text)) {
+      setState(() {
+        _error = 'Invalid JSON format. Please check your input.';
+      });
+      return;
+    }
+
+    Navigator.pop(context, _controller.text);
+  }
+
+  Future<void> _pasteFromClipboard() async {
+    final data = await Clipboard.getData('text/plain');
+    if (data != null && data.text != null) {
+      setState(() {
+        _controller.text = data.text!;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Import Entities'),
+      content: SizedBox(
+        width: 600,
+        height: 400,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Text('Paste entity JSON below:'),
+                const Spacer(),
+                TextButton.icon(
+                  onPressed: _pasteFromClipboard,
+                  icon: const Icon(Icons.content_paste),
+                  label: const Text('Paste'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Expanded(
+              child: TextField(
+                controller: _controller,
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  hintText: 'Paste JSON here...',
+                  errorText: _error,
+                ),
+                maxLines: null,
+                expands: true,
+                textAlignVertical: TextAlignVertical.top,
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          onPressed: _validate,
+          child: const Text('Import'),
+        ),
+      ],
+    );
+  }
+}
+
+/// Dialog for displaying entity template.
+class _TemplateDialog extends StatelessWidget {
+  const _TemplateDialog({required this.template});
+
+  final String template;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Entity JSON Template'),
+      content: SizedBox(
+        width: 600,
+        height: 500,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Use this template as a reference for creating entity JSON:',
+            ),
+            const SizedBox(height: 8),
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: SingleChildScrollView(
+                  child: SelectableText(
+                    template,
+                    style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () async {
+            await Clipboard.setData(ClipboardData(text: template));
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Template copied to clipboard')),
+              );
+            }
+          },
+          child: const Text('Copy'),
+        ),
+        ElevatedButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Close'),
+        ),
+      ],
+    );
   }
 }

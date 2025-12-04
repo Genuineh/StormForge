@@ -19,12 +19,12 @@ use crate::{
     handlers::{
         auth::{login, register, AppState, AppStateInner},
         project::{
-            create_project, delete_project, get_project, list_projects_by_owner,
-            update_project, ProjectState, ProjectStateInner,
+            create_project, delete_project, get_project, list_projects_by_owner, update_project,
+            ProjectState, ProjectStateInner,
         },
         team_member::{
-            add_team_member, list_team_members, remove_team_member, update_team_member,
-            TeamState, TeamStateInner,
+            add_team_member, list_team_members, remove_team_member, update_team_member, TeamState,
+            TeamStateInner,
         },
         user::{get_user, list_users, update_user},
     },
@@ -90,12 +90,11 @@ async fn main() -> Result<()> {
     dotenv::dotenv().ok();
 
     // Get configuration from environment
-    let mongodb_uri = std::env::var("MONGODB_URI")
-        .unwrap_or_else(|_| "mongodb://localhost:27017".to_string());
-    let database_name = std::env::var("DATABASE_NAME")
-        .unwrap_or_else(|_| "stormforge".to_string());
-    let sqlite_path = std::env::var("SQLITE_PATH")
-        .unwrap_or_else(|_| "./stormforge.db".to_string());
+    let mongodb_uri =
+        std::env::var("MONGODB_URI").unwrap_or_else(|_| "mongodb://localhost:27017".to_string());
+    let database_name = std::env::var("DATABASE_NAME").unwrap_or_else(|_| "stormforge".to_string());
+    let sqlite_path =
+        std::env::var("SQLITE_PATH").unwrap_or_else(|_| "./stormforge.db".to_string());
     let jwt_secret = std::env::var("JWT_SECRET")
         .unwrap_or_else(|_| "your-secret-key-change-in-production".to_string());
     let port = std::env::var("PORT")
@@ -163,16 +162,40 @@ async fn main() -> Result<()> {
         // Team member routes
         .route("/api/projects/:project_id/members", post(add_team_member))
         .route("/api/projects/:project_id/members", get(list_team_members))
-        .route("/api/projects/:project_id/members/:user_id", put(update_team_member))
-        .route("/api/projects/:project_id/members/:user_id", delete(remove_team_member))
+        .route(
+            "/api/projects/:project_id/members/:user_id",
+            put(update_team_member),
+        )
+        .route(
+            "/api/projects/:project_id/members/:user_id",
+            delete(remove_team_member),
+        )
         .with_state(team_state)
         // Connection routes
-        .route("/api/projects/:project_id/connections", post(handlers::connection::create_connection))
-        .route("/api/projects/:project_id/connections", get(handlers::connection::list_connections))
-        .route("/api/projects/:project_id/connections/:connection_id", get(handlers::connection::get_connection))
-        .route("/api/projects/:project_id/connections/:connection_id", put(handlers::connection::update_connection))
-        .route("/api/projects/:project_id/connections/:connection_id", delete(handlers::connection::delete_connection))
-        .route("/api/projects/:project_id/elements/:element_id/connections", get(handlers::connection::list_element_connections))
+        .route(
+            "/api/projects/:project_id/connections",
+            post(handlers::connection::create_connection),
+        )
+        .route(
+            "/api/projects/:project_id/connections",
+            get(handlers::connection::list_connections),
+        )
+        .route(
+            "/api/projects/:project_id/connections/:connection_id",
+            get(handlers::connection::get_connection),
+        )
+        .route(
+            "/api/projects/:project_id/connections/:connection_id",
+            put(handlers::connection::update_connection),
+        )
+        .route(
+            "/api/projects/:project_id/connections/:connection_id",
+            delete(handlers::connection::delete_connection),
+        )
+        .route(
+            "/api/projects/:project_id/elements/:element_id/connections",
+            get(handlers::connection::list_element_connections),
+        )
         .with_state(connection_service)
         // Swagger UI
         .merge(SwaggerUi::new("/swagger-ui").url("/api-docs/openapi.json", ApiDoc::openapi()))
@@ -183,7 +206,10 @@ async fn main() -> Result<()> {
     // Start server
     let addr = format!("0.0.0.0:{}", port);
     tracing::info!("Server listening on {}", addr);
-    tracing::info!("Swagger UI available at http://localhost:{}/swagger-ui", port);
+    tracing::info!(
+        "Swagger UI available at http://localhost:{}/swagger-ui",
+        port
+    );
 
     let listener = tokio::net::TcpListener::bind(&addr).await?;
     axum::serve(listener, app).await?;

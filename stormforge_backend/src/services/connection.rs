@@ -1,6 +1,6 @@
 use anyhow::{anyhow, Result};
-use mongodb::{bson::doc, Collection, Database};
 use futures_util::stream::TryStreamExt;
+use mongodb::{bson::doc, Collection, Database};
 
 use crate::models::{Connection, CreateConnectionRequest, UpdateConnectionRequest};
 
@@ -65,7 +65,11 @@ impl ConnectionService {
     }
 
     /// Lists connections by source element ID.
-    pub async fn list_by_source(&self, project_id: &str, source_id: &str) -> Result<Vec<Connection>> {
+    pub async fn list_by_source(
+        &self,
+        project_id: &str,
+        source_id: &str,
+    ) -> Result<Vec<Connection>> {
         let cursor = self
             .connections
             .find(
@@ -82,7 +86,11 @@ impl ConnectionService {
     }
 
     /// Lists connections by target element ID.
-    pub async fn list_by_target(&self, project_id: &str, target_id: &str) -> Result<Vec<Connection>> {
+    pub async fn list_by_target(
+        &self,
+        project_id: &str,
+        target_id: &str,
+    ) -> Result<Vec<Connection>> {
         let cursor = self
             .connections
             .find(
@@ -99,7 +107,11 @@ impl ConnectionService {
     }
 
     /// Lists connections for an element (either as source or target).
-    pub async fn list_by_element(&self, project_id: &str, element_id: &str) -> Result<Vec<Connection>> {
+    pub async fn list_by_element(
+        &self,
+        project_id: &str,
+        element_id: &str,
+    ) -> Result<Vec<Connection>> {
         let cursor = self
             .connections
             .find(

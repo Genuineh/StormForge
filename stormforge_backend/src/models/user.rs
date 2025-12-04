@@ -1,8 +1,8 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use std::fmt;
 use utoipa::ToSchema;
 use uuid::Uuid;
-use std::fmt;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, ToSchema)]
 #[serde(rename_all = "lowercase")]
@@ -103,12 +103,7 @@ pub struct User {
 }
 
 impl User {
-    pub fn new(
-        username: String,
-        email: String,
-        display_name: String,
-        role: UserRole,
-    ) -> Self {
+    pub fn new(username: String, email: String, display_name: String, role: UserRole) -> Self {
         let now = Utc::now();
         let permissions = role.default_permissions();
         Self {

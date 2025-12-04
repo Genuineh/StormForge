@@ -1,9 +1,9 @@
 use anyhow::{anyhow, Result};
-use mongodb::{bson::doc, Collection, Database};
 use chrono::Utc;
 use futures_util::stream::TryStreamExt;
+use mongodb::{bson::doc, Collection, Database};
 
-use crate::models::{Project, ProjectVisibility, ProjectSettings};
+use crate::models::{Project, ProjectSettings, ProjectVisibility};
 
 #[derive(Clone)]
 pub struct ProjectService {
@@ -37,7 +37,8 @@ impl ProjectService {
     }
 
     pub async fn find_by_id(&self, id: &str) -> Result<Project> {
-        let project = self.projects
+        let project = self
+            .projects
             .find_one(doc! { "id": id }, None)
             .await?
             .ok_or_else(|| anyhow!("Project not found"))?;
@@ -46,7 +47,8 @@ impl ProjectService {
     }
 
     pub async fn find_by_namespace(&self, namespace: &str) -> Result<Project> {
-        let project = self.projects
+        let project = self
+            .projects
             .find_one(doc! { "namespace": namespace }, None)
             .await?
             .ok_or_else(|| anyhow!("Project not found"))?;
@@ -55,7 +57,8 @@ impl ProjectService {
     }
 
     pub async fn list_by_owner(&self, owner_id: &str) -> Result<Vec<Project>> {
-        let cursor = self.projects
+        let cursor = self
+            .projects
             .find(doc! { "owner_id": owner_id }, None)
             .await?;
         let projects = cursor.try_collect().await?;
@@ -64,7 +67,8 @@ impl ProjectService {
     }
 
     pub async fn list_public_projects(&self) -> Result<Vec<Project>> {
-        let cursor = self.projects
+        let cursor = self
+            .projects
             .find(doc! { "visibility": "public" }, None)
             .await?;
         let projects = cursor.try_collect().await?;
@@ -96,20 +100,14 @@ impl ProjectService {
         }
 
         self.projects
-            .update_one(
-                doc! { "id": id },
-                doc! { "$set": update_doc },
-                None,
-            )
+            .update_one(doc! { "id": id }, doc! { "$set": update_doc }, None)
             .await?;
 
         self.find_by_id(id).await
     }
 
     pub async fn delete_project(&self, id: &str) -> Result<()> {
-        let result = self.projects
-            .delete_one(doc! { "id": id }, None)
-            .await?;
+        let result = self.projects.delete_one(doc! { "id": id }, None).await?;
 
         if result.deleted_count == 0 {
             return Err(anyhow!("Project not found"));

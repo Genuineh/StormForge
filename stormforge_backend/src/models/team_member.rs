@@ -50,10 +50,7 @@ impl TeamRole {
                 Permission::ModelView,
                 Permission::CodeGenerate,
             ],
-            TeamRole::Viewer => vec![
-                Permission::ProjectView,
-                Permission::ModelView,
-            ],
+            TeamRole::Viewer => vec![Permission::ProjectView, Permission::ModelView],
         }
     }
 }

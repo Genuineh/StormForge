@@ -5,11 +5,11 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Claims {
-    pub sub: String,      // user_id
+    pub sub: String, // user_id
     pub username: String,
     pub role: String,
-    pub exp: i64,         // expiration time
-    pub iat: i64,         // issued at
+    pub exp: i64, // expiration time
+    pub iat: i64, // issued at
 }
 
 #[derive(Clone)]
@@ -72,7 +72,7 @@ mod tests {
     fn test_password_hashing() {
         let auth = AuthService::new("test_secret".to_string());
         let password = "my_secure_password";
-        
+
         let hash = auth.hash_password(password).unwrap();
         assert!(auth.verify_password(password, &hash).unwrap());
         assert!(!auth.verify_password("wrong_password", &hash).unwrap());
@@ -84,10 +84,10 @@ mod tests {
         let user_id = "user123";
         let username = "testuser";
         let role = "developer";
-        
+
         let token = auth.generate_token(user_id, username, role).unwrap();
         let claims = auth.verify_token(&token).unwrap();
-        
+
         assert_eq!(claims.sub, user_id);
         assert_eq!(claims.username, username);
         assert_eq!(claims.role, role);

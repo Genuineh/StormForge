@@ -54,6 +54,7 @@ impl TeamMemberService {
         Ok(members)
     }
 
+    #[allow(dead_code)]
     pub async fn list_user_projects(&self, user_id: &str) -> Result<Vec<String>> {
         let cursor = self.members.find(doc! { "user_id": user_id }, None).await?;
         let members: Vec<TeamMember> = cursor.try_collect().await?;
@@ -99,6 +100,7 @@ impl TeamMemberService {
         Ok(())
     }
 
+    #[allow(dead_code)]
     pub async fn is_project_owner(&self, project_id: &str, user_id: &str) -> Result<bool> {
         match self.find_member(project_id, user_id).await {
             Ok(member) => Ok(matches!(member.role, TeamRole::Owner)),
@@ -106,6 +108,7 @@ impl TeamMemberService {
         }
     }
 
+    #[allow(dead_code)]
     pub async fn can_manage_team(&self, project_id: &str, user_id: &str) -> Result<bool> {
         match self.find_member(project_id, user_id).await {
             Ok(member) => Ok(member.can_manage_team()),

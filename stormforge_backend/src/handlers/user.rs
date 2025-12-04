@@ -6,7 +6,7 @@ use axum::{
 use serde_json::{json, Value};
 
 use crate::{
-    handlers::AppState,
+    handlers::auth::AppState,
     models::{UpdateUserRequest, User},
 };
 

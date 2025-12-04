@@ -3,18 +3,13 @@ use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, ToSchema, Default)]
 #[serde(rename_all = "lowercase")]
 pub enum ProjectVisibility {
+    #[default]
     Private,
     Team,
     Public,
-}
-
-impl Default for ProjectVisibility {
-    fn default() -> Self {
-        Self::Private
-    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]

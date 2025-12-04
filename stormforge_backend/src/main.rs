@@ -17,19 +17,28 @@ use utoipa_swagger_ui::SwaggerUi;
 use crate::{
     db::{MongoDbService, SqliteService},
     handlers::{
-        auth::{login, register, AppState, AppStateInner},
+        auth::{login, register, AppStateInner},
+        entity::{
+            add_invariant, add_method, add_property, create_entity, delete_entity, find_references,
+            get_entity, list_entities_by_aggregate, list_entities_for_project, remove_invariant,
+            remove_method, remove_property, update_entity, update_invariant, update_method,
+            update_property, EntityStateInner,
+        },
         project::{
             create_project, delete_project, get_project, list_projects_by_owner, update_project,
-            ProjectState, ProjectStateInner,
+            ProjectStateInner,
         },
         team_member::{
-            add_team_member, list_team_members, remove_team_member, update_team_member, TeamState,
+            add_team_member, list_team_members, remove_team_member, update_team_member,
             TeamStateInner,
         },
         user::{get_user, list_users, update_user},
     },
     models::*,
-    services::{AuthService, ConnectionService, ProjectService, TeamMemberService, UserService},
+    services::{
+        AuthService, ConnectionService, EntityService, ProjectService, TeamMemberService,
+        UserService,
+    },
 };
 
 #[derive(OpenApi)]
@@ -55,6 +64,22 @@ use crate::{
         handlers::connection::list_element_connections,
         handlers::connection::update_connection,
         handlers::connection::delete_connection,
+        handlers::entity::create_entity,
+        handlers::entity::get_entity,
+        handlers::entity::list_entities_for_project,
+        handlers::entity::list_entities_by_aggregate,
+        handlers::entity::update_entity,
+        handlers::entity::delete_entity,
+        handlers::entity::add_property,
+        handlers::entity::update_property,
+        handlers::entity::remove_property,
+        handlers::entity::add_method,
+        handlers::entity::update_method,
+        handlers::entity::remove_method,
+        handlers::entity::add_invariant,
+        handlers::entity::update_invariant,
+        handlers::entity::remove_invariant,
+        handlers::entity::find_references,
     ),
     components(
         schemas(
@@ -63,6 +88,9 @@ use crate::{
             TeamMember, TeamRole, AddTeamMemberRequest, UpdateTeamMemberRequest,
             Connection, ConnectionType, LineStyle, ArrowStyle, ConnectionStyle,
             CreateConnectionRequest, UpdateConnectionRequest,
+            EntityDefinition, EntityType, EntityProperty, EntityMethod, EntityInvariant,
+            MethodType, MethodParameter, ValidationType, ValidationRule,
+            CreateEntityRequest, UpdateEntityRequest, PropertyRequest, MethodRequest, InvariantRequest,
         )
     ),
     tags(
@@ -70,7 +98,8 @@ use crate::{
         (name = "users", description = "User management endpoints"),
         (name = "projects", description = "Project management endpoints"),
         (name = "team", description = "Team member management endpoints"),
-        (name = "connections", description = "Connection management endpoints")
+        (name = "connections", description = "Connection management endpoints"),
+        (name = "entities", description = "Entity modeling endpoints")
     )
 )]
 struct ApiDoc;
@@ -120,6 +149,7 @@ async fn main() -> Result<()> {
     let project_service = ProjectService::new(mongodb.db());
     let team_member_service = TeamMemberService::new(mongodb.db());
     let connection_service = ConnectionService::new(mongodb.db());
+    let entity_service = EntityService::new(mongodb.db());
 
     // Create application states
     let auth_state = Arc::new(AppStateInner {
@@ -133,6 +163,10 @@ async fn main() -> Result<()> {
 
     let team_state = Arc::new(TeamStateInner {
         team_member_service: team_member_service.clone(),
+    });
+
+    let entity_state = Arc::new(EntityStateInner {
+        entity_service: entity_service.clone(),
     });
 
     // Configure CORS
@@ -197,6 +231,48 @@ async fn main() -> Result<()> {
             get(handlers::connection::list_element_connections),
         )
         .with_state(connection_service)
+        // Entity routes
+        .route("/api/entities", post(create_entity))
+        .route("/api/entities/:id", get(get_entity))
+        .route("/api/entities/:id", put(update_entity))
+        .route("/api/entities/:id", delete(delete_entity))
+        .route(
+            "/api/projects/:project_id/entities",
+            get(list_entities_for_project),
+        )
+        .route(
+            "/api/aggregates/:aggregate_id/entities",
+            get(list_entities_by_aggregate),
+        )
+        .route("/api/entities/:entity_id/properties", post(add_property))
+        .route(
+            "/api/entities/:entity_id/properties/:property_id",
+            put(update_property),
+        )
+        .route(
+            "/api/entities/:entity_id/properties/:property_id",
+            delete(remove_property),
+        )
+        .route("/api/entities/:entity_id/methods", post(add_method))
+        .route(
+            "/api/entities/:entity_id/methods/:method_id",
+            put(update_method),
+        )
+        .route(
+            "/api/entities/:entity_id/methods/:method_id",
+            delete(remove_method),
+        )
+        .route("/api/entities/:entity_id/invariants", post(add_invariant))
+        .route(
+            "/api/entities/:entity_id/invariants/:invariant_id",
+            put(update_invariant),
+        )
+        .route(
+            "/api/entities/:entity_id/invariants/:invariant_id",
+            delete(remove_invariant),
+        )
+        .route("/api/entities/:entity_id/references", get(find_references))
+        .with_state(entity_state)
         // Swagger UI
         .merge(SwaggerUi::new("/swagger-ui").url("/api-docs/openapi.json", ApiDoc::openapi()))
         // Health check

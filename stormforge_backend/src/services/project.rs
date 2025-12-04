@@ -66,6 +66,7 @@ impl ProjectService {
         Ok(projects)
     }
 
+    #[allow(dead_code)]
     pub async fn list_public_projects(&self) -> Result<Vec<Project>> {
         let cursor = self
             .projects

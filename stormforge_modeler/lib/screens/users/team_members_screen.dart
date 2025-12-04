@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stormforge_modeler/models/team_member_model.dart';
-import 'package:stormforge_modeler/models/user_model.dart';
 import 'package:stormforge_modeler/services/providers.dart';
 
 /// Provider for team members list.

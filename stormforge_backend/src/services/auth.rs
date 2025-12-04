@@ -1,4 +1,4 @@
-use anyhow::{anyhow, Result};
+use anyhow::Result;
 use chrono::{Duration, Utc};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
@@ -43,6 +43,7 @@ impl AuthService {
         Ok(token)
     }
 
+    #[allow(dead_code)]
     pub fn verify_token(&self, token: &str) -> Result<Claims> {
         let token_data = decode::<Claims>(
             token,

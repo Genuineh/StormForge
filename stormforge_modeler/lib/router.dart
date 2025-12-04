@@ -1,10 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:stormforge_modeler/app.dart';
 import 'package:stormforge_modeler/screens/auth/login_screen.dart';
 import 'package:stormforge_modeler/screens/auth/register_screen.dart';
-import 'package:stormforge_modeler/screens/projects/projects_list_screen.dart';
 import 'package:stormforge_modeler/screens/projects/project_form_screen.dart';
+import 'package:stormforge_modeler/screens/projects/projects_list_screen.dart';
 import 'package:stormforge_modeler/screens/settings/project_settings_screen.dart';
 import 'package:stormforge_modeler/screens/users/team_members_screen.dart';
 

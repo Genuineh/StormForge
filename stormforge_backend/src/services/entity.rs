@@ -29,8 +29,7 @@ impl EntityService {
             ));
         }
 
-        let entity = EntityDefinition::new(request.project_id, request.name, request.entity_type);
-        let mut entity = entity;
+        let mut entity = EntityDefinition::new(request.project_id, request.name, request.entity_type);
         entity.description = request.description;
         entity.aggregate_id = request.aggregate_id;
 

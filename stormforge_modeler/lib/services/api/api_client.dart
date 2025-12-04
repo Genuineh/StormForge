@@ -62,17 +62,12 @@ class ApiClient {
   }
 
   /// Makes a DELETE request.
-  Future<void> delete(String path) async {
+  Future<Map<String, dynamic>> delete(String path) async {
     final response = await http.delete(
       Uri.parse('$baseUrl$path'),
       headers: _headers,
     );
-    if (response.statusCode < 200 || response.statusCode >= 300) {
-      throw ApiException(
-        statusCode: response.statusCode,
-        message: 'Failed to delete: ${response.body}',
-      );
-    }
+    return _handleResponse(response);
   }
 
   Map<String, dynamic> _handleResponse(http.Response response) {

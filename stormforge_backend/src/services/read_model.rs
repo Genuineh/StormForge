@@ -25,11 +25,12 @@ impl ReadModelService {
         request: CreateReadModelRequest,
     ) -> Result<ReadModelDefinition> {
         // Check if read model with same name exists in project
-        if self
-            .find_by_name(&request.project_id, &request.name)
-            .await
-            .is_ok()
-        {
+        let existing_count = self
+            .read_models
+            .count_documents(doc! { "project_id": &request.project_id, "name": &request.name }, None)
+            .await?;
+
+        if existing_count > 0 {
             return Err(anyhow!(
                 "Read model with name '{}' already exists in project",
                 request.name

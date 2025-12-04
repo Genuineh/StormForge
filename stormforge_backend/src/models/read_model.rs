@@ -32,7 +32,7 @@ pub struct JoinCondition {
 }
 
 impl JoinCondition {
-    #[allow(dead_code)]
+    /// Creates a new join condition with the equals operator
     pub fn new(left_property: String, right_property: String) -> Self {
         Self {
             left_property,
@@ -55,7 +55,7 @@ pub struct DataSource {
 }
 
 impl DataSource {
-    #[allow(dead_code)]
+    /// Creates a new data source with default join type
     pub fn new(entity_id: String, alias: String) -> Self {
         Self {
             entity_id,
@@ -99,7 +99,7 @@ pub struct FieldTransform {
 }
 
 impl FieldTransform {
-    #[allow(dead_code)]
+    /// Creates a new field transform with the specified type
     pub fn new(transform_type: TransformType) -> Self {
         Self {
             transform_type,
@@ -127,7 +127,7 @@ pub struct ReadModelField {
 }
 
 impl ReadModelField {
-    #[allow(dead_code)]
+    /// Creates a new read model field with default source type
     pub fn new(name: String, field_type: String, source_path: String) -> Self {
         Self {
             id: Uuid::new_v4().to_string(),
@@ -153,7 +153,7 @@ pub struct ReadModelMetadata {
 }
 
 impl ReadModelMetadata {
-    #[allow(dead_code)]
+    /// Creates default metadata with version 1.0.0
     pub fn new() -> Self {
         Self {
             version: "1.0.0".to_string(),
@@ -181,7 +181,7 @@ pub struct ReadModelDefinition {
 }
 
 impl ReadModelDefinition {
-    #[allow(dead_code)]
+    /// Creates a new read model with default values
     pub fn new(project_id: String, name: String) -> Self {
         Self {
             id: Uuid::new_v4().to_string(),
@@ -197,7 +197,7 @@ impl ReadModelDefinition {
         }
     }
 
-    #[allow(dead_code)]
+    /// Validates if the read model is complete and valid
     pub fn is_valid(&self) -> bool {
         !self.name.is_empty()
             && !self.sources.is_empty()
@@ -205,7 +205,7 @@ impl ReadModelDefinition {
             && !self.has_duplicate_field_names()
     }
 
-    #[allow(dead_code)]
+    /// Checks if there are duplicate field names
     pub fn has_duplicate_field_names(&self) -> bool {
         let mut names = std::collections::HashSet::new();
         for field in &self.fields {

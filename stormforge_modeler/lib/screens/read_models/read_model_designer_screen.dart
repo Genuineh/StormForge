@@ -471,11 +471,15 @@ class _ReadModelDesignerScreenState extends State<ReadModelDesignerScreen> {
           final source = readModel.sources[index];
           final entity = _entities.firstWhere(
             (e) => e.id == source.entityId,
-            orElse: () => EntityDefinition.create(
-              projectId: widget.projectId,
-              name: 'Unknown',
-              entityType: EntityType.entity,
-            ),
+            orElse: () {
+              // Log missing entity - this shouldn't happen but handle gracefully
+              debugPrint('Warning: Entity ${source.entityId} not found for source');
+              return EntityDefinition.create(
+                projectId: widget.projectId,
+                name: 'Unknown Entity',
+                entityType: EntityType.entity,
+              );
+            },
           );
 
           return ListTile(

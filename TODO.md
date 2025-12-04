@@ -224,13 +224,17 @@
 - [x] 连接样式系统
 - [x] 后台系统流水线 (CI/CD with Rust linting, building, testing)
 
-### Sprint M3: 实体建模系统 (2026.01.01 - 2026.01.21)
+### Sprint M3: 实体建模系统 (2026.01.01 - 2026.01.21) ✅
 **核心**: 独立的实体编辑器、属性和方法管理
 
-- [ ] 实体定义数据模型
-- [ ] 实体属性模型（含验证）
-- [ ] 实体方法模型
-- [ ] 实体不变量系统
+- [x] 实体定义数据模型
+- [x] 实体属性模型（含验证）
+- [x] 实体方法模型
+- [x] 实体不变量系统
+- [x] 后端API实现（Rust）
+- [x] 前端数据模型（Flutter）
+- [x] MongoDB集合和索引
+- [x] REST API端点
 - [ ] 实体编辑器UI（树+详情面板）
 - [ ] 属性网格编辑器
 - [ ] 类型选择器（集成全局库）
@@ -425,7 +429,7 @@
 |-------|--------|----------|--------|
 | Phase 0: POC | S00-S02 | 100% | ✅ Completed |
 | Phase 1: MVP | S03-S13 | 25% | 🚧 In Progress |
-| Modeler 2.0 | M1-M9 | 22% | 🚧 In Progress (M1: 100%, M2: 100%) |
+| Modeler 2.0 | M1-M9 | 33% | 🚧 In Progress (M1: 100%, M2: 100%, M3: 50%) |
 | Phase 2: Ecosystem | - | 0% | ⏳ Planned |
 | Phase 3: Enterprise | - | 0% | ⏳ Planned |
 | Phase 4: Platform | - | 0% | ⏳ Planned |

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+
 import 'package:stormforge_modeler/models/entity_model.dart';
-import 'package:stormforge_modeler/services/api/entity_service.dart';
-import 'package:stormforge_modeler/screens/entities/widgets/property_grid_editor.dart';
-import 'package:stormforge_modeler/screens/entities/widgets/method_editor.dart';
 import 'package:stormforge_modeler/screens/entities/widgets/invariant_editor.dart';
+import 'package:stormforge_modeler/screens/entities/widgets/method_editor.dart';
+import 'package:stormforge_modeler/screens/entities/widgets/property_grid_editor.dart';
+import 'package:stormforge_modeler/services/api/entity_service.dart';
 
 /// Details panel for editing an entity.
 class EntityDetailsPanel extends StatefulWidget {

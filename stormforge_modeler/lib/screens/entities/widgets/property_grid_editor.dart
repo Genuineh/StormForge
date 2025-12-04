@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+
 import 'package:stormforge_modeler/models/entity_model.dart';
-import 'package:stormforge_modeler/services/api/entity_service.dart';
 import 'package:stormforge_modeler/screens/entities/widgets/type_selector.dart';
 import 'package:stormforge_modeler/screens/entities/widgets/validation_rule_builder.dart';
+import 'package:stormforge_modeler/services/api/entity_service.dart';
 
 /// Grid editor for entity properties.
 class PropertyGridEditor extends StatefulWidget {

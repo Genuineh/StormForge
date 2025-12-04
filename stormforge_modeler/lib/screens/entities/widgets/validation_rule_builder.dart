@@ -337,7 +337,7 @@ class _ValidationRuleDialogState extends State<_ValidationRuleDialog> {
       case ValidationType.max:
         return 'e.g., 0';
       case ValidationType.pattern:
-        return 'e.g., ^[A-Z][a-z]+$';
+        return r'e.g., ^[A-Z][a-z]+$';
       case ValidationType.custom:
         return 'e.g., value > 0 && value < 100';
       default:

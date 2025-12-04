@@ -42,7 +42,7 @@ class EntityImportExport {
       final decoded = jsonDecode(jsonString);
       if (decoded is List) {
         // Validate each entity in the list
-        for (var item in decoded) {
+        for (final item in decoded) {
           if (item is! Map<String, dynamic>) return false;
           if (!_validateEntityJson(item)) return false;
         }

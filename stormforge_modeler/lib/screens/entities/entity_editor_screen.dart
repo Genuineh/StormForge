@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:stormforge_modeler/models/entity_model.dart';
-import 'package:stormforge_modeler/services/api/entity_service.dart';
-import 'package:stormforge_modeler/screens/entities/widgets/entity_tree_view.dart';
 import 'package:stormforge_modeler/screens/entities/widgets/entity_details_panel.dart';
+import 'package:stormforge_modeler/screens/entities/widgets/entity_tree_view.dart';
+import 'package:stormforge_modeler/services/api/entity_service.dart';
 import 'package:stormforge_modeler/utils/entity_import_export.dart';
 
 /// Entity editor screen with tree view and details panel.

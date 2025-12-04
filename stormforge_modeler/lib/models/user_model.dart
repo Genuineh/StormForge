@@ -151,6 +151,25 @@ enum UserRole {
 
 /// Extension to provide role-specific properties.
 extension UserRoleExtension on UserRole {
+  /// Default permissions for each role (cached)
+  static const _adminPermissions = Permission.values;
+  static const _developerPermissions = [
+    Permission.projectCreate,
+    Permission.projectEdit,
+    Permission.projectView,
+    Permission.projectExport,
+    Permission.modelEdit,
+    Permission.modelView,
+    Permission.modelExport,
+    Permission.codeGenerate,
+    Permission.libraryView,
+  ];
+  static const _viewerPermissions = [
+    Permission.projectView,
+    Permission.modelView,
+    Permission.libraryView,
+  ];
+
   /// Display name for this role.
   String get displayName {
     switch (this) {
@@ -167,25 +186,11 @@ extension UserRoleExtension on UserRole {
   List<Permission> get defaultPermissions {
     switch (this) {
       case UserRole.admin:
-        return Permission.values;
+        return _adminPermissions;
       case UserRole.developer:
-        return [
-          Permission.projectCreate,
-          Permission.projectEdit,
-          Permission.projectView,
-          Permission.projectExport,
-          Permission.modelEdit,
-          Permission.modelView,
-          Permission.modelExport,
-          Permission.codeGenerate,
-          Permission.libraryView,
-        ];
+        return _developerPermissions;
       case UserRole.viewer:
-        return [
-          Permission.projectView,
-          Permission.modelView,
-          Permission.libraryView,
-        ];
+        return _viewerPermissions;
     }
   }
 }

@@ -142,6 +142,43 @@ enum TeamRole {
 
 /// Extension to provide role-specific properties.
 extension TeamRoleExtension on TeamRole {
+  /// Default permissions for each role (cached)
+  static const _ownerPermissions = [
+    Permission.projectEdit,
+    Permission.projectDelete,
+    Permission.projectView,
+    Permission.projectExport,
+    Permission.modelEdit,
+    Permission.modelView,
+    Permission.modelExport,
+    Permission.codeGenerate,
+    Permission.teamManage,
+  ];
+  
+  static const _adminPermissions = [
+    Permission.projectEdit,
+    Permission.projectView,
+    Permission.projectExport,
+    Permission.modelEdit,
+    Permission.modelView,
+    Permission.modelExport,
+    Permission.codeGenerate,
+    Permission.teamManage,
+  ];
+  
+  static const _editorPermissions = [
+    Permission.projectView,
+    Permission.modelEdit,
+    Permission.modelView,
+    Permission.modelExport,
+    Permission.codeGenerate,
+  ];
+  
+  static const _viewerPermissions = [
+    Permission.projectView,
+    Permission.modelView,
+  ];
+
   /// Display name for this role.
   String get displayName {
     switch (this) {
@@ -174,41 +211,13 @@ extension TeamRoleExtension on TeamRole {
   List<Permission> get defaultPermissions {
     switch (this) {
       case TeamRole.owner:
-        return [
-          Permission.projectEdit,
-          Permission.projectDelete,
-          Permission.projectView,
-          Permission.projectExport,
-          Permission.modelEdit,
-          Permission.modelView,
-          Permission.modelExport,
-          Permission.codeGenerate,
-          Permission.teamManage,
-        ];
+        return _ownerPermissions;
       case TeamRole.admin:
-        return [
-          Permission.projectEdit,
-          Permission.projectView,
-          Permission.projectExport,
-          Permission.modelEdit,
-          Permission.modelView,
-          Permission.modelExport,
-          Permission.codeGenerate,
-          Permission.teamManage,
-        ];
+        return _adminPermissions;
       case TeamRole.editor:
-        return [
-          Permission.projectView,
-          Permission.modelEdit,
-          Permission.modelView,
-          Permission.modelExport,
-          Permission.codeGenerate,
-        ];
+        return _editorPermissions;
       case TeamRole.viewer:
-        return [
-          Permission.projectView,
-          Permission.modelView,
-        ];
+        return _viewerPermissions;
     }
   }
 

@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:stormforge_modeler/models/models.dart';
-import 'package:stormforge_modeler/models/connection_model.dart';
 
 /// Painter for rendering typed connections between elements.
 class ConnectionPainter {
@@ -79,7 +78,7 @@ class ConnectionPainter {
 
     // Create paint with connection style
     final linePaint = Paint()
-      ..color = _parseColor(connection.style.color)
+      ..color = connection.style.color
       ..strokeWidth = connection.isSelected
           ? connection.style.strokeWidth + 1.0
           : connection.style.strokeWidth
@@ -102,7 +101,7 @@ class ConnectionPainter {
         canvas,
         targetPoint,
         sourcePoint,
-        _parseColor(connection.style.color),
+        connection.style.color,
         connection.style.arrowStyle,
       );
     }

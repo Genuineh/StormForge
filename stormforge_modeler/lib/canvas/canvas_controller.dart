@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stormforge_modeler/models/models.dart';
-import 'package:stormforge_modeler/models/connection_model.dart';
 
 /// The canvas interaction mode.
 enum CanvasMode {

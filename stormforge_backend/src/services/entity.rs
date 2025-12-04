@@ -22,14 +22,19 @@ impl EntityService {
 
     pub async fn create_entity(&self, request: CreateEntityRequest) -> Result<EntityDefinition> {
         // Check if entity with same name exists in project
-        if self.find_by_name(&request.project_id, &request.name).await.is_ok() {
+        if self
+            .find_by_name(&request.project_id, &request.name)
+            .await
+            .is_ok()
+        {
             return Err(anyhow!(
                 "Entity with name '{}' already exists in project",
                 request.name
             ));
         }
 
-        let mut entity = EntityDefinition::new(request.project_id, request.name, request.entity_type);
+        let mut entity =
+            EntityDefinition::new(request.project_id, request.name, request.entity_type);
         entity.description = request.description;
         entity.aggregate_id = request.aggregate_id;
 

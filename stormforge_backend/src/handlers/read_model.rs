@@ -86,7 +86,11 @@ pub async fn list_read_models_for_project(
     Path(project_id): Path<String>,
 ) -> impl IntoResponse {
     match service.list_for_project(&project_id).await {
-        Ok(read_models) => (StatusCode::OK, Json(read_models)).into_response(),
+        Ok(read_models) => (
+            StatusCode::OK,
+            Json(json!({ "readModels": read_models })),
+        )
+            .into_response(),
         Err(e) => (
             StatusCode::INTERNAL_SERVER_ERROR,
             Json(json!({ "error": e.to_string() })),

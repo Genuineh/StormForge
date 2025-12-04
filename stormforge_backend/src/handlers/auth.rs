@@ -62,7 +62,7 @@ pub async fn register(
 
     // Generate token
     let token = state.auth_service
-        .generate_token(&user.id, &user.username, &format!("{:?}", user.role))
+        .generate_token(&user.id, &user.username, &user.role.to_string())
         .map_err(|e| {
             (
                 StatusCode::INTERNAL_SERVER_ERROR,
@@ -131,7 +131,7 @@ pub async fn login(
 
     // Generate token
     let token = state.auth_service
-        .generate_token(&user.id, &user.username, &format!("{:?}", user.role))
+        .generate_token(&user.id, &user.username, &user.role.to_string())
         .map_err(|e| {
             (
                 StatusCode::INTERNAL_SERVER_ERROR,

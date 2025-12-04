@@ -35,7 +35,9 @@ pub async fn add_team_member(
     Path(project_id): Path<String>,
     Json(payload): Json<AddTeamMemberRequest>,
 ) -> Result<(StatusCode, Json<TeamMember>), (StatusCode, Json<Value>)> {
-    // TODO: Get invited_by from authenticated user
+    // TODO: SECURITY - Implement authentication middleware to extract invited_by from JWT token
+    // This placeholder creates audit trail gaps and security issues
+    // Solution: Add JWT verification middleware that extracts user_id from token claims
     let invited_by = Some("placeholder_inviter_id".to_string());
 
     let member = state.team_member_service

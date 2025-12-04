@@ -33,7 +33,9 @@ pub async fn create_project(
     State(state): State<ProjectState>,
     Json(payload): Json<CreateProjectRequest>,
 ) -> Result<(StatusCode, Json<Project>), (StatusCode, Json<Value>)> {
-    // TODO: Get owner_id from authenticated user
+    // TODO: SECURITY - Implement authentication middleware to extract owner_id from JWT token
+    // This placeholder creates a security vulnerability - any user can create projects for any owner
+    // Solution: Add JWT verification middleware that extracts user_id from token claims
     let owner_id = "placeholder_owner_id".to_string();
 
     let project = state.project_service

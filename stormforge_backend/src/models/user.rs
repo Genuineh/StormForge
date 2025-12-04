@@ -2,6 +2,7 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 use uuid::Uuid;
+use std::fmt;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, ToSchema)]
 #[serde(rename_all = "lowercase")]
@@ -14,6 +15,16 @@ pub enum UserRole {
 impl Default for UserRole {
     fn default() -> Self {
         Self::Developer
+    }
+}
+
+impl fmt::Display for UserRole {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            UserRole::Admin => write!(f, "admin"),
+            UserRole::Developer => write!(f, "developer"),
+            UserRole::Viewer => write!(f, "viewer"),
+        }
     }
 }
 

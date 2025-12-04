@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:stormforge_modeler/models/element_model.dart';
+import 'package:stormforge_modeler/models/connection_model.dart';
 
 /// Represents a bounded context on the canvas.
 class BoundedContext extends Equatable {
@@ -98,6 +99,7 @@ class CanvasModel extends Equatable {
   const CanvasModel({
     this.elements = const [],
     this.connections = const [],
+    this.typedConnections = const [],
     this.contexts = const [],
     this.selectedElementId,
     this.selectedConnectionId,
@@ -107,8 +109,11 @@ class CanvasModel extends Equatable {
   /// All elements on the canvas.
   final List<CanvasElement> elements;
 
-  /// All connections between elements.
+  /// All connections between elements (legacy, for backward compatibility).
   final List<ConnectionElement> connections;
+
+  /// All typed connections between elements (new system).
+  final List<TypedConnectionElement> typedConnections;
 
   /// All bounded contexts.
   final List<BoundedContext> contexts;
@@ -153,6 +158,7 @@ class CanvasModel extends Equatable {
   CanvasModel copyWith({
     List<CanvasElement>? elements,
     List<ConnectionElement>? connections,
+    List<TypedConnectionElement>? typedConnections,
     List<BoundedContext>? contexts,
     String? selectedElementId,
     String? selectedConnectionId,
@@ -164,6 +170,7 @@ class CanvasModel extends Equatable {
     return CanvasModel(
       elements: elements ?? this.elements,
       connections: connections ?? this.connections,
+      typedConnections: typedConnections ?? this.typedConnections,
       contexts: contexts ?? this.contexts,
       selectedElementId: clearElementSelection
           ? null
@@ -215,11 +222,32 @@ class CanvasModel extends Equatable {
     );
   }
 
+  /// Adds a typed connection to the canvas.
+  CanvasModel addTypedConnection(TypedConnectionElement connection) {
+    return copyWith(
+      typedConnections: [...typedConnections, connection],
+      selectedConnectionId: connection.id,
+      clearElementSelection: true,
+      clearContextSelection: true,
+    );
+  }
+
   /// Removes a connection from the canvas.
   CanvasModel removeConnection(String connectionId) {
     return copyWith(
       connections: connections.where((c) => c.id != connectionId).toList(),
+      typedConnections:
+          typedConnections.where((c) => c.id != connectionId).toList(),
       clearConnectionSelection: selectedConnectionId == connectionId,
+    );
+  }
+
+  /// Updates a typed connection on the canvas.
+  CanvasModel updateTypedConnection(TypedConnectionElement connection) {
+    return copyWith(
+      typedConnections: typedConnections
+          .map((c) => c.id == connection.id ? connection : c)
+          .toList(),
     );
   }
 
@@ -253,6 +281,7 @@ class CanvasModel extends Equatable {
   List<Object?> get props => [
     elements,
     connections,
+    typedConnections,
     contexts,
     selectedElementId,
     selectedConnectionId,

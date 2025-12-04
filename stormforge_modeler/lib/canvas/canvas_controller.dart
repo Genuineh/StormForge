@@ -1,6 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stormforge_modeler/models/models.dart';
+import 'package:stormforge_modeler/models/connection_model.dart';
+
+/// The canvas interaction mode.
+enum CanvasMode {
+  /// Default mode - select and move elements
+  select,
+
+  /// Connection mode - create connections between elements
+  connect,
+
+  /// Pan mode - move viewport
+  pan,
+}
 
 /// Provider for the canvas model state.
 final canvasModelProvider =
@@ -14,11 +27,14 @@ final canvasViewportProvider =
       (ref) => CanvasViewportNotifier(),
     );
 
+/// Provider for the canvas interaction mode.
+final canvasModeProvider = StateProvider<CanvasMode>((ref) => CanvasMode.select);
+
 /// Provider for the currently dragged element type (from palette).
 final draggedElementTypeProvider = StateProvider<ElementType?>((ref) => null);
 
-/// Provider for tracking if we're in connection mode.
-final connectionModeProvider = StateProvider<bool>((ref) => false);
+/// Provider for the pending connection type when in connection mode.
+final pendingConnectionTypeProvider = StateProvider<ConnectionType?>((ref) => null);
 
 /// Provider for the source element when creating a connection.
 final connectionSourceProvider = StateProvider<String?>((ref) => null);
@@ -75,7 +91,52 @@ class CanvasModelNotifier extends StateNotifier<CanvasModel> {
     }
   }
 
-  /// Adds a connection between two elements.
+  /// Adds a typed connection between two elements.
+  void addTypedConnection(
+    String sourceId,
+    String targetId,
+    ConnectionType type, {
+    String? label,
+  }) {
+    final source = state.getElementById(sourceId);
+    final target = state.getElementById(targetId);
+
+    if (source == null || target == null) {
+      debugPrint('Cannot create connection: source or target element not found');
+      return;
+    }
+
+    // Validate connection type
+    if (!type.isValid(source.type, target.type)) {
+      debugPrint(
+        'Invalid connection: ${type.displayName} cannot connect '
+        '${source.type.displayName} to ${target.type.displayName}. '
+        'Expected: ${type.expectedTypes}',
+      );
+      return;
+    }
+
+    final connection = TypedConnectionElement.create(
+      sourceId: sourceId,
+      targetId: targetId,
+      type: type,
+      label: label,
+    );
+    
+    state = state.addTypedConnection(connection);
+  }
+
+  /// Removes a typed connection from the canvas.
+  void removeTypedConnection(String connectionId) {
+    state = state.removeConnection(connectionId);
+  }
+
+  /// Updates a typed connection.
+  void updateTypedConnection(TypedConnectionElement connection) {
+    state = state.updateTypedConnection(connection);
+  }
+
+  /// Adds a connection between two elements (legacy method).
   void addConnection(String sourceId, String targetId, {String? label}) {
     final connection = ConnectionElement.create(
       sourceId: sourceId,

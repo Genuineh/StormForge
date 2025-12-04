@@ -645,6 +645,21 @@ class _AddFieldDialogState extends State<_AddFieldDialog> {
     super.dispose();
   }
 
+  String _getSourceTypeLabel(FieldSourceType type) {
+    switch (type) {
+      case FieldSourceType.uiInput:
+        return 'UI Input';
+      case FieldSourceType.custom:
+        return 'Custom DTO';
+      case FieldSourceType.readModel:
+        return 'Read Model (Coming Soon)';
+      case FieldSourceType.entity:
+        return 'Entity (Coming Soon)';
+      case FieldSourceType.computed:
+        return 'Computed (Coming Soon)';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -687,11 +702,16 @@ class _AddFieldDialogState extends State<_AddFieldDialog> {
                 value: _sourceType,
                 decoration: const InputDecoration(
                   labelText: 'Source Type',
+                  hintText: 'Select field source',
                 ),
-                items: FieldSourceType.values.map((type) {
+                items: [
+                  // Only show supported source types for now
+                  FieldSourceType.uiInput,
+                  FieldSourceType.custom,
+                ].map((type) {
                   return DropdownMenuItem(
                     value: type,
-                    child: Text(type.name),
+                    child: Text(_getSourceTypeLabel(type)),
                   );
                 }).toList(),
                 onChanged: (value) {
@@ -731,6 +751,7 @@ class _AddFieldDialogState extends State<_AddFieldDialog> {
         ElevatedButton(
           onPressed: () {
             if (_formKey.currentState!.validate()) {
+              // Create appropriate FieldSource based on selected type
               FieldSource source;
               switch (_sourceType) {
                 case FieldSourceType.uiInput:
@@ -739,8 +760,13 @@ class _AddFieldDialogState extends State<_AddFieldDialog> {
                 case FieldSourceType.custom:
                   source = const FieldSource.custom();
                   break;
-                default:
+                case FieldSourceType.readModel:
+                case FieldSourceType.entity:
+                case FieldSourceType.computed:
+                  // These types are not fully supported yet in the UI
+                  // but have backend support - will be enhanced in future sprints
                   source = const FieldSource.uiInput();
+                  break;
               }
 
               Navigator.pop(context, {

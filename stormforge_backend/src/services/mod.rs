@@ -1,4 +1,5 @@
 pub mod auth;
+pub mod command;
 pub mod connection;
 pub mod entity;
 pub mod project;
@@ -7,6 +8,7 @@ pub mod team_member;
 pub mod user;
 
 pub use auth::AuthService;
+pub use command::CommandService;
 pub use connection::ConnectionService;
 pub use entity::EntityService;
 pub use project::ProjectService;

@@ -19,18 +19,27 @@ class LibraryService {
     List<String>? tags,
     required Map<String, dynamic> definition,
   }) async {
-    final response = await _apiClient.post('/api/library/components', {
+    final Map<String, dynamic> requestBody = {
       'name': name,
       'namespace': namespace,
       'scope': scope.toJson(),
       'type': componentType.toJson(),
       'version': version,
       'description': description,
-      if (author != null) 'author': author,
-      if (organizationId != null) 'organizationId': organizationId,
-      if (tags != null) 'tags': tags,
       'definition': definition,
-    });
+    };
+    
+    if (author != null) {
+      requestBody['author'] = author;
+    }
+    if (organizationId != null) {
+      requestBody['organizationId'] = organizationId;
+    }
+    if (tags != null) {
+      requestBody['tags'] = tags;
+    }
+    
+    final response = await _apiClient.post('/api/library/components', requestBody);
 
     return LibraryComponent.fromJson(response);
   }

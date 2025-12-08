@@ -2,9 +2,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stormforge_modeler/models/user_model.dart';
 import 'package:stormforge_modeler/services/api/api_client.dart';
 import 'package:stormforge_modeler/services/api/auth_service.dart';
-import 'package:stormforge_modeler/services/api/user_service.dart';
+import 'package:stormforge_modeler/services/api/command_service.dart';
+import 'package:stormforge_modeler/services/api/entity_service.dart';
+import 'package:stormforge_modeler/services/api/library_service.dart';
 import 'package:stormforge_modeler/services/api/project_service.dart';
+import 'package:stormforge_modeler/services/api/read_model_service.dart';
 import 'package:stormforge_modeler/services/api/team_member_service.dart';
+import 'package:stormforge_modeler/services/api/user_service.dart';
 
 /// Provider for the API client.
 final apiClientProvider = Provider<ApiClient>((ref) {
@@ -33,6 +37,30 @@ final projectServiceProvider = Provider<ProjectService>((ref) {
 final teamMemberServiceProvider = Provider<TeamMemberService>((ref) {
   final apiClient = ref.watch(apiClientProvider);
   return TeamMemberService(apiClient: apiClient);
+});
+
+/// Provider for the entity service.
+final entityServiceProvider = Provider<EntityService>((ref) {
+  final apiClient = ref.watch(apiClientProvider);
+  return EntityService(apiClient);
+});
+
+/// Provider for the read model service.
+final readModelServiceProvider = Provider<ReadModelService>((ref) {
+  final apiClient = ref.watch(apiClientProvider);
+  return ReadModelService(apiClient);
+});
+
+/// Provider for the command service.
+final commandServiceProvider = Provider<CommandService>((ref) {
+  final apiClient = ref.watch(apiClientProvider);
+  return CommandService(apiClient);
+});
+
+/// Provider for the library service.
+final libraryServiceProvider = Provider<LibraryService>((ref) {
+  final apiClient = ref.watch(apiClientProvider);
+  return LibraryService(apiClient);
 });
 
 /// State notifier for authentication state.

@@ -1,0 +1,1199 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stormforge.dev/schemas/ir/v2.0/ir.schema.json",
+  "title": "StormForge IR Schema v2.0",
+  "description": "Intermediate Representation schema v2.0 for StormForge domain models with entity modeling, read models, connections, and library support",
+  "type": "object",
+  "required": ["version", "bounded_context"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "IR schema version",
+      "pattern": "^\\d+\\.\\d+$",
+      "const": "2.0"
+    },
+    "project": {
+      "$ref": "#/$defs/ProjectMetadata"
+    },
+    "bounded_context": {
+      "$ref": "#/$defs/BoundedContext"
+    },
+    "entities": {
+      "type": "object",
+      "description": "Entity definitions with properties, methods, and invariants",
+      "additionalProperties": {
+        "$ref": "#/$defs/EntityDefinition"
+      }
+    },
+    "aggregates": {
+      "type": "object",
+      "description": "Aggregate definitions keyed by name",
+      "additionalProperties": {
+        "$ref": "#/$defs/Aggregate"
+      }
+    },
+    "value_objects": {
+      "type": "object",
+      "description": "Value object definitions keyed by name",
+      "additionalProperties": {
+        "$ref": "#/$defs/ValueObject"
+      }
+    },
+    "events": {
+      "type": "object",
+      "description": "Domain event definitions keyed by name",
+      "additionalProperties": {
+        "$ref": "#/$defs/Event"
+      }
+    },
+    "commands": {
+      "type": "object",
+      "description": "Command definitions with data models",
+      "additionalProperties": {
+        "$ref": "#/$defs/CommandDefinition"
+      }
+    },
+    "read_models": {
+      "type": "object",
+      "description": "Read model definitions with field sources",
+      "additionalProperties": {
+        "$ref": "#/$defs/ReadModelDefinition"
+      }
+    },
+    "queries": {
+      "type": "object",
+      "description": "Query definitions keyed by name",
+      "additionalProperties": {
+        "$ref": "#/$defs/Query"
+      }
+    },
+    "policies": {
+      "type": "array",
+      "description": "Policy definitions",
+      "items": {
+        "$ref": "#/$defs/Policy"
+      }
+    },
+    "external_events": {
+      "type": "array",
+      "description": "External event subscriptions",
+      "items": {
+        "$ref": "#/$defs/ExternalEventSubscription"
+      }
+    },
+    "connections": {
+      "type": "array",
+      "description": "Visual connections between canvas components",
+      "items": {
+        "$ref": "#/$defs/Connection"
+      }
+    },
+    "library_references": {
+      "type": "array",
+      "description": "References to components from global library",
+      "items": {
+        "$ref": "#/$defs/LibraryReference"
+      }
+    },
+    "canvas_metadata": {
+      "$ref": "#/$defs/CanvasMetadata"
+    }
+  },
+  "$defs": {
+    "ProjectMetadata": {
+      "type": "object",
+      "description": "Project-level metadata",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Project unique identifier"
+        },
+        "name": {
+          "type": "string",
+          "description": "Project name"
+        },
+        "namespace": {
+          "type": "string",
+          "description": "Root namespace for the project"
+        },
+        "description": {
+          "type": "string",
+          "description": "Project description"
+        },
+        "version": {
+          "type": "string",
+          "description": "Project version"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update timestamp"
+        }
+      }
+    },
+    "BoundedContext": {
+      "type": "object",
+      "description": "A bounded context representing a domain boundary",
+      "required": ["name", "namespace"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the bounded context",
+          "pattern": "^[A-Z][a-zA-Z0-9]*$"
+        },
+        "namespace": {
+          "type": "string",
+          "description": "Namespace for generated code",
+          "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)*$"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the bounded context"
+        }
+      }
+    },
+    "EntityDefinition": {
+      "type": "object",
+      "description": "Detailed entity definition with properties, methods, and invariants",
+      "required": ["name", "properties"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Entity unique identifier"
+        },
+        "name": {
+          "type": "string",
+          "description": "Entity name",
+          "pattern": "^[A-Z][a-zA-Z0-9]*$"
+        },
+        "description": {
+          "type": "string",
+          "description": "Entity description"
+        },
+        "entity_type": {
+          "type": "string",
+          "enum": ["entity", "aggregate_root", "value_object"],
+          "description": "Type of entity"
+        },
+        "aggregate_id": {
+          "type": "string",
+          "description": "Reference to canvas aggregate element"
+        },
+        "properties": {
+          "type": "array",
+          "description": "Entity properties",
+          "items": {
+            "$ref": "#/$defs/EntityProperty"
+          },
+          "minItems": 1
+        },
+        "methods": {
+          "type": "array",
+          "description": "Entity methods and behaviors",
+          "items": {
+            "$ref": "#/$defs/EntityMethod"
+          }
+        },
+        "invariants": {
+          "type": "array",
+          "description": "Business invariants",
+          "items": {
+            "$ref": "#/$defs/EntityInvariant"
+          }
+        },
+        "library_reference": {
+          "type": "string",
+          "description": "Reference to global library component if imported"
+        }
+      }
+    },
+    "EntityProperty": {
+      "type": "object",
+      "description": "A property of an entity",
+      "required": ["name", "type"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Property unique identifier"
+        },
+        "name": {
+          "type": "string",
+          "description": "Property name (camelCase)",
+          "pattern": "^[a-z][a-zA-Z0-9]*$"
+        },
+        "type": {
+          "type": "string",
+          "description": "Property type"
+        },
+        "identifier": {
+          "type": "boolean",
+          "description": "Whether this property is the identifier",
+          "default": false
+        },
+        "required": {
+          "type": "boolean",
+          "description": "Whether this property is required",
+          "default": true
+        },
+        "read_only": {
+          "type": "boolean",
+          "description": "Whether this property is read-only",
+          "default": false
+        },
+        "default": {
+          "description": "Default value for the property"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the property"
+        },
+        "validation": {
+          "$ref": "#/$defs/Validation"
+        },
+        "computed": {
+          "type": "string",
+          "description": "Expression for computed properties"
+        }
+      }
+    },
+    "EntityMethod": {
+      "type": "object",
+      "description": "A method or behavior of an entity",
+      "required": ["name", "method_type"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Method unique identifier"
+        },
+        "name": {
+          "type": "string",
+          "description": "Method name",
+          "pattern": "^[a-z][a-zA-Z0-9]*$"
+        },
+        "method_type": {
+          "type": "string",
+          "enum": ["constructor", "command", "query", "domain_logic"],
+          "description": "Type of method"
+        },
+        "return_type": {
+          "type": "string",
+          "description": "Return type of the method"
+        },
+        "parameters": {
+          "type": "array",
+          "description": "Method parameters",
+          "items": {
+            "$ref": "#/$defs/MethodParameter"
+          }
+        },
+        "description": {
+          "type": "string",
+          "description": "Method description"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": ["public", "private", "protected"],
+          "default": "public",
+          "description": "Method visibility"
+        }
+      }
+    },
+    "MethodParameter": {
+      "type": "object",
+      "description": "A parameter of a method",
+      "required": ["name", "type"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Parameter name"
+        },
+        "type": {
+          "type": "string",
+          "description": "Parameter type"
+        },
+        "required": {
+          "type": "boolean",
+          "description": "Whether parameter is required",
+          "default": true
+        },
+        "default": {
+          "description": "Default value"
+        }
+      }
+    },
+    "EntityInvariant": {
+      "type": "object",
+      "description": "A business invariant that must always hold true",
+      "required": ["name", "expression"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Invariant unique identifier"
+        },
+        "name": {
+          "type": "string",
+          "description": "Invariant name"
+        },
+        "expression": {
+          "type": "string",
+          "description": "Boolean expression that must be true"
+        },
+        "error_message": {
+          "type": "string",
+          "description": "Error message when invariant is violated"
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether this invariant is enabled",
+          "default": true
+        }
+      }
+    },
+    "ReadModelDefinition": {
+      "type": "object",
+      "description": "Read model definition with field sources and data sources",
+      "required": ["name", "sources", "fields"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Read model unique identifier"
+        },
+        "name": {
+          "type": "string",
+          "description": "Read model name",
+          "pattern": "^[A-Z][a-zA-Z0-9]*$"
+        },
+        "description": {
+          "type": "string",
+          "description": "Read model description"
+        },
+        "canvas_element_id": {
+          "type": "string",
+          "description": "Reference to canvas read model element"
+        },
+        "sources": {
+          "type": "array",
+          "description": "Data sources (entities) for this read model",
+          "items": {
+            "$ref": "#/$defs/DataSource"
+          },
+          "minItems": 1
+        },
+        "fields": {
+          "type": "array",
+          "description": "Fields in the read model",
+          "items": {
+            "$ref": "#/$defs/ReadModelField"
+          },
+          "minItems": 1
+        },
+        "updated_by_events": {
+          "type": "array",
+          "description": "Events that update this read model",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "DataSource": {
+      "type": "object",
+      "description": "A data source (entity) for a read model",
+      "required": ["entity_id", "alias"],
+      "properties": {
+        "entity_id": {
+          "type": "string",
+          "description": "Entity ID or name"
+        },
+        "alias": {
+          "type": "string",
+          "description": "Alias for this data source in queries"
+        },
+        "join_condition": {
+          "$ref": "#/$defs/JoinCondition"
+        },
+        "join_type": {
+          "type": "string",
+          "enum": ["inner", "left", "right"],
+          "default": "inner",
+          "description": "Type of join"
+        }
+      }
+    },
+    "JoinCondition": {
+      "type": "object",
+      "description": "Join condition between data sources",
+      "required": ["left_property", "right_property"],
+      "properties": {
+        "left_property": {
+          "type": "string",
+          "description": "Property from left data source (e.g., 'order.customerId')"
+        },
+        "right_property": {
+          "type": "string",
+          "description": "Property from right data source (e.g., 'customer.id')"
+        },
+        "operator": {
+          "type": "string",
+          "enum": ["equals", "not_equals", "greater_than", "less_than"],
+          "default": "equals",
+          "description": "Join operator"
+        }
+      }
+    },
+    "ReadModelField": {
+      "type": "object",
+      "description": "A field in a read model",
+      "required": ["name", "source"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Field name in read model"
+        },
+        "type": {
+          "type": "string",
+          "description": "Field type"
+        },
+        "source": {
+          "$ref": "#/$defs/FieldSource"
+        },
+        "transformation": {
+          "type": "string",
+          "description": "Transformation expression applied to source"
+        },
+        "description": {
+          "type": "string",
+          "description": "Field description"
+        }
+      }
+    },
+    "FieldSource": {
+      "type": "object",
+      "description": "Source of a field in read model or command",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["entity_property", "computed", "constant", "read_model", "custom"],
+          "description": "Type of field source"
+        },
+        "entity_id": {
+          "type": "string",
+          "description": "Entity ID if source is entity property"
+        },
+        "property_path": {
+          "type": "string",
+          "description": "Property path (e.g., 'customer.name', 'order.totalAmount')"
+        },
+        "expression": {
+          "type": "string",
+          "description": "Expression for computed fields"
+        },
+        "value": {
+          "description": "Constant value"
+        },
+        "read_model_id": {
+          "type": "string",
+          "description": "Read model ID if source is another read model"
+        }
+      }
+    },
+    "CommandDefinition": {
+      "type": "object",
+      "description": "Enhanced command definition with data model",
+      "required": ["name"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Command unique identifier"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the command (VerbNoun)",
+          "pattern": "^[A-Z][a-zA-Z0-9]*$"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the command"
+        },
+        "aggregate": {
+          "type": "string",
+          "description": "Aggregate that handles this command"
+        },
+        "canvas_element_id": {
+          "type": "string",
+          "description": "Reference to canvas command element"
+        },
+        "payload": {
+          "type": "array",
+          "description": "Command payload fields with sources",
+          "items": {
+            "$ref": "#/$defs/CommandField"
+          }
+        },
+        "produces": {
+          "type": "array",
+          "description": "Events produced by this command",
+          "items": {
+            "type": "string"
+          }
+        },
+        "preconditions": {
+          "type": "array",
+          "description": "Preconditions that must be met",
+          "items": {
+            "$ref": "#/$defs/Condition"
+          }
+        },
+        "validation": {
+          "type": "array",
+          "description": "Validation rules for the command",
+          "items": {
+            "$ref": "#/$defs/Condition"
+          }
+        }
+      }
+    },
+    "CommandField": {
+      "type": "object",
+      "description": "A field in a command payload with its source",
+      "required": ["name", "type"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Field name"
+        },
+        "type": {
+          "type": "string",
+          "description": "Field type"
+        },
+        "required": {
+          "type": "boolean",
+          "description": "Whether field is required",
+          "default": true
+        },
+        "source": {
+          "$ref": "#/$defs/FieldSource"
+        },
+        "validation": {
+          "$ref": "#/$defs/Validation"
+        },
+        "description": {
+          "type": "string",
+          "description": "Field description"
+        }
+      }
+    },
+    "Connection": {
+      "type": "object",
+      "description": "Visual connection between canvas components",
+      "required": ["id", "type", "source_id", "target_id"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Connection unique identifier"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "command_to_aggregate",
+            "aggregate_to_event",
+            "event_to_policy",
+            "policy_to_command",
+            "event_to_read_model",
+            "external_to_command",
+            "ui_to_command",
+            "read_model_to_ui",
+            "custom"
+          ],
+          "description": "Type of connection"
+        },
+        "source_id": {
+          "type": "string",
+          "description": "ID of source canvas element"
+        },
+        "target_id": {
+          "type": "string",
+          "description": "ID of target canvas element"
+        },
+        "label": {
+          "type": "string",
+          "description": "Optional label for the connection"
+        },
+        "style": {
+          "$ref": "#/$defs/ConnectionStyle"
+        },
+        "metadata": {
+          "type": "object",
+          "description": "Additional connection metadata"
+        }
+      }
+    },
+    "ConnectionStyle": {
+      "type": "object",
+      "description": "Visual style for a connection",
+      "properties": {
+        "color": {
+          "type": "string",
+          "description": "Connection color (hex or named)"
+        },
+        "stroke_width": {
+          "type": "number",
+          "description": "Line width in pixels"
+        },
+        "line_style": {
+          "type": "string",
+          "enum": ["solid", "dashed", "dotted"],
+          "description": "Line style"
+        },
+        "arrow_style": {
+          "type": "string",
+          "enum": ["filled", "open", "none"],
+          "description": "Arrow head style"
+        }
+      }
+    },
+    "Policy": {
+      "type": "object",
+      "description": "Policy that reacts to events",
+      "required": ["name", "triggers"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Policy unique identifier"
+        },
+        "name": {
+          "type": "string",
+          "description": "Policy name"
+        },
+        "description": {
+          "type": "string",
+          "description": "Policy description"
+        },
+        "canvas_element_id": {
+          "type": "string",
+          "description": "Reference to canvas policy element"
+        },
+        "triggers": {
+          "type": "array",
+          "description": "Events that trigger this policy",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "actions": {
+          "type": "array",
+          "description": "Commands triggered by this policy",
+          "items": {
+            "type": "string"
+          }
+        },
+        "conditions": {
+          "type": "array",
+          "description": "Conditions for policy execution",
+          "items": {
+            "$ref": "#/$defs/Condition"
+          }
+        }
+      }
+    },
+    "LibraryReference": {
+      "type": "object",
+      "description": "Reference to a component from global library",
+      "required": ["library_id", "component_type", "usage_type"],
+      "properties": {
+        "library_id": {
+          "type": "string",
+          "description": "ID of library component"
+        },
+        "component_type": {
+          "type": "string",
+          "enum": ["entity", "value_object", "enum", "aggregate", "command", "event", "read_model", "policy"],
+          "description": "Type of library component"
+        },
+        "namespace": {
+          "type": "string",
+          "description": "Component namespace"
+        },
+        "version": {
+          "type": "string",
+          "description": "Component version (semantic versioning)"
+        },
+        "scope": {
+          "type": "string",
+          "enum": ["enterprise", "organization", "project"],
+          "description": "Library scope"
+        },
+        "usage_type": {
+          "type": "string",
+          "enum": ["reference", "copy"],
+          "description": "Whether component is referenced or copied"
+        },
+        "local_id": {
+          "type": "string",
+          "description": "Local ID of the component in this project"
+        }
+      }
+    },
+    "CanvasMetadata": {
+      "type": "object",
+      "description": "Canvas-specific metadata",
+      "properties": {
+        "elements": {
+          "type": "array",
+          "description": "Canvas element positions and properties",
+          "items": {
+            "$ref": "#/$defs/CanvasElement"
+          }
+        },
+        "viewport": {
+          "$ref": "#/$defs/Viewport"
+        },
+        "swimlanes": {
+          "type": "array",
+          "description": "Swimlane definitions for bounded contexts",
+          "items": {
+            "$ref": "#/$defs/Swimlane"
+          }
+        }
+      }
+    },
+    "CanvasElement": {
+      "type": "object",
+      "description": "Visual element on canvas",
+      "required": ["id", "type", "position"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Element unique identifier"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["domain_event", "command", "aggregate", "policy", "read_model", "external_system", "ui"],
+          "description": "Type of canvas element"
+        },
+        "name": {
+          "type": "string",
+          "description": "Element name/label"
+        },
+        "position": {
+          "$ref": "#/$defs/Position"
+        },
+        "size": {
+          "$ref": "#/$defs/Size"
+        },
+        "color": {
+          "type": "string",
+          "description": "Element color"
+        },
+        "definition_id": {
+          "type": "string",
+          "description": "Reference to detailed definition (entity, command, etc.)"
+        }
+      }
+    },
+    "Position": {
+      "type": "object",
+      "required": ["x", "y"],
+      "properties": {
+        "x": {
+          "type": "number",
+          "description": "X coordinate"
+        },
+        "y": {
+          "type": "number",
+          "description": "Y coordinate"
+        }
+      }
+    },
+    "Size": {
+      "type": "object",
+      "required": ["width", "height"],
+      "properties": {
+        "width": {
+          "type": "number",
+          "description": "Width in pixels"
+        },
+        "height": {
+          "type": "number",
+          "description": "Height in pixels"
+        }
+      }
+    },
+    "Viewport": {
+      "type": "object",
+      "description": "Canvas viewport state",
+      "properties": {
+        "zoom": {
+          "type": "number",
+          "description": "Zoom level",
+          "default": 1.0
+        },
+        "pan_x": {
+          "type": "number",
+          "description": "Pan X offset",
+          "default": 0
+        },
+        "pan_y": {
+          "type": "number",
+          "description": "Pan Y offset",
+          "default": 0
+        }
+      }
+    },
+    "Swimlane": {
+      "type": "object",
+      "description": "Swimlane for organizing canvas elements",
+      "required": ["id", "name"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Swimlane unique identifier"
+        },
+        "name": {
+          "type": "string",
+          "description": "Swimlane name"
+        },
+        "bounded_context": {
+          "type": "string",
+          "description": "Associated bounded context"
+        },
+        "position": {
+          "type": "number",
+          "description": "Vertical position/order"
+        },
+        "height": {
+          "type": "number",
+          "description": "Swimlane height in pixels"
+        }
+      }
+    },
+    "Aggregate": {
+      "type": "object",
+      "description": "An aggregate root (for backward compatibility with v1.0)",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the aggregate",
+          "pattern": "^[A-Z][a-zA-Z0-9]*$"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the aggregate"
+        },
+        "entity_id": {
+          "type": "string",
+          "description": "Reference to EntityDefinition"
+        },
+        "root_entity": {
+          "$ref": "#/$defs/Entity"
+        },
+        "invariants": {
+          "type": "array",
+          "description": "Business invariants for this aggregate",
+          "items": {
+            "$ref": "#/$defs/Invariant"
+          }
+        }
+      }
+    },
+    "Entity": {
+      "type": "object",
+      "description": "A domain entity with properties (simple form for backward compatibility)",
+      "required": ["name", "properties"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the entity",
+          "pattern": "^[A-Z][a-zA-Z0-9]*$"
+        },
+        "properties": {
+          "type": "array",
+          "description": "Properties of the entity",
+          "items": {
+            "$ref": "#/$defs/Property"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "Property": {
+      "type": "object",
+      "description": "A property (simple form for backward compatibility)",
+      "required": ["name", "type"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Property name (camelCase)",
+          "pattern": "^[a-z][a-zA-Z0-9]*$"
+        },
+        "type": {
+          "type": "string",
+          "description": "Property type"
+        },
+        "identifier": {
+          "type": "boolean",
+          "description": "Whether this property is the identifier",
+          "default": false
+        },
+        "required": {
+          "type": "boolean",
+          "description": "Whether this property is required",
+          "default": true
+        },
+        "default": {
+          "description": "Default value for the property"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the property"
+        },
+        "validation": {
+          "$ref": "#/$defs/Validation"
+        },
+        "computed": {
+          "type": "string",
+          "description": "Expression for computed properties"
+        }
+      }
+    },
+    "Validation": {
+      "type": "object",
+      "description": "Validation rules for a property or field",
+      "properties": {
+        "min": {
+          "type": "number",
+          "description": "Minimum value (for numbers)"
+        },
+        "max": {
+          "type": "number",
+          "description": "Maximum value (for numbers)"
+        },
+        "minLength": {
+          "type": "integer",
+          "description": "Minimum length (for strings)"
+        },
+        "maxLength": {
+          "type": "integer",
+          "description": "Maximum length (for strings)"
+        },
+        "pattern": {
+          "type": "string",
+          "description": "Regex pattern (for strings)"
+        },
+        "precision": {
+          "type": "integer",
+          "description": "Decimal precision"
+        },
+        "email": {
+          "type": "boolean",
+          "description": "Must be valid email"
+        },
+        "url": {
+          "type": "boolean",
+          "description": "Must be valid URL"
+        }
+      }
+    },
+    "Invariant": {
+      "type": "object",
+      "description": "A business invariant/rule",
+      "required": ["name", "expression"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the invariant"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the invariant"
+        },
+        "expression": {
+          "type": "string",
+          "description": "Boolean expression for the invariant"
+        }
+      }
+    },
+    "ValueObject": {
+      "type": "object",
+      "description": "A value object definition",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the value object",
+          "pattern": "^[A-Z][a-zA-Z0-9]*$"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the value object"
+        },
+        "type": {
+          "type": "string",
+          "description": "Type of value object (identifier, enum, or complex)",
+          "enum": ["identifier", "enum"]
+        },
+        "underlying_type": {
+          "type": "string",
+          "description": "Underlying type for identifier value objects"
+        },
+        "format": {
+          "type": "string",
+          "description": "Format specification (e.g., uuid)"
+        },
+        "prefix": {
+          "type": "string",
+          "description": "Prefix for identifier values"
+        },
+        "properties": {
+          "type": "array",
+          "description": "Properties for complex value objects",
+          "items": {
+            "$ref": "#/$defs/Property"
+          }
+        },
+        "values": {
+          "type": "array",
+          "description": "Values for enum value objects",
+          "items": {
+            "$ref": "#/$defs/EnumValue"
+          }
+        }
+      }
+    },
+    "EnumValue": {
+      "type": "object",
+      "description": "A value in an enumeration",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the enum value (SCREAMING_SNAKE_CASE)",
+          "pattern": "^[A-Z][A-Z0-9_]*$"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the enum value"
+        }
+      }
+    },
+    "Event": {
+      "type": "object",
+      "description": "A domain event",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the event (PastTense)",
+          "pattern": "^[A-Z][a-zA-Z0-9]*$"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the event"
+        },
+        "aggregate": {
+          "type": "string",
+          "description": "Aggregate that emits this event"
+        },
+        "payload": {
+          "type": "array",
+          "description": "Event payload properties",
+          "items": {
+            "$ref": "#/$defs/Property"
+          }
+        }
+      }
+    },
+    "Query": {
+      "type": "object",
+      "description": "A query for retrieving data",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the query",
+          "pattern": "^[A-Z][a-zA-Z0-9]*$"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the query"
+        },
+        "parameters": {
+          "type": "array",
+          "description": "Query parameters",
+          "items": {
+            "$ref": "#/$defs/Property"
+          }
+        },
+        "returns": {
+          "$ref": "#/$defs/ReturnType"
+        },
+        "read_model": {
+          "type": "string",
+          "description": "Read model used by this query"
+        }
+      }
+    },
+    "ReturnType": {
+      "type": "object",
+      "description": "Return type specification",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "The return type"
+        },
+        "nullable": {
+          "type": "boolean",
+          "description": "Whether the return can be null",
+          "default": false
+        }
+      }
+    },
+    "Condition": {
+      "type": "object",
+      "description": "A condition/rule with expression and message",
+      "required": ["expression", "message"],
+      "properties": {
+        "expression": {
+          "type": "string",
+          "description": "Boolean expression"
+        },
+        "message": {
+          "type": "string",
+          "description": "Error message when condition fails"
+        }
+      }
+    },
+    "ExternalEventSubscription": {
+      "type": "object",
+      "description": "Subscription to an event from another bounded context",
+      "required": ["context", "event", "handler"],
+      "properties": {
+        "context": {
+          "type": "string",
+          "description": "Source bounded context name"
+        },
+        "event": {
+          "type": "string",
+          "description": "Event name to subscribe to"
+        },
+        "handler": {
+          "type": "string",
+          "description": "Handler method name"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the subscription"
+        }
+      }
+    }
+  }
+}

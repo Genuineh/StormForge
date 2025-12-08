@@ -4,6 +4,7 @@ import 'package:stormforge_modeler/models/models.dart';
 import 'package:stormforge_modeler/services/api/entity_service.dart';
 import 'package:stormforge_modeler/services/api/command_service.dart';
 import 'package:stormforge_modeler/services/api/read_model_service.dart';
+import 'package:stormforge_modeler/services/providers.dart';
 
 /// Service for bidirectional synchronization between canvas elements and definitions.
 class CanvasDefinitionSyncService {
@@ -122,9 +123,10 @@ class CanvasDefinitionSyncService {
   }) {
     // Update canvas element using the controller
     ref.read(canvasModelProvider.notifier).updateElement(
-          element.id,
-          label: label,
-          description: description ?? '',
+          element.copyWith(
+            label: label,
+            description: description ?? '',
+          ),
         );
   }
 

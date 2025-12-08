@@ -42,7 +42,7 @@ final teamMemberServiceProvider = Provider<TeamMemberService>((ref) {
 /// Provider for the entity service.
 final entityServiceProvider = Provider<EntityService>((ref) {
   final apiClient = ref.watch(apiClientProvider);
-  return EntityService(apiClient);
+  return EntityService(apiClient: apiClient);
 });
 
 /// Provider for the read model service.

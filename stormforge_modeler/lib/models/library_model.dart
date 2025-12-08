@@ -182,11 +182,16 @@ class UsageStats extends Equatable {
   }
 
   Map<String, dynamic> toJson() {
-    return {
+    final Map<String, dynamic> json = {
       'projectCount': projectCount,
       'referenceCount': referenceCount,
-      if (lastUsed != null) 'lastUsed': lastUsed!.toIso8601String(),
     };
+    
+    if (lastUsed != null) {
+      json['lastUsed'] = lastUsed!.toIso8601String();
+    }
+    
+    return json;
   }
 
   UsageStats copyWith({
@@ -265,7 +270,7 @@ class LibraryComponent extends Equatable {
   }
 
   Map<String, dynamic> toJson() {
-    return {
+    final Map<String, dynamic> json = {
       '_id': id,
       'name': name,
       'namespace': namespace,
@@ -273,8 +278,6 @@ class LibraryComponent extends Equatable {
       'type': componentType.toJson(),
       'version': version,
       'description': description,
-      if (author != null) 'author': author,
-      if (organizationId != null) 'organizationId': organizationId,
       'tags': tags,
       'definition': definition,
       'metadata': metadata,
@@ -283,6 +286,15 @@ class LibraryComponent extends Equatable {
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
     };
+    
+    if (author != null) {
+      json['author'] = author!;
+    }
+    if (organizationId != null) {
+      json['organizationId'] = organizationId!;
+    }
+    
+    return json;
   }
 
   LibraryComponent copyWith({

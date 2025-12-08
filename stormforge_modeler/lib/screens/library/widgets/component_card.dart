@@ -35,7 +35,7 @@ class ComponentCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          component.type.displayName,
+                          component.componentType.displayName,
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                 color: Colors.grey[600],
                               ),
@@ -182,7 +182,7 @@ class ComponentCard extends StatelessWidget {
     IconData icon;
     Color color;
 
-    switch (component.type) {
+    switch (component.componentType) {
       case ComponentType.entity:
         icon = Icons.layers;
         color = Colors.blue;
@@ -232,7 +232,7 @@ class ComponentCard extends StatelessWidget {
   }
 
   Widget _buildScopeBadge(BuildContext context) {
-    Color color;
+    final MaterialColor color;
     switch (component.scope) {
       case LibraryScope.enterprise:
         color = Colors.amber;
@@ -255,7 +255,7 @@ class ComponentCard extends StatelessWidget {
         component.scope.displayName,
         style: TextStyle(
           fontSize: 10,
-          color: color[700] ?? color,
+          color: color[700]!,
           fontWeight: FontWeight.w500,
         ),
       ),

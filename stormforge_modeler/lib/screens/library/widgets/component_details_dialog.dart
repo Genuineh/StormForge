@@ -190,7 +190,7 @@ class _ComponentDetailsDialogState extends State<ComponentDetailsDialog> {
     IconData icon;
     Color color;
 
-    switch (widget.component.type) {
+    switch (widget.component.componentType) {
       case ComponentType.entity:
         icon = Icons.layers;
         color = Colors.blue;
@@ -286,7 +286,7 @@ class _ComponentDetailsDialogState extends State<ComponentDetailsDialog> {
           // Metadata
           _buildSectionTitle('Metadata'),
           const SizedBox(height: 12),
-          _buildMetadataRow('Type', widget.component.type.displayName),
+          _buildMetadataRow('Type', widget.component.componentType.displayName),
           _buildMetadataRow('Scope', widget.component.scope.displayName),
           _buildMetadataRow('Version', widget.component.version),
           _buildMetadataRow('Status', widget.component.status.displayName),
@@ -499,8 +499,18 @@ class _ComponentDetailsDialogState extends State<ComponentDetailsDialog> {
                             children: [
                               const Icon(Icons.folder, size: 16),
                               const SizedBox(width: 8),
-                              Expanded(child: Text(project.projectId)),
-                              Text('${project.referenceCount} refs'),
+                              Expanded(
+                                child: Text(
+                                  '${project.projectName} (${project.projectId})',
+                                ),
+                              ),
+                              Text(
+                                project.referenceMode.displayName,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
                             ],
                           ),
                         );

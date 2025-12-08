@@ -88,7 +88,7 @@ class _LibraryBrowserScreenState extends ConsumerState<LibraryBrowserScreen> {
         }
 
         // Type filter
-        if (_selectedType != null && component.type != _selectedType) {
+        if (_selectedType != null && component.componentType != _selectedType) {
           return false;
         }
 
@@ -335,17 +335,6 @@ class _LibraryBrowserScreenState extends ConsumerState<LibraryBrowserScreen> {
     required String Function(T) displayName,
   }) {
     return PopupMenuButton<T?>(
-      child: Chip(
-        label: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(value != null ? displayName(value) : label),
-            const SizedBox(width: 4),
-            const Icon(Icons.arrow_drop_down, size: 18),
-          ],
-        ),
-        backgroundColor: value != null ? Theme.of(context).primaryColor.withOpacity(0.1) : null,
-      ),
       itemBuilder: (context) => [
         PopupMenuItem<T?>(
           value: null,
@@ -357,6 +346,17 @@ class _LibraryBrowserScreenState extends ConsumerState<LibraryBrowserScreen> {
             )),
       ],
       onSelected: onChanged,
+      child: Chip(
+        label: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(value != null ? displayName(value) : label),
+            const SizedBox(width: 4),
+            const Icon(Icons.arrow_drop_down, size: 18),
+          ],
+        ),
+        backgroundColor: value != null ? Theme.of(context).primaryColor.withOpacity(0.1) : null,
+      ),
     );
   }
 }

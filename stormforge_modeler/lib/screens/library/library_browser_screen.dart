@@ -22,7 +22,7 @@ class LibraryBrowserScreen extends ConsumerStatefulWidget {
 }
 
 class _LibraryBrowserScreenState extends ConsumerState<LibraryBrowserScreen> {
-  late LibraryService _libraryService;
+  LibraryService? _libraryService;
   List<LibraryComponent> _components = [];
   List<LibraryComponent> _filteredComponents = [];
   bool _isLoading = true;
@@ -35,18 +35,23 @@ class _LibraryBrowserScreenState extends ConsumerState<LibraryBrowserScreen> {
   @override
   void initState() {
     super.initState();
-    _libraryService = ref.read(libraryServiceProvider);
-    _loadComponents();
+    // Load components after first frame when provider is available
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _libraryService = ref.read(libraryServiceProvider);
+      _loadComponents();
+    });
   }
 
   Future<void> _loadComponents() async {
+    if (_libraryService == null) return;
+    
     setState(() {
       _isLoading = true;
       _error = null;
     });
 
     try {
-      final components = await _libraryService.searchComponents(
+      final components = await _libraryService!.searchComponents(
         scope: _selectedScope,
       );
       setState(() {
@@ -126,23 +131,27 @@ class _LibraryBrowserScreenState extends ConsumerState<LibraryBrowserScreen> {
   }
 
   Future<void> _showComponentDetails(LibraryComponent component) async {
+    if (_libraryService == null) return;
+    
     await showDialog(
       context: context,
       builder: (context) => ComponentDetailsDialog(
         component: component,
         projectId: widget.projectId,
-        libraryService: _libraryService,
+        libraryService: _libraryService!,
         onRefresh: _loadComponents,
       ),
     );
   }
 
   Future<void> _publishComponent() async {
+    if (_libraryService == null) return;
+    
     final result = await showDialog<bool>(
       context: context,
       builder: (context) => PublishComponentDialog(
         projectId: widget.projectId,
-        libraryService: _libraryService,
+        libraryService: _libraryService!,
       ),
     );
 

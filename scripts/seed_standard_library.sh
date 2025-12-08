@@ -19,7 +19,7 @@ publish_component() {
     
     echo "Publishing: $name ($namespace)"
     
-    curl -X POST "$API_URL/api/library/components" \
+    http_code=$(curl -w "%{http_code}" -o /tmp/response.json -f -X POST "$API_URL/api/library/components" \
         -H "Content-Type: application/json" \
         -d "{
             \"name\": \"$name\",
@@ -31,8 +31,15 @@ publish_component() {
             \"author\": \"StormForge Platform\",
             \"tags\": [\"standard\", \"common\"],
             \"definition\": $definition
-        }" \
-        -w "\nHTTP Status: %{http_code}\n\n"
+        }" 2>/dev/null)
+    
+    if [ $? -eq 0 ] && [ "$http_code" -ge 200 ] && [ "$http_code" -lt 300 ]; then
+        echo "✅ Success (HTTP $http_code)"
+    else
+        echo "❌ Failed (HTTP $http_code)"
+        [ -f /tmp/response.json ] && cat /tmp/response.json
+    fi
+    echo ""
 }
 
 # 1. Money Value Object

@@ -255,7 +255,7 @@ class ComponentCard extends StatelessWidget {
         component.scope.displayName,
         style: TextStyle(
           fontSize: 10,
-          color: color.shade700,
+          color: color[700] ?? color,
           fontWeight: FontWeight.w500,
         ),
       ),

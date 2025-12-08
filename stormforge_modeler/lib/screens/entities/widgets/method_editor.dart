@@ -376,7 +376,7 @@ class _MethodDialogState extends State<_MethodDialog> {
                       onPressed: () => _deleteParameter(index),
                     ),
                   );
-                }),
+                }).toList(),
               ],
             ),
           ),

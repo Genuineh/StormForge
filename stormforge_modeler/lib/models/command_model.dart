@@ -52,8 +52,6 @@ class FieldSource extends Equatable {
   final String? expression;
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> json = {};
-
     switch (type) {
       case FieldSourceType.uiInput:
         return {'type': 'UiInput'};

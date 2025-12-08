@@ -198,7 +198,7 @@ class _ReadModelDesignerScreenState extends State<ReadModelDesignerScreen> {
         readModelId: _selectedReadModel!.id,
         name: result['name'] as String,
         fieldType: result['fieldType'] as String,
-        sourceType: result['sourceType'] as FieldSourceType,
+        sourceType: result['sourceType'] as ReadModelFieldSourceType,
         sourcePath: result['sourcePath'] as String,
         transform: result['transform'] as FieldTransform?,
         nullable: result['nullable'] as bool? ?? false,
@@ -763,7 +763,7 @@ class _AddFieldDialogState extends State<_AddFieldDialog> {
   final _nameController = TextEditingController();
   final _fieldTypeController = TextEditingController(text: 'String');
   final _sourcePathController = TextEditingController();
-  FieldSourceType _sourceType = FieldSourceType.direct;
+  ReadModelFieldSourceType _sourceType = ReadModelFieldSourceType.direct;
   bool _nullable = false;
 
   @override
@@ -826,10 +826,10 @@ class _AddFieldDialogState extends State<_AddFieldDialog> {
                 },
               ),
               const SizedBox(height: 16),
-              DropdownButtonFormField<FieldSourceType>(
+              DropdownButtonFormField<ReadModelFieldSourceType>(
                 value: _sourceType,
                 decoration: const InputDecoration(labelText: 'Source Type'),
-                items: FieldSourceType.values.map((type) {
+                items: ReadModelFieldSourceType.values.map((type) {
                   return DropdownMenuItem(
                     value: type,
                     child: Text(type.name),

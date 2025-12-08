@@ -1,0 +1,987 @@
+# Acme E-commerce Order Context
+# StormForge IR v2.0
+# This example demonstrates the new v2.0 features including entity definitions,
+# read models, command data models, connections, and library references
+
+version: "2.0"
+
+# Project metadata
+project:
+  id: "acme-ecommerce"
+  name: "Acme E-commerce Platform"
+  namespace: "com.acme.ecommerce"
+  description: "Full-featured e-commerce platform"
+  version: "1.0.0"
+  created_at: "2026-03-26T00:00:00Z"
+  updated_at: "2026-04-08T00:00:00Z"
+
+# Bounded context definition
+bounded_context:
+  name: "Order"
+  namespace: "acme.order"
+  description: "Order management bounded context handling order lifecycle"
+
+# Entity Definitions (NEW in v2.0)
+# Detailed entity modeling with properties, methods, and invariants
+entities:
+  OrderEntity:
+    id: "entity-order-001"
+    name: "OrderEntity"
+    description: "Order aggregate root entity with full business logic"
+    entity_type: "aggregate_root"
+    aggregate_id: "agg-order-001"
+    
+    properties:
+      - id: "prop-001"
+        name: "id"
+        type: "OrderId"
+        identifier: true
+        required: true
+        read_only: true
+        description: "Unique order identifier"
+        
+      - id: "prop-002"
+        name: "customerId"
+        type: "CustomerId"
+        required: true
+        description: "Customer who placed the order"
+        
+      - id: "prop-003"
+        name: "items"
+        type: "List<OrderItem>"
+        required: true
+        description: "Order line items"
+        validation:
+          minLength: 1
+          maxLength: 50
+          
+      - id: "prop-004"
+        name: "status"
+        type: "OrderStatus"
+        required: true
+        default: "CREATED"
+        description: "Current order status"
+        
+      - id: "prop-005"
+        name: "shippingAddress"
+        type: "Address"
+        required: true
+        description: "Delivery address"
+        
+      - id: "prop-006"
+        name: "totalAmount"
+        type: "Money"
+        required: true
+        description: "Order total"
+        computed: "sum(items.subtotal)"
+        
+      - id: "prop-007"
+        name: "createdAt"
+        type: "DateTime"
+        required: true
+        read_only: true
+        
+      - id: "prop-008"
+        name: "updatedAt"
+        type: "DateTime"
+        required: false
+        
+    methods:
+      - id: "method-001"
+        name: "create"
+        method_type: "constructor"
+        description: "Create a new order"
+        parameters:
+          - name: "customerId"
+            type: "CustomerId"
+            required: true
+          - name: "items"
+            type: "List<OrderItem>"
+            required: true
+          - name: "shippingAddress"
+            type: "Address"
+            required: true
+        visibility: "public"
+        
+      - id: "method-002"
+        name: "addItem"
+        method_type: "domain_logic"
+        return_type: "void"
+        description: "Add an item to the order"
+        parameters:
+          - name: "item"
+            type: "OrderItem"
+            required: true
+        visibility: "public"
+        
+      - id: "method-003"
+        name: "confirmPayment"
+        method_type: "command"
+        return_type: "OrderPaid"
+        description: "Confirm payment for this order"
+        parameters:
+          - name: "paymentId"
+            type: "String"
+            required: true
+        visibility: "public"
+        
+      - id: "method-004"
+        name: "calculateTotal"
+        method_type: "query"
+        return_type: "Money"
+        description: "Calculate total order amount"
+        visibility: "private"
+        
+    invariants:
+      - id: "inv-001"
+        name: "OrderMustHaveItems"
+        expression: "items.length > 0"
+        error_message: "Order must have at least one item"
+        enabled: true
+        
+      - id: "inv-002"
+        name: "TotalMustMatchItems"
+        expression: "totalAmount == sum(items.subtotal)"
+        error_message: "Total must equal sum of item subtotals"
+        enabled: true
+        
+      - id: "inv-003"
+        name: "MaxItemsLimit"
+        expression: "items.length <= 50"
+        error_message: "Order cannot have more than 50 items"
+        enabled: true
+
+  CustomerEntity:
+    id: "entity-customer-001"
+    name: "CustomerEntity"
+    description: "Customer entity for order reference"
+    entity_type: "entity"
+    library_reference: "lib-customer-standard"
+    
+    properties:
+      - id: "prop-c-001"
+        name: "id"
+        type: "CustomerId"
+        identifier: true
+        required: true
+        
+      - id: "prop-c-002"
+        name: "name"
+        type: "String"
+        required: true
+        validation:
+          maxLength: 255
+          
+      - id: "prop-c-003"
+        name: "email"
+        type: "String"
+        required: true
+        validation:
+          email: true
+
+# Aggregates (can reference entity definitions)
+aggregates:
+  Order:
+    name: "Order"
+    description: "Order aggregate root managing order lifecycle"
+    entity_id: "entity-order-001"  # References EntityDefinition
+    # root_entity included for backward compatibility with v1.0 validators
+    root_entity:
+      name: "Order"
+      properties:
+        - name: "id"
+          type: "OrderId"
+          identifier: true
+
+# Read Models (NEW in v2.0)
+# Define projections with field sources
+read_models:
+  OrderSummary:
+    id: "rm-order-summary-001"
+    name: "OrderSummary"
+    description: "Summary view of orders for listing"
+    canvas_element_id: "canvas-rm-001"
+    
+    # Data sources - entities to pull data from
+    sources:
+      - entity_id: "entity-order-001"
+        alias: "order"
+        # Primary source, no join
+        
+      - entity_id: "entity-customer-001"
+        alias: "customer"
+        join_type: "left"
+        join_condition:
+          left_property: "order.customerId"
+          right_property: "customer.id"
+          operator: "equals"
+    
+    # Fields selected from sources
+    fields:
+      - name: "orderId"
+        type: "OrderId"
+        source:
+          type: "entity_property"
+          entity_id: "entity-order-001"
+          property_path: "order.id"
+          
+      - name: "orderNumber"
+        type: "String"
+        source:
+          type: "entity_property"
+          entity_id: "entity-order-001"
+          property_path: "order.id"
+        transformation: "formatOrderNumber(order.id)"
+        
+      - name: "customerName"
+        type: "String"
+        source:
+          type: "entity_property"
+          entity_id: "entity-customer-001"
+          property_path: "customer.name"
+          
+      - name: "customerEmail"
+        type: "String"
+        source:
+          type: "entity_property"
+          entity_id: "entity-customer-001"
+          property_path: "customer.email"
+          
+      - name: "itemCount"
+        type: "Integer"
+        source:
+          type: "computed"
+          expression: "order.items.length"
+          
+      - name: "totalAmount"
+        type: "Money"
+        source:
+          type: "entity_property"
+          entity_id: "entity-order-001"
+          property_path: "order.totalAmount"
+          
+      - name: "status"
+        type: "OrderStatus"
+        source:
+          type: "entity_property"
+          entity_id: "entity-order-001"
+          property_path: "order.status"
+          
+      - name: "createdAt"
+        type: "DateTime"
+        source:
+          type: "entity_property"
+          entity_id: "entity-order-001"
+          property_path: "order.createdAt"
+    
+    # Events that update this read model
+    updated_by_events:
+      - "OrderCreated"
+      - "OrderPaid"
+      - "OrderShipped"
+      - "OrderCancelled"
+
+  OrderDetails:
+    id: "rm-order-details-001"
+    name: "OrderDetails"
+    description: "Detailed view of a single order"
+    canvas_element_id: "canvas-rm-002"
+    
+    sources:
+      - entity_id: "entity-order-001"
+        alias: "order"
+        
+      - entity_id: "entity-customer-001"
+        alias: "customer"
+        join_type: "inner"
+        join_condition:
+          left_property: "order.customerId"
+          right_property: "customer.id"
+          operator: "equals"
+    
+    fields:
+      - name: "orderId"
+        type: "OrderId"
+        source:
+          type: "entity_property"
+          entity_id: "entity-order-001"
+          property_path: "order.id"
+          
+      - name: "customer"
+        type: "CustomerInfo"
+        source:
+          type: "computed"
+          expression: "{ id: customer.id, name: customer.name, email: customer.email }"
+          
+      - name: "items"
+        type: "List<OrderItemView>"
+        source:
+          type: "entity_property"
+          entity_id: "entity-order-001"
+          property_path: "order.items"
+        transformation: "mapToOrderItemView(order.items)"
+          
+      - name: "shippingAddress"
+        type: "Address"
+        source:
+          type: "entity_property"
+          entity_id: "entity-order-001"
+          property_path: "order.shippingAddress"
+          
+      - name: "totalAmount"
+        type: "Money"
+        source:
+          type: "entity_property"
+          entity_id: "entity-order-001"
+          property_path: "order.totalAmount"
+          
+      - name: "status"
+        type: "OrderStatus"
+        source:
+          type: "entity_property"
+          entity_id: "entity-order-001"
+          property_path: "order.status"
+          
+      - name: "timeline"
+        type: "List<OrderEvent>"
+        source:
+          type: "computed"
+          expression: "getOrderTimeline(order.id)"
+    
+    updated_by_events:
+      - "OrderCreated"
+      - "OrderPaid"
+      - "OrderShipped"
+      - "OrderDelivered"
+      - "OrderCancelled"
+
+# Value Objects (from global library or local)
+value_objects:
+  OrderId:
+    name: "OrderId"
+    type: "identifier"
+    underlying_type: "String"
+    format: "uuid"
+    prefix: "ord_"
+    
+  CustomerId:
+    name: "CustomerId"
+    type: "identifier"
+    underlying_type: "String"
+    format: "uuid"
+    prefix: "cust_"
+    
+  ProductId:
+    name: "ProductId"
+    type: "identifier"
+    underlying_type: "String"
+    format: "uuid"
+    prefix: "prod_"
+    
+  OrderItem:
+    name: "OrderItem"
+    description: "A line item in an order"
+    properties:
+      - name: "productId"
+        type: "ProductId"
+        required: true
+      - name: "productName"
+        type: "String"
+        required: true
+        validation:
+          maxLength: 255
+      - name: "quantity"
+        type: "Integer"
+        required: true
+        validation:
+          min: 1
+          max: 999
+      - name: "unitPrice"
+        type: "Money"
+        required: true
+      - name: "subtotal"
+        type: "Money"
+        required: true
+        computed: "quantity * unitPrice"
+        
+  Money:
+    name: "Money"
+    description: "Monetary value with currency"
+    properties:
+      - name: "amount"
+        type: "Decimal"
+        required: true
+        validation:
+          min: 0
+          precision: 2
+      - name: "currency"
+        type: "String"
+        required: true
+        default: "CNY"
+        validation:
+          pattern: "^[A-Z]{3}$"
+          
+  Address:
+    name: "Address"
+    description: "Physical address"
+    properties:
+      - name: "street"
+        type: "String"
+        required: true
+        validation:
+          maxLength: 255
+      - name: "city"
+        type: "String"
+        required: true
+        validation:
+          maxLength: 100
+      - name: "province"
+        type: "String"
+        required: true
+        validation:
+          maxLength: 100
+      - name: "postalCode"
+        type: "String"
+        required: true
+        validation:
+          pattern: "^[0-9]{6}$"
+      - name: "country"
+        type: "String"
+        required: true
+        default: "CN"
+        
+  OrderStatus:
+    name: "OrderStatus"
+    type: "enum"
+    values:
+      - name: "CREATED"
+        description: "Order has been created, awaiting payment"
+      - name: "PAID"
+        description: "Payment has been received"
+      - name: "PROCESSING"
+        description: "Order is being prepared"
+      - name: "SHIPPED"
+        description: "Order has been shipped"
+      - name: "DELIVERED"
+        description: "Order has been delivered"
+      - name: "CANCELLED"
+        description: "Order has been cancelled"
+      - name: "REFUNDED"
+        description: "Order has been refunded"
+
+# Domain Events
+events:
+  OrderCreated:
+    name: "OrderCreated"
+    description: "Emitted when a new order is created"
+    aggregate: "Order"
+    payload:
+      - name: "orderId"
+        type: "OrderId"
+      - name: "customerId"
+        type: "CustomerId"
+      - name: "items"
+        type: "List<OrderItem>"
+      - name: "shippingAddress"
+        type: "Address"
+      - name: "totalAmount"
+        type: "Money"
+      - name: "createdAt"
+        type: "DateTime"
+        
+  OrderPaid:
+    name: "OrderPaid"
+    description: "Emitted when an order payment is confirmed"
+    aggregate: "Order"
+    payload:
+      - name: "orderId"
+        type: "OrderId"
+      - name: "paymentId"
+        type: "String"
+      - name: "paidAmount"
+        type: "Money"
+      - name: "paidAt"
+        type: "DateTime"
+        
+  OrderShipped:
+    name: "OrderShipped"
+    description: "Emitted when an order is shipped"
+    aggregate: "Order"
+    payload:
+      - name: "orderId"
+        type: "OrderId"
+      - name: "trackingNumber"
+        type: "String"
+      - name: "carrier"
+        type: "String"
+      - name: "shippedAt"
+        type: "DateTime"
+        
+  OrderDelivered:
+    name: "OrderDelivered"
+    description: "Emitted when an order is delivered"
+    aggregate: "Order"
+    payload:
+      - name: "orderId"
+        type: "OrderId"
+      - name: "deliveredAt"
+        type: "DateTime"
+      - name: "signedBy"
+        type: "String"
+        
+  OrderCancelled:
+    name: "OrderCancelled"
+    description: "Emitted when an order is cancelled"
+    aggregate: "Order"
+    payload:
+      - name: "orderId"
+        type: "OrderId"
+      - name: "reason"
+        type: "String"
+      - name: "cancelledAt"
+        type: "DateTime"
+
+# Commands (Enhanced with data models in v2.0)
+commands:
+  CreateOrder:
+    id: "cmd-create-order-001"
+    name: "CreateOrder"
+    description: "Create a new order"
+    aggregate: "Order"
+    canvas_element_id: "canvas-cmd-001"
+    
+    # Enhanced payload with field sources
+    payload:
+      - name: "customerId"
+        type: "CustomerId"
+        required: true
+        description: "Customer placing the order"
+        source:
+          type: "custom"  # From UI input
+          
+      - name: "items"
+        type: "List<CreateOrderItem>"
+        required: true
+        description: "Items to order"
+        source:
+          type: "custom"  # From shopping cart in UI
+        validation:
+          minLength: 1
+          maxLength: 50
+          
+      - name: "shippingAddress"
+        type: "Address"
+        required: true
+        description: "Delivery address"
+        source:
+          type: "read_model"  # From customer's saved addresses
+          read_model_id: "rm-customer-addresses"
+          
+    produces:
+      - "OrderCreated"
+      
+    validation:
+      - expression: "items.length > 0"
+        message: "Order must have at least one item"
+      - expression: "items.length <= 50"
+        message: "Order cannot have more than 50 items"
+        
+  ConfirmPayment:
+    id: "cmd-confirm-payment-001"
+    name: "ConfirmPayment"
+    description: "Confirm order payment"
+    aggregate: "Order"
+    canvas_element_id: "canvas-cmd-002"
+    
+    payload:
+      - name: "orderId"
+        type: "OrderId"
+        required: true
+        source:
+          type: "entity_property"
+          entity_id: "entity-order-001"
+          property_path: "order.id"
+          
+      - name: "paymentId"
+        type: "String"
+        required: true
+        source:
+          type: "custom"  # From payment gateway
+          
+    produces:
+      - "OrderPaid"
+      
+    preconditions:
+      - expression: "order.status == CREATED"
+        message: "Can only confirm payment for orders in CREATED status"
+        
+  ShipOrder:
+    id: "cmd-ship-order-001"
+    name: "ShipOrder"
+    description: "Ship the order"
+    aggregate: "Order"
+    canvas_element_id: "canvas-cmd-003"
+    
+    payload:
+      - name: "orderId"
+        type: "OrderId"
+        required: true
+        source:
+          type: "read_model"
+          read_model_id: "rm-order-summary-001"
+          property_path: "orderId"
+          
+      - name: "trackingNumber"
+        type: "String"
+        required: true
+        source:
+          type: "custom"  # From shipping service
+          
+      - name: "carrier"
+        type: "String"
+        required: true
+        source:
+          type: "custom"  # From shipping service
+          
+    produces:
+      - "OrderShipped"
+      
+    preconditions:
+      - expression: "order.status == PAID"
+        message: "Can only ship orders that have been paid"
+
+  CancelOrder:
+    id: "cmd-cancel-order-001"
+    name: "CancelOrder"
+    description: "Cancel the order"
+    aggregate: "Order"
+    canvas_element_id: "canvas-cmd-004"
+    
+    payload:
+      - name: "orderId"
+        type: "OrderId"
+        required: true
+        source:
+          type: "entity_property"
+          entity_id: "entity-order-001"
+          property_path: "order.id"
+          
+      - name: "reason"
+        type: "String"
+        required: true
+        source:
+          type: "custom"  # User input
+          
+    produces:
+      - "OrderCancelled"
+      
+    preconditions:
+      - expression: "order.status in [CREATED, PAID]"
+        message: "Can only cancel orders that have not been shipped"
+
+# Policies (NEW in v2.0)
+policies:
+  - id: "policy-auto-ship-001"
+    name: "AutoShipWhenPaid"
+    description: "Automatically prepare order for shipping when paid"
+    canvas_element_id: "canvas-policy-001"
+    triggers:
+      - "OrderPaid"
+    actions:
+      - "PrepareShipment"
+    conditions:
+      - expression: "order.items.all(item => item.inStock)"
+        message: "All items must be in stock"
+
+# Queries
+queries:
+  GetOrder:
+    name: "GetOrder"
+    description: "Get order by ID"
+    read_model: "OrderDetails"
+    parameters:
+      - name: "orderId"
+        type: "OrderId"
+        required: true
+    returns:
+      type: "OrderDetails"
+      nullable: true
+      
+  ListOrders:
+    name: "ListOrders"
+    description: "List orders with filters"
+    read_model: "OrderSummary"
+    parameters:
+      - name: "customerId"
+        type: "CustomerId"
+        required: false
+      - name: "status"
+        type: "OrderStatus"
+        required: false
+      - name: "fromDate"
+        type: "DateTime"
+        required: false
+      - name: "toDate"
+        type: "DateTime"
+        required: false
+      - name: "page"
+        type: "Integer"
+        required: false
+        default: 1
+        validation:
+          min: 1
+      - name: "pageSize"
+        type: "Integer"
+        required: false
+        default: 20
+        validation:
+          min: 1
+          max: 100
+    returns:
+      type: "PagedResult<OrderSummary>"
+
+# External event subscriptions
+external_events:
+  - context: "Payment"
+    event: "PaymentCompleted"
+    handler: "handlePaymentCompleted"
+    description: "When payment is completed, confirm the order payment"
+  - context: "Inventory"
+    event: "StockReserved"
+    handler: "handleStockReserved"
+    description: "When stock is reserved, proceed with order processing"
+
+# Connections (NEW in v2.0)
+# Visual connections between canvas elements
+connections:
+  - id: "conn-001"
+    type: "ui_to_command"
+    source_id: "canvas-ui-checkout"
+    target_id: "canvas-cmd-001"
+    label: "Place Order"
+    
+  - id: "conn-002"
+    type: "command_to_aggregate"
+    source_id: "canvas-cmd-001"
+    target_id: "agg-order-001"
+    label: "Creates"
+    
+  - id: "conn-003"
+    type: "aggregate_to_event"
+    source_id: "agg-order-001"
+    target_id: "canvas-event-001"
+    label: "OrderCreated"
+    
+  - id: "conn-004"
+    type: "event_to_policy"
+    source_id: "canvas-event-002"
+    target_id: "canvas-policy-001"
+    label: "Triggers"
+    
+  - id: "conn-005"
+    type: "policy_to_command"
+    source_id: "canvas-policy-001"
+    target_id: "canvas-cmd-003"
+    label: "Execute"
+    
+  - id: "conn-006"
+    type: "event_to_read_model"
+    source_id: "canvas-event-001"
+    target_id: "canvas-rm-001"
+    label: "Updates"
+    
+  - id: "conn-007"
+    type: "read_model_to_ui"
+    source_id: "canvas-rm-001"
+    target_id: "canvas-ui-order-list"
+    label: "Display"
+    
+  - id: "conn-008"
+    type: "external_to_command"
+    source_id: "canvas-ext-payment"
+    target_id: "canvas-cmd-002"
+    label: "Payment Gateway"
+
+# Library References (NEW in v2.0)
+# Components imported from global library
+library_references:
+  - library_id: "lib-money-v1"
+    component_type: "value_object"
+    namespace: "com.stormforge.common.Money"
+    version: "1.0.0"
+    scope: "enterprise"
+    usage_type: "reference"
+    local_id: "Money"
+    
+  - library_id: "lib-address-v1"
+    component_type: "value_object"
+    namespace: "com.stormforge.common.Address"
+    version: "1.0.0"
+    scope: "enterprise"
+    usage_type: "reference"
+    local_id: "Address"
+    
+  - library_id: "lib-customer-standard"
+    component_type: "entity"
+    namespace: "com.acme.common.Customer"
+    version: "2.1.0"
+    scope: "organization"
+    usage_type: "reference"
+    local_id: "entity-customer-001"
+
+# Canvas Metadata (NEW in v2.0)
+# Visual layout information for the canvas
+canvas_metadata:
+  viewport:
+    zoom: 1.0
+    pan_x: 0
+    pan_y: 0
+    
+  elements:
+    - id: "canvas-event-001"
+      type: "domain_event"
+      name: "OrderCreated"
+      position:
+        x: 300
+        y: 200
+      size:
+        width: 150
+        height: 80
+      color: "#FF9933"
+      definition_id: "OrderCreated"
+      
+    - id: "canvas-event-002"
+      type: "domain_event"
+      name: "OrderPaid"
+      position:
+        x: 500
+        y: 200
+      size:
+        width: 150
+        height: 80
+      color: "#FF9933"
+      definition_id: "OrderPaid"
+      
+    - id: "canvas-cmd-001"
+      type: "command"
+      name: "CreateOrder"
+      position:
+        x: 100
+        y: 200
+      size:
+        width: 150
+        height: 80
+      color: "#3399FF"
+      definition_id: "cmd-create-order-001"
+      
+    - id: "canvas-cmd-002"
+      type: "command"
+      name: "ConfirmPayment"
+      position:
+        x: 300
+        y: 350
+      size:
+        width: 150
+        height: 80
+      color: "#3399FF"
+      definition_id: "cmd-confirm-payment-001"
+      
+    - id: "canvas-cmd-003"
+      type: "command"
+      name: "ShipOrder"
+      position:
+        x: 700
+        y: 200
+      size:
+        width: 150
+        height: 80
+      color: "#3399FF"
+      definition_id: "cmd-ship-order-001"
+      
+    - id: "agg-order-001"
+      type: "aggregate"
+      name: "Order"
+      position:
+        x: 300
+        y: 50
+      size:
+        width: 200
+        height: 100
+      color: "#FFFF66"
+      definition_id: "entity-order-001"
+      
+    - id: "canvas-policy-001"
+      type: "policy"
+      name: "AutoShipWhenPaid"
+      position:
+        x: 600
+        y: 350
+      size:
+        width: 180
+        height: 80
+      color: "#CC99FF"
+      definition_id: "policy-auto-ship-001"
+      
+    - id: "canvas-rm-001"
+      type: "read_model"
+      name: "OrderSummary"
+      position:
+        x: 500
+        y: 50
+      size:
+        width: 180
+        height: 80
+      color: "#66CC66"
+      definition_id: "rm-order-summary-001"
+      
+    - id: "canvas-rm-002"
+      type: "read_model"
+      name: "OrderDetails"
+      position:
+        x: 700
+        y: 50
+      size:
+        width: 180
+        height: 80
+      color: "#66CC66"
+      definition_id: "rm-order-details-001"
+      
+    - id: "canvas-ui-checkout"
+      type: "ui"
+      name: "Checkout Page"
+      position:
+        x: 100
+        y: 350
+      size:
+        width: 150
+        height: 80
+      color: "#FFFFFF"
+      
+    - id: "canvas-ui-order-list"
+      type: "ui"
+      name: "Order List"
+      position:
+        x: 700
+        y: 350
+      size:
+        width: 150
+        height: 80
+      color: "#FFFFFF"
+      
+    - id: "canvas-ext-payment"
+      type: "external_system"
+      name: "Payment Gateway"
+      position:
+        x: 100
+        y: 500
+      size:
+        width: 180
+        height: 80
+      color: "#FF99CC"
+  
+  swimlanes:
+    - id: "swimlane-order"
+      name: "Order Context"
+      bounded_context: "Order"
+      position: 0
+      height: 600

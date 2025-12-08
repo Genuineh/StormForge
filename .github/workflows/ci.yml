@@ -197,7 +197,14 @@ jobs:
           if [ -d "ir_schema/examples" ]; then
             for file in ir_schema/examples/**/*.yaml; do
               echo "Validating $file..."
-              ajv validate -s ir_schema/schema/ir.schema.json -d "$file" --spec=draft2020 -c ajv-formats
+              # Check if file contains version: "2.0" to determine which schema to use
+              if grep -q 'version: "2.0"' "$file"; then
+                echo "Using v2.0 schema for $file"
+                ajv validate -s ir_schema/schema/ir_v2.schema.json -d "$file" --spec=draft2020 -c ajv-formats
+              else
+                echo "Using v1.0 schema for $file"
+                ajv validate -s ir_schema/schema/ir.schema.json -d "$file" --spec=draft2020 -c ajv-formats
+              fi
             done
           else
             echo "No IR examples to validate"

@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stormforge_modeler/canvas/canvas_controller.dart';
 import 'package:stormforge_modeler/models/models.dart';
+import 'package:stormforge_modeler/services/providers.dart';
+import 'package:stormforge_modeler/widgets/dialogs/entity_selection_dialog.dart';
+import 'package:stormforge_modeler/widgets/dialogs/command_definition_selection_dialog.dart';
+import 'package:stormforge_modeler/widgets/dialogs/read_model_definition_selection_dialog.dart';
 
 /// The property panel widget for editing selected elements.
 class PropertyPanel extends ConsumerWidget {
@@ -345,13 +349,24 @@ class _ElementPropertiesState extends ConsumerState<_ElementProperties> {
         if (element.type == ElementType.aggregate && element.entityId == null)
           ...[
             ElevatedButton.icon(
-              onPressed: () {
-                // TODO: Show entity selection dialog
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Entity selection will open here'),
+              onPressed: () async {
+                final entityService = ref.read(entityServiceProvider);
+                // TODO: Get actual project ID from context/state
+                const projectId = 'current-project-id';
+                
+                final entity = await showDialog<EntityDefinition>(
+                  context: context,
+                  builder: (context) => EntitySelectionDialog(
+                    projectId: projectId,
+                    entityService: entityService,
                   ),
                 );
+                
+                if (entity != null) {
+                  ref
+                      .read(canvasModelProvider.notifier)
+                      .linkEntity(element.id, entity.id);
+                }
               },
               icon: const Icon(Icons.link),
               label: const Text('Link to Entity'),
@@ -366,13 +381,24 @@ class _ElementPropertiesState extends ConsumerState<_ElementProperties> {
             element.commandDefinitionId == null)
           ...[
             ElevatedButton.icon(
-              onPressed: () {
-                // TODO: Show command definition selection dialog
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Command definition selection will open here'),
+              onPressed: () async {
+                final commandService = ref.read(commandServiceProvider);
+                // TODO: Get actual project ID from context/state
+                const projectId = 'current-project-id';
+                
+                final command = await showDialog<CommandDefinition>(
+                  context: context,
+                  builder: (context) => CommandDefinitionSelectionDialog(
+                    projectId: projectId,
+                    commandService: commandService,
                   ),
                 );
+                
+                if (command != null) {
+                  ref
+                      .read(canvasModelProvider.notifier)
+                      .linkCommandDefinition(element.id, command.id);
+                }
               },
               icon: const Icon(Icons.link),
               label: const Text('Link to Command Definition'),
@@ -387,13 +413,24 @@ class _ElementPropertiesState extends ConsumerState<_ElementProperties> {
             element.readModelDefinitionId == null)
           ...[
             ElevatedButton.icon(
-              onPressed: () {
-                // TODO: Show read model definition selection dialog
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Read model definition selection will open here'),
+              onPressed: () async {
+                final readModelService = ref.read(readModelServiceProvider);
+                // TODO: Get actual project ID from context/state
+                const projectId = 'current-project-id';
+                
+                final readModel = await showDialog<ReadModelDefinition>(
+                  context: context,
+                  builder: (context) => ReadModelDefinitionSelectionDialog(
+                    projectId: projectId,
+                    readModelService: readModelService,
                   ),
                 );
+                
+                if (readModel != null) {
+                  ref
+                      .read(canvasModelProvider.notifier)
+                      .linkReadModelDefinition(element.id, readModel.id);
+                }
               },
               icon: const Icon(Icons.link),
               label: const Text('Link to Read Model Definition'),

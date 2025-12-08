@@ -185,6 +185,13 @@ aggregates:
     name: "Order"
     description: "Order aggregate root managing order lifecycle"
     entity_id: "entity-order-001"  # References EntityDefinition
+    # root_entity included for backward compatibility with v1.0 validators
+    root_entity:
+      name: "Order"
+      properties:
+        - name: "id"
+          type: "OrderId"
+          identifier: true
 
 # Read Models (NEW in v2.0)
 # Define projections with field sources

@@ -135,18 +135,18 @@ class DataSource extends Equatable {
       [entityId, alias, joinCondition, joinType, displayOrder];
 }
 
-/// Field source type
-enum FieldSourceType {
+/// Field source type for read models
+enum ReadModelFieldSourceType {
   direct,
   computed,
   aggregated;
 
   String toJson() => name;
 
-  static FieldSourceType fromJson(String value) {
-    return FieldSourceType.values.firstWhere(
+  static ReadModelFieldSourceType fromJson(String value) {
+    return ReadModelFieldSourceType.values.firstWhere(
       (e) => e.name == value,
-      orElse: () => FieldSourceType.direct,
+      orElse: () => ReadModelFieldSourceType.direct,
     );
   }
 }
@@ -229,7 +229,7 @@ class ReadModelField extends Equatable {
   final String id;
   final String name;
   final String fieldType;
-  final FieldSourceType sourceType;
+  final ReadModelFieldSourceType sourceType;
   final String sourcePath;
   final FieldTransform? transform;
   final bool nullable;
@@ -240,7 +240,7 @@ class ReadModelField extends Equatable {
     required String name,
     required String fieldType,
     required String sourcePath,
-    FieldSourceType? sourceType,
+    ReadModelFieldSourceType? sourceType,
     FieldTransform? transform,
     bool? nullable,
     String? description,
@@ -249,7 +249,7 @@ class ReadModelField extends Equatable {
       id: const Uuid().v4(),
       name: name,
       fieldType: fieldType,
-      sourceType: sourceType ?? FieldSourceType.direct,
+      sourceType: sourceType ?? ReadModelFieldSourceType.direct,
       sourcePath: sourcePath,
       transform: transform,
       nullable: nullable ?? false,
@@ -262,7 +262,7 @@ class ReadModelField extends Equatable {
     String? id,
     String? name,
     String? fieldType,
-    FieldSourceType? sourceType,
+    ReadModelFieldSourceType? sourceType,
     String? sourcePath,
     FieldTransform? transform,
     bool? nullable,
@@ -301,7 +301,7 @@ class ReadModelField extends Equatable {
       id: json['id'] as String,
       name: json['name'] as String,
       fieldType: json['fieldType'] as String,
-      sourceType: FieldSourceType.fromJson(json['sourceType'] as String),
+      sourceType: ReadModelFieldSourceType.fromJson(json['sourceType'] as String),
       sourcePath: json['sourcePath'] as String,
       transform: json['transform'] != null
           ? FieldTransform.fromJson(json['transform'] as Map<String, dynamic>)

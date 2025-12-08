@@ -44,11 +44,17 @@ use crate::{
             TeamStateInner,
         },
         user::{get_user, list_users, update_user},
+        library::{
+            add_component_reference, analyze_component_impact, delete_component, get_component,
+            get_component_versions, get_project_references, publish_component,
+            remove_component_reference, search_components, update_component_version,
+            LibraryStateInner,
+        },
     },
     models::*,
     services::{
-        AuthService, CommandService, ConnectionService, EntityService, ProjectService,
-        ReadModelService, TeamMemberService, UserService,
+        AuthService, CommandService, ConnectionService, EntityService, LibraryService,
+        ProjectService, ReadModelService, TeamMemberService, UserService,
     },
 };
 
@@ -114,6 +120,16 @@ use crate::{
         handlers::command::remove_validation,
         handlers::command::add_precondition,
         handlers::command::remove_precondition,
+        handlers::library::publish_component,
+        handlers::library::get_component,
+        handlers::library::search_components,
+        handlers::library::update_component_version,
+        handlers::library::delete_component,
+        handlers::library::get_component_versions,
+        handlers::library::add_component_reference,
+        handlers::library::remove_component_reference,
+        handlers::library::get_project_references,
+        handlers::library::analyze_component_impact,
     ),
     components(
         schemas(
@@ -132,6 +148,10 @@ use crate::{
             FieldSource, ValidationOperator, CommandValidationRule, PreconditionOperator, Precondition,
             CreateCommandRequest, UpdateCommandRequest, CommandFieldRequest,
             CommandValidationRuleRequest, PreconditionRequest,
+            LibraryComponent, ComponentVersion, ComponentReference, ComponentStatus,
+            LibraryScope, ComponentType, ComponentReferenceMode, UsageStats,
+            PublishComponentRequest, UpdateVersionRequest, AddReferenceRequest,
+            ProjectImpact, ImpactAnalysis,
         )
     ),
     tags(
@@ -142,7 +162,8 @@ use crate::{
         (name = "connections", description = "Connection management endpoints"),
         (name = "entities", description = "Entity modeling endpoints"),
         (name = "read-models", description = "Read model designer endpoints"),
-        (name = "commands", description = "Command data model designer endpoints")
+        (name = "commands", description = "Command data model designer endpoints"),
+        (name = "Library", description = "Enterprise global library endpoints")
     )
 )]
 struct ApiDoc;
@@ -195,6 +216,7 @@ async fn main() -> Result<()> {
     let entity_service = EntityService::new(mongodb.db());
     let read_model_service = ReadModelService::new(mongodb.db());
     let command_service = CommandService::new(mongodb.db());
+    let library_service = LibraryService::new(mongodb.db());
 
     // Create application states
     let auth_state = Arc::new(AppStateInner {
@@ -212,6 +234,10 @@ async fn main() -> Result<()> {
 
     let entity_state = Arc::new(EntityStateInner {
         entity_service: entity_service.clone(),
+    });
+
+    let library_state = Arc::new(LibraryStateInner {
+        library_service: library_service.clone(),
     });
 
     // Configure CORS
@@ -384,6 +410,36 @@ async fn main() -> Result<()> {
             delete(remove_precondition),
         )
         .with_state(command_service)
+        // Library routes
+        .route("/api/library/components", post(publish_component))
+        .route("/api/library/components", get(search_components))
+        .route("/api/library/components/:id", get(get_component))
+        .route(
+            "/api/library/components/:id/version",
+            put(update_component_version),
+        )
+        .route("/api/library/components/:id", delete(delete_component))
+        .route(
+            "/api/library/components/:id/versions",
+            get(get_component_versions),
+        )
+        .route(
+            "/api/library/components/:id/impact",
+            get(analyze_component_impact),
+        )
+        .route(
+            "/api/projects/:project_id/library/references",
+            post(add_component_reference),
+        )
+        .route(
+            "/api/projects/:project_id/library/references",
+            get(get_project_references),
+        )
+        .route(
+            "/api/projects/:project_id/library/references/:component_id",
+            delete(remove_component_reference),
+        )
+        .with_state(library_state)
         // Swagger UI
         .merge(SwaggerUi::new("/swagger-ui").url("/api-docs/openapi.json", ApiDoc::openapi()))
         // Health check

@@ -135,6 +135,10 @@ abstract class CanvasElement extends Equatable {
     required this.label,
     this.description = '',
     this.isSelected = false,
+    this.entityId,
+    this.commandDefinitionId,
+    this.readModelDefinitionId,
+    this.libraryComponentId,
   });
 
   /// Unique identifier for this element.
@@ -158,6 +162,18 @@ abstract class CanvasElement extends Equatable {
   /// Whether this element is currently selected.
   final bool isSelected;
 
+  /// Reference to an entity definition (for Aggregate elements).
+  final String? entityId;
+
+  /// Reference to a command definition (for Command elements).
+  final String? commandDefinitionId;
+
+  /// Reference to a read model definition (for ReadModel elements).
+  final String? readModelDefinitionId;
+
+  /// Reference to a library component (for elements created from library).
+  final String? libraryComponentId;
+
   /// Creates a copy of this element with the given properties.
   CanvasElement copyWith({
     String? id,
@@ -167,6 +183,10 @@ abstract class CanvasElement extends Equatable {
     String? label,
     String? description,
     bool? isSelected,
+    String? entityId,
+    String? commandDefinitionId,
+    String? readModelDefinitionId,
+    String? libraryComponentId,
   });
 
   /// The bounding rectangle of this element.
@@ -185,6 +205,10 @@ abstract class CanvasElement extends Equatable {
     label,
     description,
     isSelected,
+    entityId,
+    commandDefinitionId,
+    readModelDefinitionId,
+    libraryComponentId,
   ];
 }
 
@@ -199,6 +223,10 @@ class StickyNoteElement extends CanvasElement {
     required super.label,
     super.description,
     super.isSelected,
+    super.entityId,
+    super.commandDefinitionId,
+    super.readModelDefinitionId,
+    super.libraryComponentId,
   });
 
   /// Creates a new sticky note with default values.
@@ -224,6 +252,10 @@ class StickyNoteElement extends CanvasElement {
     String? label,
     String? description,
     bool? isSelected,
+    String? entityId,
+    String? commandDefinitionId,
+    String? readModelDefinitionId,
+    String? libraryComponentId,
   }) {
     return StickyNoteElement(
       id: id ?? this.id,
@@ -233,6 +265,10 @@ class StickyNoteElement extends CanvasElement {
       label: label ?? this.label,
       description: description ?? this.description,
       isSelected: isSelected ?? this.isSelected,
+      entityId: entityId ?? this.entityId,
+      commandDefinitionId: commandDefinitionId ?? this.commandDefinitionId,
+      readModelDefinitionId: readModelDefinitionId ?? this.readModelDefinitionId,
+      libraryComponentId: libraryComponentId ?? this.libraryComponentId,
     );
   }
 }

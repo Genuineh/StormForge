@@ -180,6 +180,76 @@ class CanvasModelNotifier extends StateNotifier<CanvasModel> {
   List<CanvasElement> getElementsByType(ElementType type) {
     return state.elements.where((e) => e.type == type).toList();
   }
+
+  /// Links an element to an entity definition.
+  void linkEntity(String elementId, String entityId) {
+    final element = state.getElementById(elementId);
+    if (element != null) {
+      state = state.updateElement(element.copyWith(entityId: entityId));
+    }
+  }
+
+  /// Unlinks an element from its entity definition.
+  void unlinkEntity(String elementId) {
+    final element = state.getElementById(elementId);
+    if (element != null) {
+      state = state.updateElement(element.copyWith(entityId: ''));
+    }
+  }
+
+  /// Links an element to a command definition.
+  void linkCommandDefinition(String elementId, String commandDefinitionId) {
+    final element = state.getElementById(elementId);
+    if (element != null) {
+      state = state.updateElement(
+        element.copyWith(commandDefinitionId: commandDefinitionId),
+      );
+    }
+  }
+
+  /// Unlinks an element from its command definition.
+  void unlinkCommandDefinition(String elementId) {
+    final element = state.getElementById(elementId);
+    if (element != null) {
+      state = state.updateElement(element.copyWith(commandDefinitionId: ''));
+    }
+  }
+
+  /// Links an element to a read model definition.
+  void linkReadModelDefinition(String elementId, String readModelDefinitionId) {
+    final element = state.getElementById(elementId);
+    if (element != null) {
+      state = state.updateElement(
+        element.copyWith(readModelDefinitionId: readModelDefinitionId),
+      );
+    }
+  }
+
+  /// Unlinks an element from its read model definition.
+  void unlinkReadModelDefinition(String elementId) {
+    final element = state.getElementById(elementId);
+    if (element != null) {
+      state = state.updateElement(element.copyWith(readModelDefinitionId: ''));
+    }
+  }
+
+  /// Links an element to a library component.
+  void linkLibraryComponent(String elementId, String libraryComponentId) {
+    final element = state.getElementById(elementId);
+    if (element != null) {
+      state = state.updateElement(
+        element.copyWith(libraryComponentId: libraryComponentId),
+      );
+    }
+  }
+
+  /// Unlinks an element from its library component.
+  void unlinkLibraryComponent(String elementId) {
+    final element = state.getElementById(elementId);
+    if (element != null) {
+      state = state.updateElement(element.copyWith(libraryComponentId: ''));
+    }
+  }
 }
 
 /// State notifier for managing the canvas viewport.

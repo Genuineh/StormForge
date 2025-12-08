@@ -235,6 +235,196 @@ class _ElementPropertiesState extends ConsumerState<_ElementProperties> {
         const Divider(),
         const SizedBox(height: 16),
 
+        // Linked definitions section
+        if (element.entityId != null ||
+            element.commandDefinitionId != null ||
+            element.readModelDefinitionId != null ||
+            element.libraryComponentId != null)
+          ...[
+            _PropertyField(
+              label: 'Linked Definitions',
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (element.entityId != null)
+                    _LinkedDefinitionCard(
+                      icon: Icons.account_tree,
+                      title: 'Entity',
+                      subtitle: 'Linked to entity definition',
+                      onTap: () {
+                        // TODO: Navigate to entity editor
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Entity editor will open here'),
+                          ),
+                        );
+                      },
+                      onUnlink: () {
+                        ref
+                            .read(canvasModelProvider.notifier)
+                            .unlinkEntity(element.id);
+                      },
+                    ),
+                  if (element.commandDefinitionId != null) ...[
+                    if (element.entityId != null) const SizedBox(height: 8),
+                    _LinkedDefinitionCard(
+                      icon: Icons.play_arrow,
+                      title: 'Command Definition',
+                      subtitle: 'Linked to command data model',
+                      onTap: () {
+                        // TODO: Navigate to command editor
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Command editor will open here'),
+                          ),
+                        );
+                      },
+                      onUnlink: () {
+                        ref
+                            .read(canvasModelProvider.notifier)
+                            .unlinkCommandDefinition(element.id);
+                      },
+                    ),
+                  ],
+                  if (element.readModelDefinitionId != null) ...[
+                    if (element.entityId != null ||
+                        element.commandDefinitionId != null)
+                      const SizedBox(height: 8),
+                    _LinkedDefinitionCard(
+                      icon: Icons.visibility,
+                      title: 'Read Model Definition',
+                      subtitle: 'Linked to read model fields',
+                      onTap: () {
+                        // TODO: Navigate to read model editor
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Read model editor will open here'),
+                          ),
+                        );
+                      },
+                      onUnlink: () {
+                        ref
+                            .read(canvasModelProvider.notifier)
+                            .unlinkReadModelDefinition(element.id);
+                      },
+                    ),
+                  ],
+                  if (element.libraryComponentId != null) ...[
+                    if (element.entityId != null ||
+                        element.commandDefinitionId != null ||
+                        element.readModelDefinitionId != null)
+                      const SizedBox(height: 8),
+                    _LinkedDefinitionCard(
+                      icon: Icons.library_books,
+                      title: 'Library Component',
+                      subtitle: 'Imported from global library',
+                      onTap: () {
+                        // TODO: Show library component details
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Library component details will show here'),
+                          ),
+                        );
+                      },
+                      onUnlink: () {
+                        ref
+                            .read(canvasModelProvider.notifier)
+                            .unlinkLibraryComponent(element.id);
+                      },
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            const Divider(),
+            const SizedBox(height: 16),
+          ],
+
+        // Link actions
+        if (element.type == ElementType.aggregate && element.entityId == null)
+          ...[
+            ElevatedButton.icon(
+              onPressed: () {
+                // TODO: Show entity selection dialog
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Entity selection will open here'),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.link),
+              label: const Text('Link to Entity'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: theme.colorScheme.primaryContainer,
+                foregroundColor: theme.colorScheme.onPrimaryContainer,
+              ),
+            ),
+            const SizedBox(height: 8),
+          ],
+        if (element.type == ElementType.command &&
+            element.commandDefinitionId == null)
+          ...[
+            ElevatedButton.icon(
+              onPressed: () {
+                // TODO: Show command definition selection dialog
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Command definition selection will open here'),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.link),
+              label: const Text('Link to Command Definition'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: theme.colorScheme.primaryContainer,
+                foregroundColor: theme.colorScheme.onPrimaryContainer,
+              ),
+            ),
+            const SizedBox(height: 8),
+          ],
+        if (element.type == ElementType.readModel &&
+            element.readModelDefinitionId == null)
+          ...[
+            ElevatedButton.icon(
+              onPressed: () {
+                // TODO: Show read model definition selection dialog
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Read model definition selection will open here'),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.link),
+              label: const Text('Link to Read Model Definition'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: theme.colorScheme.primaryContainer,
+                foregroundColor: theme.colorScheme.onPrimaryContainer,
+              ),
+            ),
+            const SizedBox(height: 8),
+          ],
+        ElevatedButton.icon(
+          onPressed: () {
+            // TODO: Show library browser
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Library browser will open here'),
+              ),
+            );
+          },
+          icon: const Icon(Icons.library_add),
+          label: const Text('Import from Library'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: theme.colorScheme.secondaryContainer,
+            foregroundColor: theme.colorScheme.onSecondaryContainer,
+          ),
+        ),
+
+        const SizedBox(height: 24),
+        const Divider(),
+        const SizedBox(height: 16),
+
         // ID (for debugging)
         _PropertyField(
           label: 'ID',
@@ -360,6 +550,79 @@ class _NoSelectionPlaceholder extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Card showing a linked definition with edit and unlink actions.
+class _LinkedDefinitionCard extends StatelessWidget {
+  const _LinkedDefinitionCard({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+    required this.onUnlink,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+  final VoidCallback onUnlink;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Card(
+      elevation: 0,
+      color: theme.colorScheme.secondaryContainer.withOpacity(0.3),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: BorderSide(color: theme.colorScheme.outline.withOpacity(0.2)),
+      ),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              Icon(
+                icon,
+                size: 24,
+                color: theme.colorScheme.secondary,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      subtitle,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.link_off, size: 20),
+                tooltip: 'Unlink',
+                onPressed: onUnlink,
+                visualDensity: VisualDensity.compact,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

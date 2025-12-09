@@ -18,6 +18,11 @@ class AuthService {
   static const _userIdKey = 'user_id';
 
   /// Gets the SharedPreferences instance.
+  ///
+  /// Note: SharedPreferences stores data in plain text. For production use on platforms
+  /// that require encryption (mobile), consider using flutter_secure_storage or
+  /// implementing encryption on top of SharedPreferences. For Linux compatibility,
+  /// we use SharedPreferences as flutter_secure_storage_linux has build issues.
   Future<SharedPreferences> get _prefs async =>
       _sharedPreferences ?? await SharedPreferences.getInstance();
 

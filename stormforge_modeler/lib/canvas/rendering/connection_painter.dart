@@ -291,21 +291,4 @@ class ConnectionPainter {
       return Offset(center.dx, y);
     }
   }
-
-  /// Parses a color string (hex format like "#2196F3") to a Color object.
-  Color _parseColor(String colorStr) {
-    try {
-      if (colorStr.startsWith('#')) {
-        final hexColor = colorStr.substring(1);
-        if (hexColor.length == 6) {
-          return Color(int.parse('FF$hexColor', radix: 16));
-        } else if (hexColor.length == 8) {
-          return Color(int.parse(hexColor, radix: 16));
-        }
-      }
-    } catch (e) {
-      // Fallback to grey if parsing fails
-    }
-    return Colors.grey;
-  }
 }

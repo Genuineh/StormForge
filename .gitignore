@@ -219,3 +219,4 @@ __pycache__/
 .Python
 venv/
 .venv/
+analyze_*.txt

@@ -136,19 +136,16 @@ impl App {
 
     pub fn confirm_action(&mut self) -> Result<()> {
         if let AppState::Confirm { action } = &self.state {
-            match action.as_str() {
-                "cleanup" => {
-                    self.add_log("Cleaning up all services...".to_string());
-                    match self.backend.cleanup_all() {
-                        Ok(messages) => {
-                            for msg in messages {
-                                self.add_log(msg);
-                            }
+            if action.as_str() == "cleanup" {
+                self.add_log("Cleaning up all services...".to_string());
+                match self.backend.cleanup_all() {
+                    Ok(messages) => {
+                        for msg in messages {
+                            self.add_log(msg);
                         }
-                        Err(e) => self.add_log(format!("Error during cleanup: {}", e)),
                     }
+                    Err(e) => self.add_log(format!("Error during cleanup: {}", e)),
                 }
-                _ => {}
             }
         }
         Ok(())
@@ -304,7 +301,11 @@ fn draw_status(f: &mut Frame, area: Rect, app: &App) {
     );
 
     let paragraph = Paragraph::new(status_text)
-        .block(Block::default().borders(Borders::ALL).title("System Status"))
+        .block(
+            Block::default()
+                .borders(Borders::ALL)
+                .title("System Status"),
+        )
         .wrap(Wrap { trim: true });
     f.render_widget(paragraph, area);
 }
@@ -349,11 +350,7 @@ fn draw_confirm(f: &mut Frame, area: Rect, action: &str) {
     let paragraph = Paragraph::new(message)
         .style(Style::default().fg(Color::Yellow))
         .alignment(Alignment::Center)
-        .block(
-            Block::default()
-                .borders(Borders::ALL)
-                .title("Confirmation"),
-        )
+        .block(Block::default().borders(Borders::ALL).title("Confirmation"))
         .wrap(Wrap { trim: true });
 
     // Center the confirmation dialog

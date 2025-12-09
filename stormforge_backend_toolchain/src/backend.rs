@@ -1,8 +1,8 @@
 use anyhow::{Context, Result};
+use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::{Child, Command, Stdio};
 use std::sync::{Arc, Mutex};
-use std::fs;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum ServiceStatus {
@@ -25,7 +25,7 @@ impl BackendManager {
     pub fn new() -> Result<Self> {
         let current_dir = std::env::current_dir()?;
         let backend_path = current_dir.join("../stormforge_backend");
-        
+
         Ok(Self {
             backend_path,
             backend_process: Arc::new(Mutex::new(None)),
@@ -36,11 +36,11 @@ impl BackendManager {
 
     pub fn setup_environment(&mut self) -> Result<Vec<String>> {
         let mut messages = Vec::new();
-        
+
         // Check if .env exists, if not create from .env.example
         let env_path = self.backend_path.join(".env");
         let env_example_path = self.backend_path.join(".env.example");
-        
+
         if !env_path.exists() {
             if env_example_path.exists() {
                 fs::copy(&env_example_path, &env_path)
@@ -52,13 +52,13 @@ impl BackendManager {
         } else {
             messages.push("✓ .env already exists".to_string());
         }
-        
+
         Ok(messages)
     }
 
     pub fn start_mongodb(&mut self) -> Result<String> {
         self.mongo_status = ServiceStatus::Starting;
-        
+
         // Check if MongoDB is already running
         if self.check_mongodb_running() {
             self.mongo_status = ServiceStatus::Running;
@@ -67,12 +67,15 @@ impl BackendManager {
 
         // Try to start MongoDB using Docker
         match Command::new("docker")
-            .args(&[
-                "run", "-d",
-                "-p", "27017:27017",
-                "--name", "stormforge_mongodb",
+            .args([
+                "run",
+                "-d",
+                "-p",
+                "27017:27017",
+                "--name",
+                "stormforge_mongodb",
                 "--rm",
-                "mongo:latest"
+                "mongo:latest",
             ])
             .output()
         {
@@ -94,16 +97,19 @@ impl BackendManager {
             }
             Err(e) => {
                 self.mongo_status = ServiceStatus::NotStarted;
-                Ok(format!("Docker not available: {}. Please start MongoDB manually.", e))
+                Ok(format!(
+                    "Docker not available: {}. Please start MongoDB manually.",
+                    e
+                ))
             }
         }
     }
 
     pub fn stop_mongodb(&mut self) -> Result<String> {
         self.mongo_status = ServiceStatus::Stopping;
-        
+
         match Command::new("docker")
-            .args(&["stop", "stormforge_mongodb"])
+            .args(["stop", "stormforge_mongodb"])
             .output()
         {
             Ok(output) => {
@@ -142,7 +148,7 @@ impl BackendManager {
 
     pub fn start_backend(&mut self) -> Result<String> {
         self.backend_status = ServiceStatus::Starting;
-        
+
         // Start backend process in background
         match Command::new("cargo")
             .arg("run")
@@ -166,7 +172,7 @@ impl BackendManager {
 
     pub fn stop_backend(&mut self) -> Result<String> {
         self.backend_status = ServiceStatus::Stopping;
-        
+
         let mut process = self.backend_process.lock().unwrap();
         if let Some(mut child) = process.take() {
             match child.kill() {
@@ -188,23 +194,23 @@ impl BackendManager {
 
     pub fn cleanup_all(&mut self) -> Result<Vec<String>> {
         let mut messages = Vec::new();
-        
+
         // Stop backend
         messages.push(self.stop_backend()?);
-        
+
         // Stop MongoDB
         messages.push(self.stop_mongodb()?);
-        
+
         // Remove MongoDB container
         if let Ok(output) = Command::new("docker")
-            .args(&["rm", "-f", "stormforge_mongodb"])
+            .args(["rm", "-f", "stormforge_mongodb"])
             .output()
         {
             if output.status.success() {
                 messages.push("✓ MongoDB container removed".to_string());
             }
         }
-        
+
         Ok(messages)
     }
 
@@ -249,7 +255,14 @@ impl BackendManager {
     pub fn check_health(&self) -> Result<bool> {
         // Try to connect to the health endpoint
         match Command::new("curl")
-            .args(&["-s", "-o", "/dev/null", "-w", "%{http_code}", "http://localhost:3000/health"])
+            .args([
+                "-s",
+                "-o",
+                "/dev/null",
+                "-w",
+                "%{http_code}",
+                "http://localhost:3000/health",
+            ])
             .output()
         {
             Ok(output) => {
@@ -263,7 +276,13 @@ impl BackendManager {
     fn check_mongodb_running(&self) -> bool {
         // Check if MongoDB container is running
         if let Ok(output) = Command::new("docker")
-            .args(&["ps", "--filter", "name=stormforge_mongodb", "--format", "{{.Names}}"])
+            .args([
+                "ps",
+                "--filter",
+                "name=stormforge_mongodb",
+                "--format",
+                "{{.Names}}",
+            ])
             .output()
         {
             let names = String::from_utf8_lossy(&output.stdout);

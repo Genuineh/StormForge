@@ -4,9 +4,7 @@ use crossterm::{
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
     ExecutableCommand,
 };
-use ratatui::{
-    prelude::*,
-};
+use ratatui::prelude::*;
 use std::io::{stdout, Stdout};
 use std::time::Duration;
 
@@ -23,7 +21,7 @@ fn main() -> Result<()> {
 
     // Create app state
     let mut app = App::new();
-    
+
     // Run app
     let res = run_app(&mut terminal, &mut app);
 
@@ -44,10 +42,8 @@ fn run_app(terminal: &mut Terminal<CrosstermBackend<Stdout>>, app: &mut App) -> 
 
         if event::poll(Duration::from_millis(100))? {
             if let Event::Key(key) = event::read()? {
-                if key.kind == KeyEventKind::Press {
-                    if handle_key_event(key, app)? {
-                        return Ok(());
-                    }
+                if key.kind == KeyEventKind::Press && handle_key_event(key, app)? {
+                    return Ok(());
                 }
             }
         }

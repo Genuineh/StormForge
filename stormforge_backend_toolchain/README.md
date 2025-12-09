@@ -2,6 +2,31 @@
 
 A visual TUI (Terminal User Interface) tool for managing the StormForge backend lifecycle. Built with Rust and ratatui, this tool provides an interactive way to setup, start, monitor, and cleanup the backend services.
 
+## Screenshot
+
+```
+┌────────────────────────────────────────────────────────────────────┐
+│              StormForge Backend Toolchain                          │
+├──────────────────────┬─────────────────────────────────────────────┤
+│ Menu                 │ Recent Activity                             │
+│                      │                                             │
+│ 1. Setup Environment │ [10:23:45] MongoDB started successfully     │
+│ 2. Start MongoDB     │ [10:23:40] ✓ Created .env from .env.example │
+│ 3. Build Backend     │ [10:23:35] Building backend...             │
+│ 4. Start Backend     │                                             │
+│ 5. View Status       │                                             │
+│ 6. View Logs         │                                             │
+│ 7. Stop Backend      │                                             │
+│ 8. Stop MongoDB      │                                             │
+│ 9. Cleanup All       │                                             │
+│ 10. Configuration    │                                             │
+│ Q. Quit              │                                             │
+│                      │                                             │
+├──────────────────────┴─────────────────────────────────────────────┤
+│ ↑/↓: Navigate | Enter: Select | Q/Esc: Quit                       │
+└────────────────────────────────────────────────────────────────────┘
+```
+
 ## Features
 
 - 🚀 **One-command setup**: Initialize environment and start all services
@@ -34,9 +59,14 @@ The binary will be available at `target/release/stormforge_backend_toolchain`.
 
 ```bash
 # From the stormforge_backend_toolchain directory
+
+# Option 1: Using the convenience script (auto-builds if needed)
+./run.sh
+
+# Option 2: Using cargo run
 cargo run
 
-# Or use the compiled binary
+# Option 3: Use the compiled binary directly
 ./target/release/stormforge_backend_toolchain
 ```
 

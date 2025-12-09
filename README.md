@@ -130,17 +130,23 @@ For detailed sprint progress and completion reports, see [docs/sprints/](docs/sp
 
 | Phase | Timeline | Milestone | Description |
 |-------|----------|-----------|-------------|
-| 0 | 2025.10 | POC | Complete end-to-end flow in 30 minutes |
-| 1 | 2025.11-2026.04 | MVP | Rust + Flutter API Package MVP |
-| 2 | 2026.05-2026.10 | Ecosystem | Multi-microservice + Plugin ecosystem |
-| 3 | 2026.11-2027.04 | Enterprise | Enterprise-grade + Incremental + Reverse engineering |
-| 4 | 2027.05-2027.12 | Platform | Platform-level + Open source + Commercialization |
+| 0 | 2025.10 - 2025.11 | POC | Complete end-to-end flow in 30 minutes |
+| 1 | 2025.11 - 2026.Q2 | MVP | Rust + Flutter API Package MVP + Modeler 2.0 |
+| 2 | 2026.Q3+ | Ecosystem | Multi-microservice + Plugin ecosystem |
+| 3 | 2027.Q1+ | Enterprise | Enterprise-grade + Incremental + Reverse engineering |
+| 4 | 2027.Q3+ | Platform | Platform-level + Open source + Commercialization |
 
 ### Current Progress
 
-- ✅ **Phase 0**: POC Complete (Sprint S00-S02)
-- 🚧 **Phase 1**: MVP In Progress (Sprint S03-S04 completed, S05-S13 planned)
-- 🚧 **Modeler 2.0**: Upgrade In Progress (Sprint M1-M8 completed, M9 at 60%)
+- ✅ **Phase 0**: POC Complete (Sprint S00-S03)
+- 🚧 **Phase 1**: MVP In Progress 
+  - Sprint S04: 90% complete (Dart generator)
+  - Backend architecture: Established
+  - Core features: In development
+- 📋 **Modeler 2.0**: Design Complete, Implementation In Progress
+  - Detailed design documents: Complete
+  - Backend models and API: 40% complete
+  - Frontend UI: 15% complete
 
 ## 🎨 Usage Example
 

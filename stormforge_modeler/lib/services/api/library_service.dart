@@ -68,13 +68,10 @@ class LibraryService {
     
     final response = await _apiClient.get(uri.toString());
     
-    if (response is List) {
-      return response
-          .map((json) => LibraryComponent.fromJson(json as Map<String, dynamic>))
-          .toList();
-    }
-    
-    return [];
+    final components = (response['components'] as List<dynamic>?)  ?? [];
+    return components
+        .map((json) => LibraryComponent.fromJson(json as Map<String, dynamic>))
+        .toList();
   }
 
   /// List components by scope
@@ -113,13 +110,10 @@ class LibraryService {
     final response =
         await _apiClient.get('/api/library/components/$componentId/versions');
     
-    if (response is List) {
-      return response
-          .map((json) => ComponentVersion.fromJson(json as Map<String, dynamic>))
-          .toList();
-    }
-    
-    return [];
+    final versions = (response['versions'] as List<dynamic>?) ?? [];
+    return versions
+        .map((json) => ComponentVersion.fromJson(json as Map<String, dynamic>))
+        .toList();
   }
 
   /// Add component reference to project
@@ -155,13 +149,10 @@ class LibraryService {
       '/api/projects/$projectId/library/references',
     );
     
-    if (response is List) {
-      return response
-          .map((json) => ComponentReference.fromJson(json as Map<String, dynamic>))
-          .toList();
-    }
-    
-    return [];
+    final references = (response['references'] as List<dynamic>?) ?? [];
+    return references
+        .map((json) => ComponentReference.fromJson(json as Map<String, dynamic>))
+        .toList();
   }
 
   /// Analyze impact of component changes

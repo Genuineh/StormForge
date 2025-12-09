@@ -266,10 +266,10 @@ class _CommandDefinitionSelectionDialogState
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (command.payload.isNotEmpty)
+                if (command.payload.fields.isNotEmpty)
                   Chip(
                     label: Text(
-                      '${command.payload.length} fields',
+                      '${command.payload.fields.length} fields',
                       style: theme.textTheme.labelSmall,
                     ),
                     visualDensity: VisualDensity.compact,

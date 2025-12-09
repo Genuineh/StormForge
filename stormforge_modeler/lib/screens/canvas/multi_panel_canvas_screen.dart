@@ -58,7 +58,7 @@ class MultiPanelCanvasScreen extends ConsumerWidget {
       body: Column(
         children: [
           // Toolbar
-          const Toolbar(),
+          const ModelerToolbar(),
           // Main content with panels
           Expanded(
             child: Row(
@@ -81,7 +81,7 @@ class MultiPanelCanvasScreen extends ConsumerWidget {
                 Expanded(
                   child: Container(
                     color: Theme.of(context).colorScheme.surface,
-                    child: const CanvasWidget(),
+                    child: const EventStormingCanvas(),
                   ),
                 ),
 

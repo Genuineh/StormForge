@@ -146,7 +146,7 @@ stormforge_modeler/lib/
 # 新增依赖
 http: ^1.2.0                    # HTTP 客户端
 go_router: ^14.3.0              # 路由管理
-flutter_secure_storage: ^9.2.2  # 安全存储
+shared_preferences: ^2.3.3      # 本地存储
 
 # 现有依赖
 flutter_riverpod: ^2.5.1        # 状态管理
@@ -204,7 +204,7 @@ uuid: ^4.5.0                    # UUID 生成
 
 ### 认证安全 (Authentication Security)
 - ✅ JWT token 认证
-- ✅ 安全存储 token（flutter_secure_storage）
+- ✅ 本地存储 token（shared_preferences）
 - ✅ 密码客户端验证（最少 6 字符）
 - ✅ 密码服务端 bcrypt 加密
 - ✅ 密码确认验证

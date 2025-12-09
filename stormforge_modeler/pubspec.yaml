@@ -37,8 +37,8 @@ dependencies:
   # Navigation
   go_router: ^14.3.0
   
-  # Secure storage
-  flutter_secure_storage: ^9.2.2
+  # Storage
+  shared_preferences: ^2.3.3
   
   # Git integration (future)
   # git2dart: ^0.2.0

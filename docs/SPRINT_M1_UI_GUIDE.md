@@ -224,7 +224,7 @@ flutter run
 
 ### Authentication
 - JWT token-based authentication
-- Secure token storage using `flutter_secure_storage`
+- Token storage using `shared_preferences`
 - Automatic token injection in API requests
 
 ### Password Security

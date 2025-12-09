@@ -22,11 +22,6 @@ set(FLUTTER_MANAGED_DIR "${CMAKE_CURRENT_SOURCE_DIR}/flutter")
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GTK REQUIRED IMPORTED_TARGET gtk+-3.0)
 
-# Add compiler flags to suppress deprecated literal operator warnings from third-party libraries
-# This addresses the issue with flutter_secure_storage_linux's json.hpp
-add_compile_options(-Wno-error=deprecated-literal-operator)
-add_compile_options(-Wno-deprecated-literal-operator)
-
 # Application build
 add_subdirectory(${FLUTTER_MANAGED_DIR})
 

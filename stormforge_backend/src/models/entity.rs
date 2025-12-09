@@ -278,3 +278,155 @@ pub struct InvariantRequest {
 fn default_enabled() -> bool {
     true
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_entity_type_default() {
+        assert_eq!(EntityType::default(), EntityType::Entity);
+    }
+
+    #[test]
+    fn test_validation_rule_new() {
+        let rule = ValidationRule::new(
+            ValidationType::Required,
+            None,
+            Some("Field is required".to_string()),
+        );
+        assert!(!rule.id.is_empty());
+        assert_eq!(rule.validation_type, ValidationType::Required);
+        assert!(rule.value.is_none());
+        assert_eq!(rule.error_message.unwrap(), "Field is required");
+    }
+
+    #[test]
+    fn test_entity_property_new() {
+        let property = EntityProperty::new("name".to_string(), "String".to_string());
+        assert!(!property.id.is_empty());
+        assert_eq!(property.name, "name");
+        assert_eq!(property.property_type, "String");
+        assert!(!property.required);
+        assert!(!property.is_identifier);
+        assert!(!property.is_read_only);
+        assert!(property.default_value.is_none());
+        assert!(property.validations.is_empty());
+    }
+
+    #[test]
+    fn test_entity_method_new() {
+        let method = EntityMethod::new(
+            "create".to_string(),
+            MethodType::Constructor,
+            "Self".to_string(),
+        );
+        assert!(!method.id.is_empty());
+        assert_eq!(method.name, "create");
+        assert_eq!(method.method_type, MethodType::Constructor);
+        assert_eq!(method.return_type, "Self");
+        assert!(method.parameters.is_empty());
+    }
+
+    #[test]
+    fn test_entity_invariant_new() {
+        let invariant = EntityInvariant::new(
+            "price_positive".to_string(),
+            "price > 0".to_string(),
+            "Price must be positive".to_string(),
+        );
+        assert!(!invariant.id.is_empty());
+        assert_eq!(invariant.name, "price_positive");
+        assert_eq!(invariant.expression, "price > 0");
+        assert_eq!(invariant.error_message, "Price must be positive");
+        assert!(invariant.enabled);
+    }
+
+    #[test]
+    fn test_entity_definition_new() {
+        let entity = EntityDefinition::new(
+            "project-123".to_string(),
+            "Order".to_string(),
+            EntityType::AggregateRoot,
+        );
+        assert!(!entity.id.is_empty());
+        assert_eq!(entity.project_id, "project-123");
+        assert_eq!(entity.name, "Order");
+        assert_eq!(entity.entity_type, EntityType::AggregateRoot);
+        assert!(entity.properties.is_empty());
+        assert!(entity.methods.is_empty());
+        assert!(entity.invariants.is_empty());
+    }
+
+    #[test]
+    fn test_entity_definition_timestamps() {
+        let before = Utc::now();
+        let entity = EntityDefinition::new(
+            "project-123".to_string(),
+            "Product".to_string(),
+            EntityType::Entity,
+        );
+        let after = Utc::now();
+
+        assert!(entity.created_at >= before && entity.created_at <= after);
+        assert!(entity.updated_at >= before && entity.updated_at <= after);
+        assert_eq!(entity.created_at, entity.updated_at);
+    }
+
+    #[test]
+    fn test_validation_types() {
+        let types = vec![
+            ValidationType::Required,
+            ValidationType::MinLength,
+            ValidationType::MaxLength,
+            ValidationType::Min,
+            ValidationType::Max,
+            ValidationType::Pattern,
+            ValidationType::Email,
+            ValidationType::Url,
+            ValidationType::Custom,
+        ];
+        
+        // Ensure all types can be created
+        for validation_type in types {
+            let rule = ValidationRule::new(validation_type.clone(), None, None);
+            assert!(!rule.id.is_empty());
+        }
+    }
+
+    #[test]
+    fn test_method_types() {
+        let constructor = EntityMethod::new(
+            "new".to_string(),
+            MethodType::Constructor,
+            "Self".to_string(),
+        );
+        assert_eq!(constructor.method_type, MethodType::Constructor);
+
+        let command = EntityMethod::new(
+            "update".to_string(),
+            MethodType::Command,
+            "()".to_string(),
+        );
+        assert_eq!(command.method_type, MethodType::Command);
+
+        let query = EntityMethod::new(
+            "get_total".to_string(),
+            MethodType::Query,
+            "f64".to_string(),
+        );
+        assert_eq!(query.method_type, MethodType::Query);
+
+        let logic = EntityMethod::new(
+            "calculate".to_string(),
+            MethodType::DomainLogic,
+            "bool".to_string(),
+        );
+        assert_eq!(logic.method_type, MethodType::DomainLogic);
+    }
+
+    #[test]
+    fn test_default_enabled() {
+        assert!(default_enabled());
+    }
+}

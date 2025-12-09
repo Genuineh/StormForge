@@ -122,7 +122,9 @@ cd StormForge
 
 ## 📅 Development Roadmap
 
-See [docs/ROADMAP.md](docs/ROADMAP.md) for the complete 68-sprint development plan.
+See [docs/ROADMAP.md](docs/ROADMAP.md) for the complete development plan.
+
+For detailed sprint progress and completion reports, see [docs/sprints/](docs/sprints/README.md).
 
 ### Key Milestones
 
@@ -133,6 +135,12 @@ See [docs/ROADMAP.md](docs/ROADMAP.md) for the complete 68-sprint development pl
 | 2 | 2026.05-2026.10 | Ecosystem | Multi-microservice + Plugin ecosystem |
 | 3 | 2026.11-2027.04 | Enterprise | Enterprise-grade + Incremental + Reverse engineering |
 | 4 | 2027.05-2027.12 | Platform | Platform-level + Open source + Commercialization |
+
+### Current Progress
+
+- ✅ **Phase 0**: POC Complete (Sprint S00-S02)
+- 🚧 **Phase 1**: MVP In Progress (Sprint S03-S04 completed, S05-S13 planned)
+- 🚧 **Modeler 2.0**: Upgrade In Progress (Sprint M1-M8 completed, M9 at 60%)
 
 ## 🎨 Usage Example
 
@@ -159,6 +167,15 @@ EventBus().on<OrderPaid>((event) {
 ## 🤝 Contributing
 
 We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## 📚 Documentation
+
+- **[TODO.md](TODO.md)** - Current project status and task tracking
+- **[Sprint Archives](docs/sprints/README.md)** - Completed sprint reports and progress
+- **[Roadmap](docs/ROADMAP.md)** - Complete development plan
+- **[Architecture](docs/ARCHITECTURE.md)** - System architecture and design
+- **[User Guides](docs/guides/)** - Getting started and user documentation
+- **[Design Documents](docs/designs/)** - Detailed design specifications
 
 ## 📄 License
 

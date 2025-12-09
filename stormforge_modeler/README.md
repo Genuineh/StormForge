@@ -42,17 +42,19 @@ stormforge_modeler/
 
 ### Initial Setup
 
-The Linux platform files are pre-configured with necessary build fixes. For other platforms, you can generate them as needed:
+**IMPORTANT:** Before building or running the application, you must run `flutter pub get` to generate required build files. Skipping this step will cause CMake errors like "does not contain a CMakeLists.txt file" or "Unknown CMake command".
 
 ```bash
 cd stormforge_modeler
 
-# Generate platform directories for other platforms (Linux is already configured)
-flutter create --platforms=web,windows,macos,ios,android .
-
-# Install dependencies
+# REQUIRED: Install dependencies and generate Flutter build files
 flutter pub get
+
+# Optional: Generate platform directories for other platforms (Linux is already configured)
+flutter create --platforms=web,windows,macos,ios,android .
 ```
+
+The Linux platform files are pre-configured with necessary build fixes. For other platforms, you can generate them as needed.
 
 **Note:** The Linux platform includes a CMake configuration fix for the `flutter_secure_storage_linux` plugin. If you need to regenerate Linux files, see `linux/README.md` for important instructions.
 
@@ -60,7 +62,11 @@ flutter pub get
 
 ```bash
 cd stormforge_modeler
+
+# Generate Flutter build files (required before first run)
 flutter pub get
+
+# Run the application
 flutter run
 ```
 

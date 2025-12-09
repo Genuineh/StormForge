@@ -117,8 +117,13 @@ StormForge/
 git clone https://github.com/Genuineh/StormForge.git
 cd StormForge
 
-# More installation steps will be added as the project develops
+# Setup Flutter Modeler
+cd stormforge_modeler
+flutter pub get  # Required: Generates build files for all platforms
+flutter run      # Run the application
 ```
+
+**Important:** If you encounter CMake errors when building the Linux application (such as "does not contain a CMakeLists.txt file"), make sure you've run `flutter pub get` first. This command generates the required ephemeral build files that are not committed to Git. See [stormforge_modeler/README.md](stormforge_modeler/README.md) for detailed setup instructions.
 
 ## 📅 Development Roadmap
 

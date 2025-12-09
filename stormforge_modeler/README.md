@@ -44,6 +44,17 @@ stormforge_modeler/
 
 **IMPORTANT:** Before building or running the application, you must run `flutter pub get` to generate required build files. Skipping this step will cause CMake errors like "does not contain a CMakeLists.txt file" or "Unknown CMake command".
 
+#### Option 1: Using the Setup Script (Recommended)
+
+```bash
+cd stormforge_modeler
+./setup.sh
+```
+
+This script will check prerequisites, install dependencies, and verify that all build files were generated correctly.
+
+#### Option 2: Manual Setup
+
 ```bash
 cd stormforge_modeler
 

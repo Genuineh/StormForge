@@ -150,7 +150,7 @@ Xcode 12.0 or later is required for building the macOS application.
 
 If you encounter an issue not covered in this guide:
 
-1. Check the [GitHub Issues](https://github.com/Genuineh/StormForge/issues) to see if someone else has reported it
+1. Check the GitHub Issues page to see if someone else has reported it
 2. Run `flutter doctor` to check your Flutter environment
 3. Enable verbose logging: `flutter run -v`
 4. Create a new issue with:

@@ -143,10 +143,12 @@ For detailed sprint progress and completion reports, see [docs/sprints/](docs/sp
   - Sprint S04: 90% complete (Dart generator)
   - Backend architecture: Established
   - Core features: In development
-- 📋 **Modeler 2.0**: Design Complete, Implementation In Progress
+- 🚧 **Modeler 2.0**: Design Complete, Implementation In Progress
   - Detailed design documents: Complete
   - Backend models and API: 40% complete
   - Frontend UI: 15% complete
+
+> **Note**: Progress percentages are calculated as: Design (20%) + Implementation (60%) + Testing (20%). See [TODO.md](TODO.md) for detailed progress tracking methodology.
 
 ## 🎨 Usage Example
 

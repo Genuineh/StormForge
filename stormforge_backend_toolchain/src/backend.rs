@@ -251,8 +251,7 @@ impl BackendManager {
         Ok(())
     }
 
-    #[allow(dead_code)]
-    pub fn check_health(&self) -> Result<bool> {
+    pub fn check_health(&self) -> bool {
         // Try to connect to the health endpoint
         match Command::new("curl")
             .args([
@@ -267,9 +266,9 @@ impl BackendManager {
         {
             Ok(output) => {
                 let status_code = String::from_utf8_lossy(&output.stdout);
-                Ok(status_code.trim() == "200")
+                status_code.trim() == "200"
             }
-            Err(_) => Ok(false),
+            Err(_) => false,
         }
     }
 

@@ -157,11 +157,6 @@ impl App {
         Ok(())
     }
 
-    pub fn refresh_status(&mut self) -> Result<()> {
-        self.backend.check_status()?;
-        Ok(())
-    }
-
     pub fn add_log(&mut self, message: String) {
         let timestamp = chrono::Local::now().format("%H:%M:%S");
         self.logs.push(format!("[{}] {}", timestamp, message));
@@ -290,13 +285,25 @@ fn draw_main_menu(f: &mut Frame, area: Rect, app: &App) {
 }
 
 fn draw_status(f: &mut Frame, area: Rect, app: &App) {
+    let health_status = if app.backend.backend_status == ServiceStatus::Running {
+        if app.backend.check_health() {
+            "✓ Healthy (HTTP 200)"
+        } else {
+            "⚠ Not responding"
+        }
+    } else {
+        "N/A"
+    };
+
     let status_text = format!(
         "MongoDB Status: {}\n\
          Backend Status: {}\n\
+         Health Check: {}\n\
          Backend Path: {}\n\n\
          Press 'r' to refresh status",
         format_status(&app.backend.mongo_status),
         format_status(&app.backend.backend_status),
+        health_status,
         app.backend.get_backend_path().display(),
     );
 

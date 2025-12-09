@@ -64,7 +64,7 @@ fn handle_key_event(key: KeyEvent, app: &mut App) -> Result<bool> {
         },
         AppState::Status => match key.code {
             KeyCode::Char('q') | KeyCode::Esc => app.state = AppState::MainMenu,
-            KeyCode::Char('r') => app.refresh_status()?,
+            KeyCode::Char('r') => app.update()?,
             _ => {}
         },
         AppState::Logs => match key.code {

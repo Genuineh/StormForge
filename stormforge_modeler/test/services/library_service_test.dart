@@ -54,6 +54,13 @@ void main() {
               'version': '1.0.0',
               'description': 'Test component',
               'definition': {},
+              'status': 'active',
+              'usageStats': {
+                'projectCount': 0,
+                'referenceCount': 0,
+              },
+              'createdAt': '2025-01-01T00:00:00.000Z',
+              'updatedAt': '2025-01-01T00:00:00.000Z',
             }
           ],
           'total': 1,
@@ -102,18 +109,22 @@ void main() {
         mockApiClient.setMockResponse({
           'versions': [
             {
+              'id': 'ver-1',
+              'componentId': 'comp-1',
               'version': '1.0.0',
-              'createdAt': '2025-01-01T00:00:00.000Z',
-              'author': 'test@example.com',
-              'changeNotes': 'Initial version',
               'definition': {},
+              'changeNotes': 'Initial version',
+              'author': 'test@example.com',
+              'createdAt': '2025-01-01T00:00:00.000Z',
             },
             {
+              'id': 'ver-2',
+              'componentId': 'comp-1',
               'version': '1.1.0',
-              'createdAt': '2025-02-01T00:00:00.000Z',
-              'author': 'test@example.com',
-              'changeNotes': 'Bug fixes',
               'definition': {},
+              'changeNotes': 'Bug fixes',
+              'author': 'test@example.com',
+              'createdAt': '2025-02-01T00:00:00.000Z',
             }
           ]
         });
@@ -160,10 +171,11 @@ void main() {
           'references': [
             {
               'id': 'ref-1',
-              'componentId': 'comp-1',
               'projectId': 'proj-1',
+              'componentId': 'comp-1',
+              'version': '1.0.0',
               'mode': 'copy',
-              'createdAt': '2025-01-01T00:00:00.000Z',
+              'addedAt': '2025-01-01T00:00:00.000Z',
             }
           ]
         });

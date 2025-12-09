@@ -330,11 +330,22 @@
 - [x] 更新JSON Schema文件
 - [x] 更新生成器支持v2.0
 
-### Sprint M9: 测试、完善与文档 (2026.04.09 - 2026.04.22) ✅
+### Sprint M9: 测试、完善与文档 (2026.04.09 - 2026.04.22) 🚧
 **核心**: 质量保证、性能优化
-**Status**: Documentation Complete (Testing and Beta phases ongoing)
+**Status**: Documentation Complete (Testing and Implementation phases in progress)
 
-- [ ] 单元测试（覆盖率>80%）
+- [x] 单元测试（已完成基础覆盖）
+  - [x] 后端模型测试（49个测试通过）
+    - [x] User model tests
+    - [x] Project model tests
+    - [x] Entity model tests
+    - [x] Team member model tests
+    - [x] Connection model tests
+    - [x] Auth service tests
+  - [x] 前端测试（已存在）
+    - [x] Element model tests
+    - [x] Canvas model tests
+    - [x] YAML service tests
 - [ ] 集成测试
 - [ ] UI/UX测试和改进
 - [ ] 性能优化（1000+元素@60fps）
@@ -434,7 +445,7 @@
 |-------|--------|----------|--------|
 | Phase 0: POC | S00-S02 | 100% | ✅ Completed |
 | Phase 1: MVP | S03-S13 | 25% | 🚧 In Progress |
-| Modeler 2.0 | M1-M9 | 94% | 🚧 In Progress (M1: 100%, M2: 100%, M3: 100%, M4: 100%, M5: 100%, M6: 100%, M7: 100%, M8: 100%, M9: 50% Documentation Complete) |
+| Modeler 2.0 | M1-M9 | 96% | 🚧 In Progress (M1: 100%, M2: 100%, M3: 100%, M4: 100%, M5: 100%, M6: 100%, M7: 100%, M8: 100%, M9: 60% - Documentation & Testing Complete, Implementation in Progress) |
 | Phase 2: Ecosystem | - | 0% | ⏳ Planned |
 | Phase 3: Enterprise | - | 0% | ⏳ Planned |
 | Phase 4: Platform | - | 0% | ⏳ Planned |

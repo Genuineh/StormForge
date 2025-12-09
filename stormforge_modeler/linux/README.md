@@ -2,6 +2,21 @@
 
 This directory contains the Linux-specific build configuration for the StormForge Modeler Flutter application.
 
+## Build Prerequisites
+
+**CRITICAL:** Before building the Linux application, you MUST run `flutter pub get` from the `stormforge_modeler` directory. This generates the ephemeral `flutter/` subdirectory and `generated_plugins.cmake` file that are required by CMake.
+
+If you see errors like:
+- "The source directory .../linux/flutter does not contain a CMakeLists.txt file"
+- "Unknown CMake command 'apply_standard_settings'"
+
+This means you haven't run `flutter pub get` yet. Run it now:
+
+```bash
+cd stormforge_modeler
+flutter pub get
+```
+
 ## Important Note
 
 The main CMakeLists.txt file includes a fix for a build error that occurs with newer Clang compilers when using the `flutter_secure_storage_linux` plugin. The plugin includes an older version of `json.hpp` that uses deprecated literal operator syntax.

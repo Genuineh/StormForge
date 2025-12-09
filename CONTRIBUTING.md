@@ -79,9 +79,11 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 2. **Flutter Modeler Setup**
    ```bash
    cd stormforge_modeler
-   flutter pub get
+   flutter pub get  # REQUIRED: Generates build files
    flutter run -d chrome  # or your preferred device
    ```
+   
+   **Note:** If you encounter CMake errors when building for Linux (e.g., "does not contain a CMakeLists.txt file"), ensure you've run `flutter pub get` first. This generates ephemeral build files required by the build system.
 
 3. **Rust Generator Setup**
    ```bash

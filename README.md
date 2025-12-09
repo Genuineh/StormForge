@@ -76,6 +76,12 @@ StormForge/
 │   │   ├── widgets/             # UI components
 │   │   └── services/            # Business services
 │   └── test/
+├── stormforge_backend/          # Backend server (Rust + Axum)
+│   ├── src/                     # Backend source code
+│   └── QUICKSTART.md           # Backend quick start guide
+├── stormforge_backend_toolchain/ # 🆕 Visual TUI tool for backend management
+│   ├── src/                     # Toolchain source code
+│   └── README.md               # Toolchain documentation
 ├── stormforge_generator/         # Rust code generator
 │   ├── src/
 │   │   ├── rust/                # Rust microservice generator
@@ -122,6 +128,24 @@ cd stormforge_modeler
 flutter pub get  # Required: Generates build files for all platforms
 flutter run      # Run the application
 ```
+
+### Backend Quick Start
+
+**🆕 Visual TUI Tool**: We now have an interactive terminal tool for managing the backend:
+
+```bash
+cd stormforge_backend_toolchain
+cargo run
+```
+
+This provides a visual interface to:
+- ✨ Setup environment with one command
+- 🚀 Start/stop MongoDB and backend services
+- 📊 Monitor service status in real-time
+- 📝 View logs
+- 🧹 Complete cleanup
+
+For traditional manual setup, see [stormforge_backend/QUICKSTART.md](stormforge_backend/QUICKSTART.md).
 
 **Important:** If you encounter CMake errors when building the Linux application (such as "does not contain a CMakeLists.txt file"), make sure you've run `flutter pub get` first. This command generates the required ephemeral build files that are not committed to Git. See [stormforge_modeler/README.md](stormforge_modeler/README.md) for detailed setup instructions.
 

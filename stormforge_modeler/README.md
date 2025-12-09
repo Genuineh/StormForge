@@ -42,17 +42,19 @@ stormforge_modeler/
 
 ### Initial Setup
 
-Before running the application for the first time, you need to generate platform-specific files:
+The Linux platform files are pre-configured with necessary build fixes. For other platforms, you can generate them as needed:
 
 ```bash
 cd stormforge_modeler
 
-# Generate platform directories for all supported platforms
-flutter create --platforms=web,windows,macos,linux,ios,android .
+# Generate platform directories for other platforms (Linux is already configured)
+flutter create --platforms=web,windows,macos,ios,android .
 
 # Install dependencies
 flutter pub get
 ```
+
+**Note:** The Linux platform includes a CMake configuration fix for the `flutter_secure_storage_linux` plugin. If you need to regenerate Linux files, see `linux/README.md` for important instructions.
 
 ### Running the Application
 

@@ -40,12 +40,34 @@ stormforge_modeler/
 - Flutter SDK 3.24+
 - Dart SDK 3.5+
 
+### Initial Setup
+
+Before running the application for the first time, you need to generate platform-specific files:
+
+```bash
+cd stormforge_modeler
+
+# Generate platform directories for all supported platforms
+flutter create --platforms=web,windows,macos,linux,ios,android .
+
+# Install dependencies
+flutter pub get
+```
+
 ### Running the Application
 
 ```bash
 cd stormforge_modeler
 flutter pub get
 flutter run
+```
+
+For specific platforms:
+```bash
+flutter run -d chrome      # Web
+flutter run -d windows     # Windows
+flutter run -d macos       # macOS
+flutter run -d linux       # Linux
 ```
 
 ## Development Status

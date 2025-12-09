@@ -38,9 +38,9 @@ CMake Error at flutter/ephemeral/.plugin_symlinks/flutter_secure_storage_linux/l
   Unknown CMake command "apply_standard_settings".
 ```
 
-**Cause:** Same as above - the Flutter build system hasn't generated the necessary helper files.
+**Cause:** This error previously occurred with the `flutter_secure_storage_linux` plugin. The application now uses `shared_preferences` instead to ensure Linux compatibility.
 
-**Solution:**
+**If you see this error:** Run `flutter pub get` to regenerate the plugin configuration:
 ```bash
 cd stormforge_modeler
 flutter pub get
@@ -134,7 +134,7 @@ sudo apt-get install libgtk-3-dev  # Ubuntu/Debian
 sudo dnf install gtk3-devel        # Fedora
 ```
 
-**Clang Compiler Issues:** The project includes fixes for deprecated literal operator warnings with newer Clang versions. These are already configured in `linux/CMakeLists.txt`.
+**Storage:** The application uses `shared_preferences` for local storage, which is fully compatible with Linux.
 
 ### Windows
 

@@ -1,4 +1,4 @@
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stormforge_modeler/models/user_model.dart';
 import 'package:stormforge_modeler/services/api/api_client.dart';
 
@@ -7,15 +7,19 @@ class AuthService {
   /// Creates an auth service.
   AuthService({
     ApiClient? apiClient,
-    FlutterSecureStorage? secureStorage,
+    SharedPreferences? sharedPreferences,
   })  : _apiClient = apiClient ?? ApiClient(),
-        _secureStorage = secureStorage ?? const FlutterSecureStorage();
+        _sharedPreferences = sharedPreferences;
 
   final ApiClient _apiClient;
-  final FlutterSecureStorage _secureStorage;
+  final SharedPreferences? _sharedPreferences;
 
   static const _tokenKey = 'auth_token';
   static const _userIdKey = 'user_id';
+
+  /// Gets the SharedPreferences instance.
+  Future<SharedPreferences> get _prefs async =>
+      _sharedPreferences ?? await SharedPreferences.getInstance();
 
   /// Registers a new user.
   Future<User> register({
@@ -37,8 +41,9 @@ class AuthService {
     final token = response['token'] as String;
 
     // Store authentication data
-    await _secureStorage.write(key: _tokenKey, value: token);
-    await _secureStorage.write(key: _userIdKey, value: user.id);
+    final prefs = await _prefs;
+    await prefs.setString(_tokenKey, token);
+    await prefs.setString(_userIdKey, user.id);
     _apiClient.token = token;
 
     return user;
@@ -58,8 +63,9 @@ class AuthService {
     final token = response['token'] as String;
 
     // Store authentication data
-    await _secureStorage.write(key: _tokenKey, value: token);
-    await _secureStorage.write(key: _userIdKey, value: user.id);
+    final prefs = await _prefs;
+    await prefs.setString(_tokenKey, token);
+    await prefs.setString(_userIdKey, user.id);
     _apiClient.token = token;
 
     return user;
@@ -67,25 +73,29 @@ class AuthService {
 
   /// Logs out the current user.
   Future<void> logout() async {
-    await _secureStorage.delete(key: _tokenKey);
-    await _secureStorage.delete(key: _userIdKey);
+    final prefs = await _prefs;
+    await prefs.remove(_tokenKey);
+    await prefs.remove(_userIdKey);
     _apiClient.token = null;
   }
 
   /// Checks if a user is logged in.
   Future<bool> isLoggedIn() async {
-    final token = await _secureStorage.read(key: _tokenKey);
+    final prefs = await _prefs;
+    final token = prefs.getString(_tokenKey);
     return token != null;
   }
 
   /// Gets the stored authentication token.
   Future<String?> getToken() async {
-    return await _secureStorage.read(key: _tokenKey);
+    final prefs = await _prefs;
+    return prefs.getString(_tokenKey);
   }
 
   /// Gets the current user ID.
   Future<String?> getCurrentUserId() async {
-    return await _secureStorage.read(key: _userIdKey);
+    final prefs = await _prefs;
+    return prefs.getString(_userIdKey);
   }
 
   /// Initializes the API client with stored token.

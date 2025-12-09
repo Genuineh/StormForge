@@ -67,7 +67,7 @@ flutter create --platforms=web,windows,macos,ios,android .
 
 The Linux platform files are pre-configured with necessary build fixes. For other platforms, you can generate them as needed.
 
-**Note:** The Linux platform includes a CMake configuration fix for the `flutter_secure_storage_linux` plugin. If you need to regenerate Linux files, see `linux/README.md` for important instructions.
+**Note:** The application uses `shared_preferences` for local storage to ensure Linux compatibility. If you need to regenerate Linux files, see `linux/README.md` for instructions.
 
 ### Running the Application
 

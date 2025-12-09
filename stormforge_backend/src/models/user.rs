@@ -155,3 +155,109 @@ pub struct UpdateUserRequest {
     pub avatar_url: Option<String>,
     pub email: Option<String>,
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_user_role_display() {
+        assert_eq!(UserRole::Admin.to_string(), "admin");
+        assert_eq!(UserRole::Developer.to_string(), "developer");
+        assert_eq!(UserRole::Viewer.to_string(), "viewer");
+    }
+
+    #[test]
+    fn test_user_role_default() {
+        assert_eq!(UserRole::default(), UserRole::Developer);
+    }
+
+    #[test]
+    fn test_admin_permissions() {
+        let permissions = UserRole::Admin.default_permissions();
+        assert_eq!(permissions.len(), 12);
+        assert!(permissions.contains(&Permission::ProjectCreate));
+        assert!(permissions.contains(&Permission::ProjectDelete));
+        assert!(permissions.contains(&Permission::TeamManage));
+    }
+
+    #[test]
+    fn test_developer_permissions() {
+        let permissions = UserRole::Developer.default_permissions();
+        assert_eq!(permissions.len(), 9);
+        assert!(permissions.contains(&Permission::ProjectCreate));
+        assert!(permissions.contains(&Permission::ModelEdit));
+        assert!(!permissions.contains(&Permission::ProjectDelete));
+        assert!(!permissions.contains(&Permission::TeamManage));
+    }
+
+    #[test]
+    fn test_viewer_permissions() {
+        let permissions = UserRole::Viewer.default_permissions();
+        assert_eq!(permissions.len(), 3);
+        assert!(permissions.contains(&Permission::ProjectView));
+        assert!(permissions.contains(&Permission::ModelView));
+        assert!(permissions.contains(&Permission::LibraryView));
+        assert!(!permissions.contains(&Permission::ModelEdit));
+    }
+
+    #[test]
+    fn test_user_new() {
+        let user = User::new(
+            "testuser".to_string(),
+            "test@example.com".to_string(),
+            "Test User".to_string(),
+            UserRole::Developer,
+        );
+
+        assert!(!user.id.is_empty());
+        assert_eq!(user.username, "testuser");
+        assert_eq!(user.email, "test@example.com");
+        assert_eq!(user.display_name, "Test User");
+        assert_eq!(user.role, UserRole::Developer);
+        assert!(user.is_active);
+        assert_eq!(user.permissions.len(), 9);
+        assert!(user.avatar_url.is_none());
+        assert!(user.password_hash.is_none());
+        assert!(user.last_login_at.is_none());
+    }
+
+    #[test]
+    fn test_user_has_permission() {
+        let user = User::new(
+            "admin".to_string(),
+            "admin@example.com".to_string(),
+            "Admin User".to_string(),
+            UserRole::Admin,
+        );
+
+        assert!(user.has_permission(&Permission::ProjectCreate));
+        assert!(user.has_permission(&Permission::TeamManage));
+        
+        let viewer = User::new(
+            "viewer".to_string(),
+            "viewer@example.com".to_string(),
+            "Viewer User".to_string(),
+            UserRole::Viewer,
+        );
+
+        assert!(!viewer.has_permission(&Permission::ProjectCreate));
+        assert!(viewer.has_permission(&Permission::ProjectView));
+    }
+
+    #[test]
+    fn test_user_timestamps() {
+        let before = Utc::now();
+        let user = User::new(
+            "testuser".to_string(),
+            "test@example.com".to_string(),
+            "Test User".to_string(),
+            UserRole::Developer,
+        );
+        let after = Utc::now();
+
+        assert!(user.created_at >= before && user.created_at <= after);
+        assert!(user.updated_at >= before && user.updated_at <= after);
+        assert_eq!(user.created_at, user.updated_at);
+    }
+}

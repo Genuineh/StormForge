@@ -1,7 +1,9 @@
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
-import 'package:stormforge_modeler/models/models.dart';
+
 import 'package:stormforge_modeler/canvas/rendering/connection_painter.dart';
+import 'package:stormforge_modeler/models/models.dart';
 
 /// Custom painter for rendering the EventStorming canvas.
 class CanvasPainter extends CustomPainter {
@@ -159,105 +161,6 @@ class CanvasPainter extends CustomPainter {
       canvas,
       Offset(rect.left + 8, rect.bottom - typeTextPainter.height - 6),
     );
-  }
-
-  /// Draws a connection between elements.
-  void _drawConnection(Canvas canvas, ConnectionElement connection) {
-    final sourceElement = model.getElementById(connection.sourceId);
-    final targetElement = model.getElementById(connection.targetId);
-
-    if (sourceElement == null || targetElement == null) return;
-
-    final sourceCenter = sourceElement.bounds.center;
-    final targetCenter = targetElement.bounds.center;
-
-    // Calculate connection points on element boundaries
-    final sourcePoint = _getConnectionPoint(sourceElement.bounds, targetCenter);
-    final targetPoint = _getConnectionPoint(targetElement.bounds, sourceCenter);
-
-    final linePaint = Paint()
-      ..color = connection.isSelected ? Colors.blue : Colors.grey
-      ..strokeWidth = connection.isSelected ? 2 : 1
-      ..style = PaintingStyle.stroke;
-
-    // Draw curved line
-    final path = Path();
-    path.moveTo(sourcePoint.dx, sourcePoint.dy);
-
-    final midX = (sourcePoint.dx + targetPoint.dx) / 2;
-    final midY = (sourcePoint.dy + targetPoint.dy) / 2;
-
-    // Simple quadratic curve
-    path.quadraticBezierTo(midX, midY - 20, targetPoint.dx, targetPoint.dy);
-
-    canvas.drawPath(path, linePaint);
-
-    // Draw arrow head
-    _drawArrowHead(canvas, targetPoint, sourcePoint, linePaint);
-  }
-
-  /// Gets the connection point on a rectangle's boundary toward a target point.
-  Offset _getConnectionPoint(Rect rect, Offset target) {
-    final center = rect.center;
-    final dx = target.dx - center.dx;
-    final dy = target.dy - center.dy;
-
-    if (dx == 0 && dy == 0) return center;
-
-    final absDx = dx.abs();
-    final absDy = dy.abs();
-
-    // Determine which edge to connect to
-    if (absDx / rect.width > absDy / rect.height) {
-      // Connect to left or right edge
-      final x = dx > 0 ? rect.right : rect.left;
-      final y = center.dy + dy * (x - center.dx).abs() / absDx;
-      return Offset(x, y.clamp(rect.top, rect.bottom));
-    } else {
-      // Connect to top or bottom edge
-      final y = dy > 0 ? rect.bottom : rect.top;
-      final x = center.dx + dx * (y - center.dy).abs() / absDy;
-      return Offset(x.clamp(rect.left, rect.right), y);
-    }
-  }
-
-  /// Draws an arrow head at the target point.
-  void _drawArrowHead(Canvas canvas, Offset point, Offset from, Paint paint) {
-    final direction = (point - from);
-    final normalized = direction / direction.distance;
-
-    const arrowLength = 10.0;
-    const arrowAngle = 0.5;
-
-    final arrowPaint = Paint()
-      ..color = paint.color
-      ..style = PaintingStyle.fill;
-
-    final path = Path();
-    path.moveTo(point.dx, point.dy);
-    path.lineTo(
-      point.dx -
-          arrowLength *
-              (normalized.dx * arrowAngle.cos() -
-                  normalized.dy * arrowAngle.sin()),
-      point.dy -
-          arrowLength *
-              (normalized.dx * arrowAngle.sin() +
-                  normalized.dy * arrowAngle.cos()),
-    );
-    path.lineTo(
-      point.dx -
-          arrowLength *
-              (normalized.dx * arrowAngle.cos() +
-                  normalized.dy * arrowAngle.sin()),
-      point.dy -
-          arrowLength *
-              (-normalized.dx * arrowAngle.sin() +
-                  normalized.dy * arrowAngle.cos()),
-    );
-    path.close();
-
-    canvas.drawPath(path, arrowPaint);
   }
 
   /// Draws a preview of an element being dragged from the palette.

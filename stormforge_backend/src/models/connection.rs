@@ -196,3 +196,149 @@ impl Connection {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_connection_type_variants() {
+        let types = vec![
+            ConnectionType::CommandToAggregate,
+            ConnectionType::AggregateToEvent,
+            ConnectionType::EventToPolicy,
+            ConnectionType::PolicyToCommand,
+            ConnectionType::EventToReadModel,
+            ConnectionType::ExternalToCommand,
+            ConnectionType::UiToCommand,
+            ConnectionType::ReadModelToUI,
+            ConnectionType::Custom,
+        ];
+        assert_eq!(types.len(), 9);
+    }
+
+    #[test]
+    fn test_line_style_variants() {
+        let _solid = LineStyle::Solid;
+        let _dashed = LineStyle::Dashed;
+        let _dotted = LineStyle::Dotted;
+    }
+
+    #[test]
+    fn test_arrow_style_variants() {
+        let _filled = ArrowStyle::Filled;
+        let _open = ArrowStyle::Open;
+        let _none = ArrowStyle::None;
+    }
+
+    #[test]
+    fn test_connection_new() {
+        let style = ConnectionStyle {
+            color: "#FF0000".to_string(),
+            stroke_width: 3.0,
+            line_style: LineStyle::Solid,
+            arrow_style: ArrowStyle::Filled,
+        };
+
+        let connection = Connection::new(
+            "project-123".to_string(),
+            "source-1".to_string(),
+            "target-2".to_string(),
+            ConnectionType::CommandToAggregate,
+            "test connection".to_string(),
+            style,
+            serde_json::json!({}),
+        );
+
+        assert!(!connection.id.is_empty());
+        assert_eq!(connection.project_id, "project-123");
+        assert_eq!(connection.source_id, "source-1");
+        assert_eq!(connection.target_id, "target-2");
+        assert_eq!(connection.connection_type, ConnectionType::CommandToAggregate);
+        assert_eq!(connection.label, "test connection");
+        assert_eq!(connection.style.color, "#FF0000");
+        assert_eq!(connection.style.stroke_width, 3.0);
+    }
+
+    #[test]
+    fn test_connection_timestamps() {
+        let style = Connection::default_style_for_type(&ConnectionType::Custom);
+        let before = chrono::Utc::now();
+        let connection = Connection::new(
+            "project-123".to_string(),
+            "source-1".to_string(),
+            "target-2".to_string(),
+            ConnectionType::Custom,
+            "".to_string(),
+            style,
+            serde_json::json!({}),
+        );
+        let after = chrono::Utc::now();
+
+        assert!(connection.created_at >= before && connection.created_at <= after);
+        assert!(connection.updated_at >= before && connection.updated_at <= after);
+        assert_eq!(connection.created_at, connection.updated_at);
+    }
+
+    #[test]
+    fn test_default_style_for_command_to_aggregate() {
+        let style = Connection::default_style_for_type(&ConnectionType::CommandToAggregate);
+        assert_eq!(style.color, "#2196F3");
+        assert_eq!(style.stroke_width, 2.0);
+        assert_eq!(style.line_style, LineStyle::Dashed);
+        assert_eq!(style.arrow_style, ArrowStyle::Filled);
+    }
+
+    #[test]
+    fn test_default_style_for_aggregate_to_event() {
+        let style = Connection::default_style_for_type(&ConnectionType::AggregateToEvent);
+        assert_eq!(style.color, "#FF9800");
+        assert_eq!(style.line_style, LineStyle::Solid);
+        assert_eq!(style.arrow_style, ArrowStyle::Filled);
+    }
+
+    #[test]
+    fn test_default_style_for_event_to_policy() {
+        let style = Connection::default_style_for_type(&ConnectionType::EventToPolicy);
+        assert_eq!(style.color, "#9C27B0");
+        assert_eq!(style.line_style, LineStyle::Solid);
+        assert_eq!(style.arrow_style, ArrowStyle::Filled);
+    }
+
+    #[test]
+    fn test_default_style_for_event_to_read_model() {
+        let style = Connection::default_style_for_type(&ConnectionType::EventToReadModel);
+        assert_eq!(style.color, "#4CAF50");
+        assert_eq!(style.line_style, LineStyle::Solid);
+        assert_eq!(style.arrow_style, ArrowStyle::Filled);
+    }
+
+    #[test]
+    fn test_default_style_for_custom() {
+        let style = Connection::default_style_for_type(&ConnectionType::Custom);
+        assert_eq!(style.color, "#9E9E9E");
+        assert_eq!(style.line_style, LineStyle::Solid);
+        assert_eq!(style.arrow_style, ArrowStyle::Open);
+    }
+
+    #[test]
+    fn test_all_connection_types_have_default_styles() {
+        let types = vec![
+            ConnectionType::CommandToAggregate,
+            ConnectionType::AggregateToEvent,
+            ConnectionType::EventToPolicy,
+            ConnectionType::PolicyToCommand,
+            ConnectionType::EventToReadModel,
+            ConnectionType::ExternalToCommand,
+            ConnectionType::UiToCommand,
+            ConnectionType::ReadModelToUI,
+            ConnectionType::Custom,
+        ];
+
+        for connection_type in types {
+            let style = Connection::default_style_for_type(&connection_type);
+            assert!(!style.color.is_empty());
+            assert!(style.stroke_width > 0.0);
+        }
+    }
+}

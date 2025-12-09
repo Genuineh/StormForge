@@ -118,3 +118,165 @@ pub struct UpdateTeamMemberRequest {
     #[allow(dead_code)]
     pub permissions: Option<Vec<Permission>>,
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_team_role_default() {
+        assert_eq!(TeamRole::default(), TeamRole::Editor);
+    }
+
+    #[test]
+    fn test_owner_permissions() {
+        let permissions = TeamRole::Owner.default_permissions();
+        assert_eq!(permissions.len(), 9);
+        assert!(permissions.contains(&Permission::ProjectDelete));
+        assert!(permissions.contains(&Permission::TeamManage));
+    }
+
+    #[test]
+    fn test_admin_permissions() {
+        let permissions = TeamRole::Admin.default_permissions();
+        assert_eq!(permissions.len(), 8);
+        assert!(permissions.contains(&Permission::TeamManage));
+        assert!(!permissions.contains(&Permission::ProjectDelete));
+    }
+
+    #[test]
+    fn test_editor_permissions() {
+        let permissions = TeamRole::Editor.default_permissions();
+        assert_eq!(permissions.len(), 4);
+        assert!(permissions.contains(&Permission::ModelEdit));
+        assert!(!permissions.contains(&Permission::TeamManage));
+    }
+
+    #[test]
+    fn test_viewer_permissions() {
+        let permissions = TeamRole::Viewer.default_permissions();
+        assert_eq!(permissions.len(), 2);
+        assert!(permissions.contains(&Permission::ProjectView));
+        assert!(permissions.contains(&Permission::ModelView));
+        assert!(!permissions.contains(&Permission::ModelEdit));
+    }
+
+    #[test]
+    fn test_team_member_new() {
+        let member = TeamMember::new(
+            "project-123".to_string(),
+            "user-456".to_string(),
+            TeamRole::Editor,
+            Some("owner-789".to_string()),
+        );
+
+        assert!(!member.id.is_empty());
+        assert_eq!(member.project_id, "project-123");
+        assert_eq!(member.user_id, "user-456");
+        assert_eq!(member.role, TeamRole::Editor);
+        assert_eq!(member.permissions.len(), 4);
+        assert_eq!(member.invited_by.unwrap(), "owner-789");
+    }
+
+    #[test]
+    fn test_has_permission() {
+        let owner = TeamMember::new(
+            "project-123".to_string(),
+            "user-456".to_string(),
+            TeamRole::Owner,
+            None,
+        );
+
+        assert!(owner.has_permission(&Permission::ProjectDelete));
+        assert!(owner.has_permission(&Permission::TeamManage));
+
+        let editor = TeamMember::new(
+            "project-123".to_string(),
+            "user-789".to_string(),
+            TeamRole::Editor,
+            None,
+        );
+
+        assert!(!editor.has_permission(&Permission::ProjectDelete));
+        assert!(editor.has_permission(&Permission::ModelEdit));
+    }
+
+    #[test]
+    fn test_can_manage_team() {
+        let owner = TeamMember::new(
+            "project-123".to_string(),
+            "user-1".to_string(),
+            TeamRole::Owner,
+            None,
+        );
+        assert!(owner.can_manage_team());
+
+        let admin = TeamMember::new(
+            "project-123".to_string(),
+            "user-2".to_string(),
+            TeamRole::Admin,
+            None,
+        );
+        assert!(admin.can_manage_team());
+
+        let editor = TeamMember::new(
+            "project-123".to_string(),
+            "user-3".to_string(),
+            TeamRole::Editor,
+            None,
+        );
+        assert!(!editor.can_manage_team());
+    }
+
+    #[test]
+    fn test_can_edit_project() {
+        let owner = TeamMember::new(
+            "project-123".to_string(),
+            "user-1".to_string(),
+            TeamRole::Owner,
+            None,
+        );
+        assert!(owner.can_edit_project());
+
+        let viewer = TeamMember::new(
+            "project-123".to_string(),
+            "user-2".to_string(),
+            TeamRole::Viewer,
+            None,
+        );
+        assert!(!viewer.can_edit_project());
+    }
+
+    #[test]
+    fn test_can_delete_project() {
+        let owner = TeamMember::new(
+            "project-123".to_string(),
+            "user-1".to_string(),
+            TeamRole::Owner,
+            None,
+        );
+        assert!(owner.can_delete_project());
+
+        let admin = TeamMember::new(
+            "project-123".to_string(),
+            "user-2".to_string(),
+            TeamRole::Admin,
+            None,
+        );
+        assert!(!admin.can_delete_project());
+    }
+
+    #[test]
+    fn test_team_member_timestamps() {
+        let before = Utc::now();
+        let member = TeamMember::new(
+            "project-123".to_string(),
+            "user-456".to_string(),
+            TeamRole::Editor,
+            None,
+        );
+        let after = Utc::now();
+
+        assert!(member.joined_at >= before && member.joined_at <= after);
+    }
+}

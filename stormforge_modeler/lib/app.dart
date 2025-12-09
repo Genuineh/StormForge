@@ -47,9 +47,9 @@ class ModelerHomePage extends ConsumerStatefulWidget {
 class _ModelerHomePageState extends ConsumerState<ModelerHomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Column(
-        children: const [
+        children: [
           // Top toolbar
           ModelerToolbar(),
 

@@ -4,7 +4,6 @@ use axum::{
     Json,
 };
 use serde::{Deserialize, Serialize};
-use std::fmt;
 use thiserror::Error;
 
 /// Application error types
@@ -214,7 +213,7 @@ mod tests {
     #[test]
     fn test_error_conversions() {
         // Test that error conversions work (these create AppError from other error types)
-        let json_error = serde_json::from_str::<serde_json::Value>("{invalid json");
+        let json_error = serde_json::from_str::<serde_json::Value>("{invalid JSON");
         assert!(json_error.is_err());
         let app_error: AppError = json_error.unwrap_err().into();
         assert!(matches!(app_error, AppError::InvalidInput(_)));

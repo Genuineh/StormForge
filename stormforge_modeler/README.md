@@ -78,6 +78,10 @@ flutter run -d macos       # macOS
 flutter run -d linux       # Linux
 ```
 
+### Troubleshooting
+
+If you encounter build errors or other issues, see [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for solutions to common problems.
+
 ## Development Status
 
 - [x] Project structure defined

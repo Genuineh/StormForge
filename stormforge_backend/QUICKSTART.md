@@ -1,5 +1,28 @@
 # StormForge Backend - Quick Start Guide
 
+## Easy Start with Visual Toolchain 🚀
+
+**NEW!** We now have a visual TUI tool that automates all the steps below. If you prefer an interactive terminal interface:
+
+```bash
+cd stormforge_backend_toolchain
+cargo run
+```
+
+Follow the on-screen menu to:
+- Setup environment
+- Start MongoDB
+- Build and start backend
+- Monitor status
+- View logs
+- Cleanup everything
+
+For more details, see [stormforge_backend_toolchain/README.md](../stormforge_backend_toolchain/README.md).
+
+---
+
+## Manual Setup (Traditional Way)
+
 ## Prerequisites
 
 Before running the backend, ensure you have:

@@ -1,0 +1,15 @@
+[package]
+name = "stormforge_backend_toolchain"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# TUI framework
+ratatui = "0.28"
+crossterm = "0.28"
+
+# Error handling
+anyhow = "1.0"
+
+# Utilities
+chrono = "0.4"

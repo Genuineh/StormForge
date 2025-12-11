@@ -105,7 +105,8 @@ pub struct CreateProjectRequest {
     pub name: String,
     pub namespace: String,
     pub description: String,
-    pub owner_id: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub owner_id: Option<String>,
     #[serde(default)]
     pub visibility: ProjectVisibility,
 }

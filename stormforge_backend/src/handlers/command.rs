@@ -7,6 +7,7 @@ use axum::{
 use serde_json::json;
 
 use crate::{
+    middleware::auth::AuthUser,
     models::{
         CommandFieldRequest, CreateCommandRequest, PreconditionRequest,
         UpdateCommandRequest, CommandValidationRuleRequest,
@@ -29,6 +30,7 @@ pub type _CommandStateInner = CommandService;
     )
 )]
 pub async fn create_command(
+    _auth: AuthUser,
     State(service): State<CommandService>,
     Json(request): Json<CreateCommandRequest>,
 ) -> impl IntoResponse {
@@ -56,6 +58,7 @@ pub async fn create_command(
     )
 )]
 pub async fn get_command(
+    _auth: AuthUser,
     State(service): State<CommandService>,
     Path(id): Path<String>,
 ) -> impl IntoResponse {
@@ -83,6 +86,7 @@ pub async fn get_command(
     )
 )]
 pub async fn list_commands_for_project(
+    _auth: AuthUser,
     State(service): State<CommandService>,
     Path(project_id): Path<String>,
 ) -> impl IntoResponse {
@@ -116,6 +120,7 @@ pub async fn list_commands_for_project(
     )
 )]
 pub async fn update_command(
+    _auth: AuthUser,
     State(service): State<CommandService>,
     Path(id): Path<String>,
     Json(request): Json<UpdateCommandRequest>,
@@ -144,6 +149,7 @@ pub async fn update_command(
     )
 )]
 pub async fn delete_command(
+    _auth: AuthUser,
     State(service): State<CommandService>,
     Path(id): Path<String>,
 ) -> impl IntoResponse {
@@ -173,6 +179,7 @@ pub async fn delete_command(
     )
 )]
 pub async fn add_field(
+    _auth: AuthUser,
     State(service): State<CommandService>,
     Path(id): Path<String>,
     Json(request): Json<CommandFieldRequest>,
@@ -204,6 +211,7 @@ pub async fn add_field(
     )
 )]
 pub async fn update_field(
+    _auth: AuthUser,
     State(service): State<CommandService>,
     Path((id, field_id)): Path<(String, String)>,
     Json(request): Json<CommandFieldRequest>,
@@ -233,6 +241,7 @@ pub async fn update_field(
     )
 )]
 pub async fn remove_field(
+    _auth: AuthUser,
     State(service): State<CommandService>,
     Path((id, field_id)): Path<(String, String)>,
 ) -> impl IntoResponse {
@@ -262,6 +271,7 @@ pub async fn remove_field(
     )
 )]
 pub async fn add_validation(
+    _auth: AuthUser,
     State(service): State<CommandService>,
     Path(id): Path<String>,
     Json(request): Json<CommandValidationRuleRequest>,
@@ -291,6 +301,7 @@ pub async fn add_validation(
     )
 )]
 pub async fn remove_validation(
+    _auth: AuthUser,
     State(service): State<CommandService>,
     Path((id, index)): Path<(String, usize)>,
 ) -> impl IntoResponse {
@@ -320,6 +331,7 @@ pub async fn remove_validation(
     )
 )]
 pub async fn add_precondition(
+    _auth: AuthUser,
     State(service): State<CommandService>,
     Path(id): Path<String>,
     Json(request): Json<PreconditionRequest>,
@@ -349,6 +361,7 @@ pub async fn add_precondition(
     )
 )]
 pub async fn remove_precondition(
+    _auth: AuthUser,
     State(service): State<CommandService>,
     Path((id, index)): Path<(String, usize)>,
 ) -> impl IntoResponse {

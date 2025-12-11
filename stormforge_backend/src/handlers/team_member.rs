@@ -6,6 +6,7 @@ use axum::{
 use serde_json::{json, Value};
 
 use crate::{
+    middleware::auth::AuthUser,
     models::{AddTeamMemberRequest, TeamMember, UpdateTeamMemberRequest},
     services::TeamMemberService,
 };
@@ -31,14 +32,13 @@ pub struct TeamStateInner {
     tag = "team"
 )]
 pub async fn add_team_member(
+    auth: AuthUser,
     State(state): State<TeamState>,
     Path(project_id): Path<String>,
     Json(payload): Json<AddTeamMemberRequest>,
 ) -> Result<(StatusCode, Json<TeamMember>), (StatusCode, Json<Value>)> {
-    // TODO: SECURITY - Implement authentication middleware to extract invited_by from JWT token
-    // This placeholder creates audit trail gaps and security issues
-    // Solution: Add JWT verification middleware that extracts user_id from token claims
-    let invited_by = Some("placeholder_inviter_id".to_string());
+    // Extract invited_by from authenticated user's JWT token
+    let invited_by = Some(auth.0.sub);
 
     let member = state
         .team_member_service
@@ -67,6 +67,7 @@ pub async fn add_team_member(
     tag = "team"
 )]
 pub async fn list_team_members(
+    _auth: AuthUser,
     State(state): State<TeamState>,
     Path(project_id): Path<String>,
 ) -> Result<Json<Vec<TeamMember>>, (StatusCode, Json<Value>)> {
@@ -100,6 +101,7 @@ pub async fn list_team_members(
     tag = "team"
 )]
 pub async fn update_team_member(
+    _auth: AuthUser,
     State(state): State<TeamState>,
     Path((project_id, user_id)): Path<(String, String)>,
     Json(payload): Json<UpdateTeamMemberRequest>,
@@ -133,6 +135,7 @@ pub async fn update_team_member(
     tag = "team"
 )]
 pub async fn remove_team_member(
+    _auth: AuthUser,
     State(state): State<TeamState>,
     Path((project_id, user_id)): Path<(String, String)>,
 ) -> Result<StatusCode, (StatusCode, Json<Value>)> {

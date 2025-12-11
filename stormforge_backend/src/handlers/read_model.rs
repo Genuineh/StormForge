@@ -7,6 +7,7 @@ use axum::{
 use serde_json::json;
 
 use crate::{
+    middleware::auth::AuthUser,
     models::{
         CreateReadModelRequest, DataSourceRequest, FieldRequest, UpdateReadModelRequest,
     },
@@ -28,6 +29,7 @@ pub type _ReadModelStateInner = ReadModelService;
     )
 )]
 pub async fn create_read_model(
+    _auth: AuthUser,
     State(service): State<ReadModelService>,
     Json(request): Json<CreateReadModelRequest>,
 ) -> impl IntoResponse {
@@ -55,6 +57,7 @@ pub async fn create_read_model(
     )
 )]
 pub async fn get_read_model(
+    _auth: AuthUser,
     State(service): State<ReadModelService>,
     Path(id): Path<String>,
 ) -> impl IntoResponse {
@@ -82,6 +85,7 @@ pub async fn get_read_model(
     )
 )]
 pub async fn list_read_models_for_project(
+    _auth: AuthUser,
     State(service): State<ReadModelService>,
     Path(project_id): Path<String>,
 ) -> impl IntoResponse {
@@ -114,6 +118,7 @@ pub async fn list_read_models_for_project(
     )
 )]
 pub async fn update_read_model(
+    _auth: AuthUser,
     State(service): State<ReadModelService>,
     Path(id): Path<String>,
     Json(request): Json<UpdateReadModelRequest>,
@@ -142,6 +147,7 @@ pub async fn update_read_model(
     )
 )]
 pub async fn delete_read_model(
+    _auth: AuthUser,
     State(service): State<ReadModelService>,
     Path(id): Path<String>,
 ) -> impl IntoResponse {
@@ -170,6 +176,7 @@ pub async fn delete_read_model(
     )
 )]
 pub async fn add_source(
+    _auth: AuthUser,
     State(service): State<ReadModelService>,
     Path(read_model_id): Path<String>,
     Json(request): Json<DataSourceRequest>,
@@ -200,6 +207,7 @@ pub async fn add_source(
     )
 )]
 pub async fn update_source(
+    _auth: AuthUser,
     State(service): State<ReadModelService>,
     Path((read_model_id, source_index)): Path<(String, usize)>,
     Json(request): Json<DataSourceRequest>,
@@ -232,6 +240,7 @@ pub async fn update_source(
     )
 )]
 pub async fn remove_source(
+    _auth: AuthUser,
     State(service): State<ReadModelService>,
     Path((read_model_id, source_index)): Path<(String, usize)>,
 ) -> impl IntoResponse {
@@ -260,6 +269,7 @@ pub async fn remove_source(
     )
 )]
 pub async fn add_field(
+    _auth: AuthUser,
     State(service): State<ReadModelService>,
     Path(read_model_id): Path<String>,
     Json(request): Json<FieldRequest>,
@@ -290,6 +300,7 @@ pub async fn add_field(
     )
 )]
 pub async fn update_field(
+    _auth: AuthUser,
     State(service): State<ReadModelService>,
     Path((read_model_id, field_id)): Path<(String, String)>,
     Json(request): Json<FieldRequest>,
@@ -319,6 +330,7 @@ pub async fn update_field(
     )
 )]
 pub async fn remove_field(
+    _auth: AuthUser,
     State(service): State<ReadModelService>,
     Path((read_model_id, field_id)): Path<(String, String)>,
 ) -> impl IntoResponse {

@@ -6,6 +6,7 @@ use axum::{
 use serde_json::{json, Value};
 
 use crate::{
+    middleware::auth::AuthUser,
     models::{CreateProjectRequest, Project, UpdateProjectRequest},
     services::ProjectService,
 };
@@ -29,13 +30,23 @@ pub struct ProjectStateInner {
     tag = "projects"
 )]
 pub async fn create_project(
+    auth: AuthUser,
     State(state): State<ProjectState>,
     Json(payload): Json<CreateProjectRequest>,
 ) -> Result<(StatusCode, Json<Project>), (StatusCode, Json<Value>)> {
-    // TODO: SECURITY - Implement authentication middleware to extract owner_id from JWT token
-    // This placeholder creates a security vulnerability - any user can create projects for any owner
-    // Solution: Add JWT verification middleware that extracts user_id from token claims
-    let owner_id = payload.owner_id.clone();
+    // Use authenticated user's ID as owner, or allow override for admin users
+    let owner_id = if let Some(requested_owner) = payload.owner_id {
+        // Only admin users can create projects for other users
+        if auth.0.role != "admin" && requested_owner != auth.0.sub {
+            return Err((
+                StatusCode::FORBIDDEN,
+                Json(json!({ "error": "Only admins can create projects for other users" })),
+            ));
+        }
+        requested_owner
+    } else {
+        auth.0.sub
+    };
 
     let project = state
         .project_service
@@ -71,6 +82,7 @@ pub async fn create_project(
     tag = "projects"
 )]
 pub async fn get_project(
+    _auth: AuthUser,
     State(state): State<ProjectState>,
     Path(id): Path<String>,
 ) -> Result<Json<Project>, (StatusCode, Json<Value>)> {
@@ -97,6 +109,7 @@ pub async fn get_project(
     tag = "projects"
 )]
 pub async fn list_projects_by_owner(
+    _auth: AuthUser,
     State(state): State<ProjectState>,
     Path(owner_id): Path<String>,
 ) -> Result<Json<Vec<Project>>, (StatusCode, Json<Value>)> {
@@ -129,6 +142,7 @@ pub async fn list_projects_by_owner(
     tag = "projects"
 )]
 pub async fn update_project(
+    _auth: AuthUser,
     State(state): State<ProjectState>,
     Path(id): Path<String>,
     Json(payload): Json<UpdateProjectRequest>,
@@ -167,6 +181,7 @@ pub async fn update_project(
     tag = "projects"
 )]
 pub async fn delete_project(
+    _auth: AuthUser,
     State(state): State<ProjectState>,
     Path(id): Path<String>,
 ) -> Result<StatusCode, (StatusCode, Json<Value>)> {

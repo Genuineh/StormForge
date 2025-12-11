@@ -90,8 +90,7 @@ pub async fn update_user(
     Path(id): Path<String>,
     Json(payload): Json<UpdateUserRequest>,
 ) -> Result<Json<User>, (StatusCode, Json<Value>)> {
-    // TODO: Add authorization check - users should only update their own profile unless admin
-    // For now, verify the user is updating themselves
+    // Authorization: users can only update their own profile unless they are admin
     if auth.0.sub != id && auth.0.role != "admin" {
         return Err((
             StatusCode::FORBIDDEN,

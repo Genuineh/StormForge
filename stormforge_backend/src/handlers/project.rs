@@ -35,8 +35,18 @@ pub async fn create_project(
     Json(payload): Json<CreateProjectRequest>,
 ) -> Result<(StatusCode, Json<Project>), (StatusCode, Json<Value>)> {
     // Use authenticated user's ID as owner, or allow override for admin users
-    // TODO: Add admin role check for owner_id override
-    let owner_id = payload.owner_id.unwrap_or(auth.0.sub);
+    let owner_id = if let Some(requested_owner) = payload.owner_id {
+        // Only admin users can create projects for other users
+        if auth.0.role != "admin" && requested_owner != auth.0.sub {
+            return Err((
+                StatusCode::FORBIDDEN,
+                Json(json!({ "error": "Only admins can create projects for other users" })),
+            ));
+        }
+        requested_owner
+    } else {
+        auth.0.sub
+    };
 
     let project = state
         .project_service

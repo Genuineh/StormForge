@@ -46,8 +46,13 @@ where
             })?;
 
         // Get JWT secret from environment variable
-        let secret = std::env::var("JWT_SECRET")
-            .unwrap_or_else(|_| "your-secret-key-change-in-production".to_string());
+        let secret = std::env::var("JWT_SECRET").map_err(|_| {
+            tracing::error!("JWT_SECRET environment variable not set");
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(json!({"error": "Server configuration error"})),
+            )
+        })?;
 
         // Decode and validate the token
         let token_data = decode::<Claims>(
@@ -55,7 +60,8 @@ where
             &DecodingKey::from_secret(secret.as_bytes()),
             &Validation::default(),
         )
-        .map_err(|_| {
+        .map_err(|e| {
+            tracing::warn!("JWT validation failed: {}", e);
             (
                 StatusCode::UNAUTHORIZED,
                 Json(json!({"error": "Invalid or expired token"})),

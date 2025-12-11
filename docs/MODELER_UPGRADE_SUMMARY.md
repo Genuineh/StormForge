@@ -1,13 +1,23 @@
 # Modeler 2.0 Upgrade Summary
 
-> Quick reference guide for the StormForge Modeler 2.0 upgrade
+> **⚠️ 重要说明 / IMPORTANT NOTE**: 
+> 
+> 本文档是**设计总结文档**，描述了Modeler 2.0升级的完整规划。**大部分功能尚未实现**。
+> 
+> This document is a **design summary** describing the complete Modeler 2.0 upgrade plan. **Most features are not yet implemented.**
+> 
+> 实际实施状态请参考 [TODO.md](../TODO.md) 和 [sprints/planning/](sprints/planning/README.md)。
+> 
+> For actual implementation status, see [TODO.md](../TODO.md) and [sprints/planning/](sprints/planning/README.md).
+>
+> Quick reference guide for the StormForge Modeler 2.0 upgrade plan  
 > Date: 2025-12-03
 
 ---
 
 ## 📋 Overview
 
-This upgrade transforms StormForge Modeler from a basic EventStorming canvas into a complete enterprise-grade modeling and project management platform.
+This upgrade plan transforms StormForge Modeler from a basic EventStorming canvas into a complete enterprise-grade modeling and project management platform.
 
 ## 🎯 Goals
 

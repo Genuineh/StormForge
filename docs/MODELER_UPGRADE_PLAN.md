@@ -1,7 +1,17 @@
 # StormForge Modeler Upgrade Plan
 
-> Complete upgrade plan for transforming Modeler into a full-featured project management and modeling software
-> Version: 2.0
+> **⚠️ 重要说明 / IMPORTANT NOTE**: 
+> 
+> 本文档是**完整的升级规划文档**，描述了Modeler 2.0的设计愿景。**这是设计文档，不是实施完成报告**。
+> 
+> This document is a **complete upgrade planning document** describing the Modeler 2.0 design vision. **This is a design document, not an implementation completion report.**
+> 
+> 实际实施状态请参考 [TODO.md](../TODO.md) 和 [sprints/planning/](sprints/planning/README.md)。
+> 
+> For actual implementation status, see [TODO.md](../TODO.md) and [sprints/planning/](sprints/planning/README.md).
+>
+> Complete upgrade plan for transforming Modeler into a full-featured project management and modeling software  
+> Version: 2.0  
 > Date: 2025-12-03
 
 ---

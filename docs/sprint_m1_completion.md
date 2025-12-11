@@ -1,8 +1,12 @@
 # Sprint M1: Project Management Foundation - Completion Report
 
-> Sprint M1 Implementation Report
-> Date: 2025-12-04
-> Status: ✅ COMPLETED
+> **实际完成状态**: 本文档描述的是后台基础框架的实际实现工作。
+>
+> **重要**: 这仅代表Sprint M1总工作量的一部分（主要是后台框架）。完整的Sprint M1设计文档位于 `docs/sprints/planning/SPRINT_M1_SUMMARY.md`。前端UI、完整API实现和集成测试尚未完成。
+>
+> Sprint M1 Backend Framework Implementation Report  
+> Date: 2025-12-04  
+> Status: ✅ Backend Framework COMPLETED (~40% of Sprint M1 scope)
 
 ---
 

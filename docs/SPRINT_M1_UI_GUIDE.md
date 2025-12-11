@@ -1,8 +1,18 @@
 # Sprint M1 UI Implementation Guide
 
+> **⚠️ 重要说明 / IMPORTANT NOTE**: 
+> 
+> 本文档是**设计指南和UI规划文档**，描述了预期的UI实现方法。**实际UI实现尚未按此指南完成**。
+> 
+> This document is a **design guide and UI planning document** describing the intended UI implementation approach. **Actual UI implementation has not yet been completed according to this guide.**
+> 
+> 实际实施状态请参考 [TODO.md](../TODO.md)。
+> 
+> For actual implementation status, see [TODO.md](../TODO.md).
+
 ## Overview
 
-This document describes the UI implementation for Sprint M1 of the StormForge Modeler 2.0 upgrade, which adds project management, user authentication, and team collaboration features.
+This document describes the UI implementation design for Sprint M1 of the StormForge Modeler 2.0 upgrade, which plans to add project management, user authentication, and team collaboration features.
 
 ## Features Implemented
 

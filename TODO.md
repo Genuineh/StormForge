@@ -2,14 +2,14 @@
 
 > StormForge平台开发追踪文档
 > 
-> Last Updated: 2025-12-09
+> Last Updated: 2025-12-11
 > 
-> **重要说明**: 本文档已根据实际开发进度重新整理。当前处于早期开发阶段，重点是完成基础功能和核心生成器。
+> **重要说明**: 本文档反映实际实施进度。所有进度百分比基于**实际代码实现**，而非设计文档完成度。
 > 
 > **项目状态**: 
-> - Phase 0 (POC): ✅ 已完成
-> - Phase 1 (MVP): 🚧 进行中 - 基础架构已搭建，核心功能开发中
-> - Modeler 2.0: 🚧 设计完成，实现进行中 - 后台架构已搭建，前端UI开发中
+> - Phase 0 (POC): ✅ 已完成 - 基础建模器和生成器原型可工作
+> - Phase 1 (MVP): 🚧 早期阶段 (约20%完成) - 基础框架存在，大部分功能待实现
+> - Modeler 2.0: 📋 设计完成，实现刚开始 (约10%完成) - 数据模型已定义，UI待实现
 
 ---
 
@@ -60,11 +60,12 @@
 
 ### 当前进展
 
-**Sprint S04: Flutter API包生成器** 🚧 (正在进行)
-- [x] Dart生成器项目初始化 (stormforge_dart_generator)
-- [x] 从IR生成Dart类型
-- [x] Command类生成
-- [x] Query类生成
+**Sprint S04: Flutter API包生成器** 📋 (规划阶段)
+- [x] Dart生成器项目规划 (stormforge_dart_generator)
+- [ ] 项目结构搭建
+- [ ] 从IR生成Dart类型
+- [ ] Command类生成
+- [ ] Query类生成
 - [ ] HTTP客户端封装
 - [ ] 错误处理类型
 - [ ] event_bus集成
@@ -72,37 +73,49 @@
 - [ ] 生成的包pubspec.yaml
 - [ ] 包文档生成
 
-**Modeler 2.0 架构与后台系统** 🚧 (正在开发)
+**说明**: 目前只有README文档，无实际代码实现
 
-*基础架构已搭建完成*:
+**Modeler 2.0 架构与后台系统** 🚧 (早期开发阶段)
+
+*基础框架已搭建*:
 - [x] 后台系统项目 (stormforge_backend) - Rust/Axum
 - [x] 数据模型定义 (User, Project, TeamMember, Entity, Connection, ReadModel, Command, Library)
-- [x] 双数据库架构 (SQLite本地 + MongoDB云端)
-- [x] JWT认证系统
+- [x] 双数据库架构设计 (SQLite本地 + MongoDB云端)
+- [x] JWT认证系统基础
 - [x] 基础REST API框架
 - [x] 权限系统设计 (3种全局角色, 4种团队角色, 12种权限)
 
-*详细设计文档已完成*:
-- [x] 项目管理系统设计
-- [x] 组件连接系统设计 (8种连接类型)
-- [x] 实体建模系统设计
-- [x] 读模型设计器设计
-- [x] 命令数据模型设计
-- [x] 企业全局库设计 (三层架构)
-- [x] IR Schema v2.0设计
+*详细设计文档已完成* (位于 `docs/sprints/planning/`):
+- [x] 项目管理系统设计 (Sprint M1)
+- [x] 组件连接系统设计 (Sprint M2 - 8种连接类型)
+- [x] 实体建模系统设计 (Sprint M3)
+- [x] 读模型设计器设计 (Sprint M4)
+- [x] 命令数据模型设计 (Sprint M5)
+- [x] 企业全局库设计 (Sprint M6 - 三层架构)
+- [x] 画布集成设计 (Sprint M7)
+- [x] IR Schema v2.0设计 (Sprint M8)
 
-*待实现功能*:
-- [ ] 完整的前端UI实现
-- [ ] 所有后台API端点
+*核心功能待实现* (实际代码实现):
+- [ ] 完整的前端UI实现 (目前基础画布存在)
+- [ ] 所有后台API端点完整实现
 - [ ] 实体编辑器UI
 - [ ] 连接可视化UI
 - [ ] 读模型设计器UI
 - [ ] 命令设计器UI
 - [ ] 全局库UI
-- [ ] IR v2.0迁移工具实现
+- [ ] 项目管理UI完整版
+- [ ] IR v2.0解析器实现
+- [ ] IR v1到v2迁移工具实现
 
-**设计文档** (已完成):
-- [docs/MODELER_UPGRADE_PLAN.md](docs/MODELER_UPGRADE_PLAN.md) - 总体规划
+**实际实施状态**:
+- 后台: 35个Rust文件，基础框架和数据模型
+- 前端: 72个Dart文件，基础画布和导航
+- 集成度: ~10% (主要是框架和设计)
+
+**说明**: Sprint M1-M9的"完成报告"实际上是设计文档，已移至 `docs/sprints/planning/`。这些文档描述了预期的功能和架构，但大部分功能尚未实现。
+
+**设计文档** (已完成 - 位于 `docs/sprints/planning/` 和 `docs/designs/`):
+- [docs/sprints/planning/README.md](docs/sprints/planning/README.md) - Sprint M1-M9设计文档索引
 - [docs/designs/entity_modeling_system.md](docs/designs/entity_modeling_system.md)
 - [docs/designs/connection_system.md](docs/designs/connection_system.md)
 - [docs/designs/read_model_designer.md](docs/designs/read_model_designer.md)
@@ -111,24 +124,27 @@
 ### 下一步计划 (Near-term Roadmap)
 
 **当前Sprint (2025.12)**:
-1. ✅ 完成Sprint S04剩余任务 (Flutter API包生成器)
-2. 🚧 完成Modeler 2.0基础UI实现
-   - 实体编辑器UI基础版
-   - 连接可视化基础版
-   - 项目管理UI
+1. 📋 开始实现Sprint S04 (Flutter API包生成器)
+   - 创建基础项目结构
+   - 实现类型生成器
+   - 实现Command和Query生成
+2. 🚧 启动Modeler 2.0基础UI实现
+   - 项目管理UI基础版
+   - 实体列表视图
+   - 基础导航和布局
 
 **2026.Q1 规划**:
-1. 多微服务生成支持
-2. 独立Dart包生成（每个限界上下文）
-3. 端到端演示案例
+1. 完成Dart API包生成器MVP
+2. 实现Modeler 2.0核心UI（实体编辑器、连接可视化）
+3. 端到端演示案例（一个完整的bounded context）
 4. 基础测试覆盖
 
 **2026.Q2+ 规划**:
-1. AI模型生成集成
-2. 跨域事件和消息队列支持
-3. 外部系统插件架构
-4. 一键部署功能
-5. 性能优化和企业级特性
+1. 多微服务生成支持
+2. IR v2.0完整实现和迁移工具
+3. AI模型生成集成
+4. 跨域事件和消息队列支持
+5. 一键部署功能
 
 ---
 
@@ -185,18 +201,24 @@
 | Phase | Component | Progress | Status |
 |-------|-----------|----------|--------|
 | Phase 0 | POC (S00-S03) | 100% | ✅ 已完成 |
-| Phase 1 | 生成器 (S04) | 90% | 🚧 进行中 |
-| Phase 1 | Modeler 2.0后台 | 40% | 🚧 开发中 |
-| Phase 1 | Modeler 2.0前端 | 15% | 🚧 开发中 |
+| Phase 1 | Rust生成器 (S03) | 60% | ✅ 基础完成 |
+| Phase 1 | Dart生成器 (S04) | 0% | 📋 规划中 |
+| Phase 1 | Modeler 2.0后台 | 15% | 🚧 早期开发 |
+| Phase 1 | Modeler 2.0前端 | 5% | 🚧 早期开发 |
 | Phase 1 | 设计文档 | 100% | ✅ 已完成 |
 | Phase 2-4 | 未来规划 | 0% | 📋 已规划 |
 
 **整体进度**: 
-- Phase 0: ✅ 100% 完成
-- Phase 1: 🚧 约35% 完成 (基础架构完成，核心功能开发中)
-- Modeler 2.0: 📋 设计完成，实现进行中
+- Phase 0 (POC): ✅ 100% 完成
+- Phase 1 (MVP): 🚧 约20% 完成 (设计完成，基础框架搭建，核心功能待实现)
+- Modeler 2.0: 📋 设计100%完成，实现约10%完成
 
-**说明**: 之前的进度报告中将"设计完成"标记为"实现完成"，现已更正。当前focus是将设计转化为可工作的实现。
+**实际代码状态**:
+- stormforge_modeler: 72个Dart文件 (基础画布工作中)
+- stormforge_backend: 35个Rust文件 (基础框架和模型)
+- stormforge_generator: 7个Rust生成器文件 (基础生成器可用)
+- stormforge_dart_generator: 仅README，无代码
+- 测试覆盖率: 较低 (<20%)
 
 ---
 
@@ -204,17 +226,25 @@
 
 ### 关于Sprint M1-M9的说明
 
-Sprint M1-M9的详细设计文档和报告已经完成（位于[docs/sprints/](docs/sprints/)），但这些是**设计和规划文档**，并非表示所有功能已经完整实现。
+**Sprint M1-M9文档现已移至 `docs/sprints/planning/` 目录**
 
-**重要**: 这些Sprint文档使用了未来日期（2026年），这是因为它们是作为规划文档创建的，而不是实际完成报告。请以文档中的功能描述为准，而非日期。
+这些文档是**设计和规划文档**，而非实际完成报告。它们详细描述了Modeler 2.0的完整架构和功能设计。
+
+**重要**: 这些Sprint文档使用了未来日期（2026年），这是因为它们是作为规划文档创建的。**日期不代表实际完成时间**，请以文档中的功能描述和本TODO中的实际进度为准。
 
 **当前实际状态**:
-- ✅ 后台数据模型和API框架已搭建
-- ✅ 详细的设计文档已完成
-- 🚧 前端UI实现进行中
-- 🚧 完整的功能集成进行中
+- ✅ 设计文档已完成（100%） - 详细的架构和功能规划
+- ✅ 后台数据模型已定义（15%） - 基础框架和模型定义
+- 🚧 后台API实现进行中（10%） - 部分端点存在
+- 📋 前端UI实现待开始（5%） - 仅基础画布和导航
+- 📋 完整功能集成待开始（0%） - 设计与实现的桥接
 
-**实施时间表**: 实际实施将根据团队资源和优先级动态调整。预计2026年Q1-Q2完成核心功能的可用实现。
+**实施时间表**: 
+- 2025.12: 启动基础实现，重点是项目管理和实体编辑
+- 2026.Q1: 核心UI功能实现
+- 2026.Q2: 完整集成和测试
+
+详细的设计文档索引和实施状态，请查看 [docs/sprints/planning/README.md](docs/sprints/planning/README.md)。
 
 ### 进度计算标准
 
@@ -224,7 +254,11 @@ Sprint M1-M9的详细设计文档和报告已经完成（位于[docs/sprints/](d
 - **实现阶段**: 后端API + 前端UI + 数据集成 (占总工作量的60%)
 - **测试阶段**: 单元测试 + 集成测试 + 用户验收测试 (占总工作量的20%)
 
-例如：Modeler 2.0后台架构40%完成 = 设计20% + 实现12% (60%×20%) + 测试8% (20%×40%)
+**进度仅基于实际代码实现**，设计文档完成不计入实现进度。
+
+例如：
+- Modeler 2.0后台15%完成 = 设计20% (不计入) + 实现9% (60%×15%) + 测试0%
+- Rust生成器60%完成 = 实现36% (60%×60%) + 测试0% (基础功能可用但测试不足)
 
 ### 架构决策
 
@@ -245,7 +279,8 @@ Sprint M1-M9的详细设计文档和报告已经完成（位于[docs/sprints/](d
 
 ## 📚 文档导航
 
-- **Sprint归档**: [docs/sprints/](docs/sprints/README.md) - 查看所有已完成的Sprint报告
+- **Sprint规划**: [docs/sprints/planning/](docs/sprints/planning/README.md) - Sprint M1-M9设计和规划文档
+- **Sprint归档**: [docs/sprints/](docs/sprints/README.md) - Sprint历史和实际完成工作
 - **设计文档**: [docs/designs/](docs/designs/) - 详细设计文档
 - **用户指南**: [docs/guides/](docs/guides/) - 用户和开发者指南
 - **项目路线图**: [docs/ROADMAP.md](docs/ROADMAP.md) - 详细的Sprint规划
@@ -253,4 +288,4 @@ Sprint M1-M9的详细设计文档和报告已经完成（位于[docs/sprints/](d
 
 ---
 
-*此TODO文档持续维护中。Last Updated: 2025-12-09*
+*此TODO文档持续维护中。Last Updated: 2025-12-11*

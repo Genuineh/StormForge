@@ -1,10 +1,20 @@
 # Sprint M1 UI Implementation Summary
 
+> **⚠️ 重要说明 / IMPORTANT NOTE**: 
+> 
+> 本文档是**设计规范和UI规划文档**，描述了预期的UI实现。**实际UI实现尚未完成或仅部分完成**。
+> 
+> This document is a **design specification and UI planning document** describing the intended UI implementation. **Actual UI implementation is not yet complete or only partially complete.**
+> 
+> 实际实施状态请参考 [TODO.md](../TODO.md)。完整的Sprint M1规划文档位于 [docs/sprints/planning/SPRINT_M1_SUMMARY.md](sprints/planning/SPRINT_M1_SUMMARY.md)。
+> 
+> For actual implementation status, see [TODO.md](../TODO.md). Complete Sprint M1 planning document at [docs/sprints/planning/SPRINT_M1_SUMMARY.md](sprints/planning/SPRINT_M1_SUMMARY.md).
+
 ## 实现概述 (Implementation Overview)
 
-本次实现完成了 Sprint M1 中所有的 UI 相关任务，为 StormForge Modeler 添加了完整的项目管理、用户认证和团队协作功能。
+本次文档描述了 Sprint M1 中所有的 UI 相关任务设计，为 StormForge Modeler 规划了完整的项目管理、用户认证和团队协作功能。
 
-This implementation completes all UI-related tasks in Sprint M1, adding comprehensive project management, user authentication, and team collaboration features to StormForge Modeler.
+This document describes all UI-related task designs for Sprint M1, planning comprehensive project management, user authentication, and team collaboration features for StormForge Modeler.
 
 ## 已实现功能 (Implemented Features)
 

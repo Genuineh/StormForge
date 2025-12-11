@@ -367,7 +367,7 @@ class _EntityManagementScreenState extends ConsumerState<EntityManagementScreen>
 
   String _getEntityTypeLabel(EntityType type) {
     switch (type) {
-      case EntityType.aggregate:
+      case EntityType.aggregateRoot:
         return 'Aggregate';
       case EntityType.entity:
         return 'Entity';

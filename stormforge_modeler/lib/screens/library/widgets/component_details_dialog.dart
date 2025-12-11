@@ -13,12 +13,14 @@ class ComponentDetailsDialog extends StatefulWidget {
     required this.projectId,
     required this.libraryService,
     required this.onRefresh,
+    this.isEmbedded = false,
   });
 
   final LibraryComponent component;
   final String projectId;
   final LibraryService libraryService;
   final VoidCallback onRefresh;
+  final bool isEmbedded;
 
   @override
   State<ComponentDetailsDialog> createState() => _ComponentDetailsDialogState();

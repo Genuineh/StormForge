@@ -88,7 +88,6 @@ pub struct User {
     pub avatar_url: Option<String>,
     pub role: UserRole,
     pub permissions: Vec<Permission>,
-    #[serde(skip_serializing)]
     pub password_hash: Option<String>,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,

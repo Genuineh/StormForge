@@ -37,7 +37,7 @@ class AuthService {
     final response = await _apiClient.post('/api/auth/register', {
       'username': username,
       'email': email,
-      'display_name': displayName,
+      'displayName': displayName,
       'password': password,
       'role': role.name,
     });

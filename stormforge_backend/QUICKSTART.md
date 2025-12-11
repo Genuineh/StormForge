@@ -61,7 +61,17 @@ JWT_SECRET=your-secret-key-change-in-production
 
 # Server Configuration
 PORT=3000
+
+# Default Admin Account (optional)
+# Set INIT_DEFAULT_ADMIN=true to auto-create an admin user on startup
+INIT_DEFAULT_ADMIN=true
+DEFAULT_ADMIN_USERNAME=admin
+DEFAULT_ADMIN_EMAIL=admin@stormforge.local
+DEFAULT_ADMIN_DISPLAY_NAME=Administrator
+DEFAULT_ADMIN_PASSWORD=admin123
 ```
+
+**Note**: If `INIT_DEFAULT_ADMIN=true`, the server will create a default admin account on first startup. Change the password immediately after first login!
 
 ### 2. Build and Run
 

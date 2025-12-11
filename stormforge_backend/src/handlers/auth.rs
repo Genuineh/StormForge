@@ -69,7 +69,11 @@ pub async fn register(
             )
         })?;
 
-    Ok((StatusCode::CREATED, Json(LoginResponse { token, user })))
+    // Clear password hash before sending response
+    let mut user_response = user;
+    user_response.password_hash = None;
+
+    Ok((StatusCode::CREATED, Json(LoginResponse { token, user: user_response })))
 }
 
 /// Login with username/email and password
@@ -138,5 +142,9 @@ pub async fn login(
             )
         })?;
 
-    Ok(Json(LoginResponse { token, user }))
+    // Clear password hash before sending response
+    let mut user_response = user;
+    user_response.password_hash = None;
+
+    Ok(Json(LoginResponse { token, user: user_response }))
 }

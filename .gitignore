@@ -48,7 +48,6 @@ migrate_working_dir/
 
 # Flutter/Dart/Pub related
 **/doc/api/
-**/ios/Flutter/.last_build_id
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
@@ -68,42 +67,8 @@ app.*.symbols
 app.*.map.json
 
 # Platform-specific build artifacts
-# Android
-/android/app/debug
-/android/app/profile
-/android/app/release
-**/android/.gradle/
-**/android/captures/
-**/android/local.properties
-**/android/gradlew
-**/android/gradlew.bat
-**/android/key.properties
-
-# iOS
-**/ios/Pods/
-**/ios/.symlinks/
-**/ios/Flutter/Flutter.framework/
-**/ios/Flutter/Flutter.podspec
-**/ios/Flutter/App.framework/
-**/ios/Flutter/Generated.xcconfig
-**/ios/Flutter/app.flx
-**/ios/Flutter/app.zip
-**/ios/Flutter/flutter_assets/
-**/ios/ServiceDefinitions.json
-**/ios/Runner/GeneratedPluginRegistrant.*
-
-# Windows
-**/windows/flutter/
-
-# Linux
-**/linux/flutter/
-
-# macOS
-**/macos/Flutter/
-**/macos/Pods/
-
-# Web
-**/web/flutter_service_worker.js
+# NOTE: Platform-specific artifacts intentionally tracked for the UI,
+# since platform builds are generated in CI or included in release bundles.
 
 # Flutter test coverage
 coverage/

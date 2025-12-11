@@ -57,9 +57,10 @@ impl ProjectService {
     }
 
     pub async fn list_by_owner(&self, owner_id: &str) -> Result<Vec<Project>> {
+        // Project fields are serialized in camelCase (e.g., "ownerId"), so query using that key
         let cursor = self
             .projects
-            .find(doc! { "owner_id": owner_id }, None)
+            .find(doc! { "ownerId": owner_id }, None)
             .await?;
         let projects = cursor.try_collect().await?;
 

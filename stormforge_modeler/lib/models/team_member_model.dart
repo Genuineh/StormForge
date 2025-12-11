@@ -96,9 +96,9 @@ class TeamMember extends Equatable {
   /// Creates a team member from a JSON map.
   factory TeamMember.fromJson(Map<String, dynamic> json) {
     return TeamMember(
-      id: json['id'] as String,
-      projectId: json['project_id'] as String,
-      userId: json['user_id'] as String,
+      id: json['id'] as String? ?? '',
+      projectId: json['project_id'] as String? ?? '',
+      userId: json['user_id'] as String? ?? '',
       role: TeamRole.values.firstWhere(
         (r) => r.name == json['role'],
         orElse: () => TeamRole.editor,
@@ -110,7 +110,9 @@ class TeamMember extends Equatable {
                   ))
               .toList() ??
           [],
-      joinedAt: DateTime.parse(json['joined_at'] as String),
+      joinedAt: json['joined_at'] != null
+          ? DateTime.parse(json['joined_at'] as String)
+          : DateTime.now(),
     );
   }
 

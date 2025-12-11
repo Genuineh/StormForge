@@ -66,9 +66,9 @@ class JoinCondition extends Equatable {
 
   factory JoinCondition.fromJson(Map<String, dynamic> json) {
     return JoinCondition(
-      leftProperty: json['leftProperty'] as String,
-      rightProperty: json['rightProperty'] as String,
-      operator: JoinOperator.fromJson(json['operator'] as String),
+      leftProperty: json['leftProperty'] as String? ?? '',
+      rightProperty: json['rightProperty'] as String? ?? '',
+      operator: JoinOperator.fromJson(json['operator'] as String? ?? 'equals'),
     );
   }
 
@@ -120,13 +120,13 @@ class DataSource extends Equatable {
 
   factory DataSource.fromJson(Map<String, dynamic> json) {
     return DataSource(
-      entityId: json['entityId'] as String,
-      alias: json['alias'] as String,
+      entityId: json['entityId'] as String? ?? '',
+      alias: json['alias'] as String? ?? '',
       joinCondition: json['joinCondition'] != null
           ? JoinCondition.fromJson(json['joinCondition'] as Map<String, dynamic>)
           : null,
-      joinType: JoinType.fromJson(json['joinType'] as String),
-      displayOrder: json['displayOrder'] as int,
+      joinType: JoinType.fromJson(json['joinType'] as String? ?? 'inner'),
+      displayOrder: json['displayOrder'] as int? ?? 0,
     );
   }
 
@@ -202,7 +202,7 @@ class FieldTransform extends Equatable {
 
   factory FieldTransform.fromJson(Map<String, dynamic> json) {
     return FieldTransform(
-      transformType: TransformType.fromJson(json['transformType'] as String),
+      transformType: TransformType.fromJson(json['transformType'] as String? ?? 'rename'),
       expression: json['expression'] as String?,
       parameters: json['parameters'] as Map<String, dynamic>?,
     );
@@ -298,17 +298,17 @@ class ReadModelField extends Equatable {
 
   factory ReadModelField.fromJson(Map<String, dynamic> json) {
     return ReadModelField(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      fieldType: json['fieldType'] as String,
-      sourceType: ReadModelFieldSourceType.fromJson(json['sourceType'] as String),
-      sourcePath: json['sourcePath'] as String,
+      id: json['id'] as String? ?? '',
+      name: json['name'] as String? ?? '',
+      fieldType: json['fieldType'] as String? ?? '',
+      sourceType: ReadModelFieldSourceType.fromJson(json['sourceType'] as String? ?? 'direct'),
+      sourcePath: json['sourcePath'] as String? ?? '',
       transform: json['transform'] != null
           ? FieldTransform.fromJson(json['transform'] as Map<String, dynamic>)
           : null,
-      nullable: json['nullable'] as bool,
+      nullable: json['nullable'] as bool? ?? false,
       description: json['description'] as String?,
-      displayOrder: json['displayOrder'] as int,
+      displayOrder: json['displayOrder'] as int? ?? 0,
     );
   }
 
@@ -359,7 +359,7 @@ class ReadModelMetadata extends Equatable {
 
   factory ReadModelMetadata.fromJson(Map<String, dynamic> json) {
     return ReadModelMetadata(
-      version: json['version'] as String,
+      version: json['version'] as String? ?? '1.0.0',
       tags: json['tags'] != null
           ? List<String>.from(json['tags'] as List)
           : null,
@@ -479,21 +479,28 @@ class ReadModelDefinition extends Equatable {
 
   factory ReadModelDefinition.fromJson(Map<String, dynamic> json) {
     return ReadModelDefinition(
-      id: json['_id'] as String,
-      projectId: json['projectId'] as String,
-      name: json['name'] as String,
+      id: json['_id'] as String? ?? '',
+      projectId: json['projectId'] as String? ?? '',
+      name: json['name'] as String? ?? '',
       description: json['description'] as String?,
-      sources: (json['sources'] as List)
-          .map((s) => DataSource.fromJson(s as Map<String, dynamic>))
-          .toList(),
-      fields: (json['fields'] as List)
-          .map((f) => ReadModelField.fromJson(f as Map<String, dynamic>))
-          .toList(),
-      updatedByEvents: List<String>.from(json['updatedByEvents'] as List),
-      metadata: ReadModelMetadata.fromJson(
-          json['metadata'] as Map<String, dynamic>),
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      sources: (json['sources'] as List?)
+          ?.map((s) => DataSource.fromJson(s as Map<String, dynamic>))
+          .toList() ?? [],
+      fields: (json['fields'] as List?)
+          ?.map((f) => ReadModelField.fromJson(f as Map<String, dynamic>))
+          .toList() ?? [],
+      updatedByEvents: json['updatedByEvents'] != null
+          ? List<String>.from(json['updatedByEvents'] as List)
+          : [],
+      metadata: json['metadata'] != null
+          ? ReadModelMetadata.fromJson(json['metadata'] as Map<String, dynamic>)
+          : ReadModelMetadata.defaults(),
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'] as String)
+          : DateTime.now(),
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.parse(json['updatedAt'] as String)
+          : DateTime.now(),
     );
   }
 

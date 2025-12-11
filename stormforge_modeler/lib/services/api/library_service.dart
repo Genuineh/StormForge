@@ -41,13 +41,13 @@ class LibraryService {
     
     final response = await _apiClient.post('/api/library/components', requestBody);
 
-    return LibraryComponent.fromJson(response);
+    return LibraryComponent.fromJson(response as Map<String, dynamic>);
   }
 
   /// Get a component by ID
   Future<LibraryComponent> getComponent(String id) async {
     final response = await _apiClient.get('/api/library/components/$id');
-    return LibraryComponent.fromJson(response);
+    return LibraryComponent.fromJson(response as Map<String, dynamic>);
   }
 
   /// Search components
@@ -68,8 +68,16 @@ class LibraryService {
     
     final response = await _apiClient.get(uri.toString());
     
-    final components = (response['components'] as List<dynamic>?)  ?? [];
-    return components
+    List<dynamic> componentsList;
+    if (response is List<dynamic>) {
+      componentsList = response;
+    } else if (response is Map<String, dynamic> && response.containsKey('components')) {
+      componentsList = response['components'] as List<dynamic>? ?? [];
+    } else {
+      componentsList = [];
+    }
+    
+    return componentsList
         .map((json) => LibraryComponent.fromJson(json as Map<String, dynamic>))
         .toList();
   }
@@ -97,7 +105,7 @@ class LibraryService {
       },
     );
 
-    return LibraryComponent.fromJson(response);
+    return LibraryComponent.fromJson(response as Map<String, dynamic>);
   }
 
   /// Delete a component
@@ -110,8 +118,16 @@ class LibraryService {
     final response =
         await _apiClient.get('/api/library/components/$componentId/versions');
     
-    final versions = (response['versions'] as List<dynamic>?) ?? [];
-    return versions
+    List<dynamic> versionsList;
+    if (response is List<dynamic>) {
+      versionsList = response;
+    } else if (response is Map<String, dynamic> && response.containsKey('versions')) {
+      versionsList = response['versions'] as List<dynamic>? ?? [];
+    } else {
+      versionsList = [];
+    }
+    
+    return versionsList
         .map((json) => ComponentVersion.fromJson(json as Map<String, dynamic>))
         .toList();
   }
@@ -130,7 +146,7 @@ class LibraryService {
       },
     );
 
-    return ComponentReference.fromJson(response);
+    return ComponentReference.fromJson(response as Map<String, dynamic>);
   }
 
   /// Remove component reference from project
@@ -149,8 +165,16 @@ class LibraryService {
       '/api/projects/$projectId/library/references',
     );
     
-    final references = (response['references'] as List<dynamic>?) ?? [];
-    return references
+    List<dynamic> referencesList;
+    if (response is List<dynamic>) {
+      referencesList = response;
+    } else if (response is Map<String, dynamic> && response.containsKey('references')) {
+      referencesList = response['references'] as List<dynamic>? ?? [];
+    } else {
+      referencesList = [];
+    }
+    
+    return referencesList
         .map((json) => ComponentReference.fromJson(json as Map<String, dynamic>))
         .toList();
   }
@@ -161,6 +185,6 @@ class LibraryService {
       '/api/library/components/$componentId/impact',
     );
 
-    return ImpactAnalysis.fromJson(response);
+    return ImpactAnalysis.fromJson(response as Map<String, dynamic>);
   }
 }

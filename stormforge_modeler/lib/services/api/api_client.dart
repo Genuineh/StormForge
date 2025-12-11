@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:logger/logger.dart';
 
 /// Base API client for communicating with StormForge backend.
 class ApiClient {
@@ -15,6 +16,8 @@ class ApiClient {
   /// The JWT authentication token.
   String? token;
 
+  final Logger _logger = Logger();
+
   /// Common headers for all requests.
   Map<String, String> get _headers {
     final headers = {
@@ -27,7 +30,8 @@ class ApiClient {
   }
 
   /// Makes a GET request.
-  Future<Map<String, dynamic>> get(String path) async {
+  Future<dynamic> get(String path) async {
+    _logger.d('Making GET request to $baseUrl$path');
     final response = await http.get(
       Uri.parse('$baseUrl$path'),
       headers: _headers,
@@ -36,10 +40,11 @@ class ApiClient {
   }
 
   /// Makes a POST request.
-  Future<Map<String, dynamic>> post(
+  Future<dynamic> post(
     String path,
     Map<String, dynamic> body,
   ) async {
+    _logger.d('Making POST request to $baseUrl$path with body: $body');
     final response = await http.post(
       Uri.parse('$baseUrl$path'),
       headers: _headers,
@@ -49,10 +54,11 @@ class ApiClient {
   }
 
   /// Makes a PUT request.
-  Future<Map<String, dynamic>> put(
+  Future<dynamic> put(
     String path,
     Map<String, dynamic> body,
   ) async {
+    _logger.d('Making PUT request to $baseUrl$path with body: $body');
     final response = await http.put(
       Uri.parse('$baseUrl$path'),
       headers: _headers,
@@ -62,7 +68,8 @@ class ApiClient {
   }
 
   /// Makes a DELETE request.
-  Future<Map<String, dynamic>> delete(String path) async {
+  Future<dynamic> delete(String path) async {
+    _logger.d('Making DELETE request to $baseUrl$path');
     final response = await http.delete(
       Uri.parse('$baseUrl$path'),
       headers: _headers,
@@ -70,13 +77,18 @@ class ApiClient {
     return _handleResponse(response);
   }
 
-  Map<String, dynamic> _handleResponse(http.Response response) {
+  dynamic _handleResponse(http.Response response) {
+    _logger.d('Response status: ${response.statusCode}');
     if (response.statusCode >= 200 && response.statusCode < 300) {
       if (response.body.isEmpty) {
+        _logger.d('Response body is empty');
         return {};
       }
-      return jsonDecode(response.body) as Map<String, dynamic>;
+      final decoded = jsonDecode(response.body);
+      _logger.d('Response body: ${response.body}');
+      return decoded;
     } else {
+      _logger.e('API error: ${response.statusCode} - ${response.body}');
       throw ApiException(
         statusCode: response.statusCode,
         message: response.body.isNotEmpty

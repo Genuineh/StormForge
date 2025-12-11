@@ -91,8 +91,8 @@ class ValidationRule extends Equatable {
 
   factory ValidationRule.fromJson(Map<String, dynamic> json) {
     return ValidationRule(
-      id: json['id'] as String,
-      validationType: ValidationType.fromJson(json['validationType'] as String),
+      id: json['id'] as String? ?? '',
+      validationType: ValidationType.fromJson(json['validationType'] as String? ?? 'required'),
       value: json['value'],
       errorMessage: json['errorMessage'] as String?,
     );
@@ -194,9 +194,9 @@ class EntityProperty extends Equatable {
 
   factory EntityProperty.fromJson(Map<String, dynamic> json) {
     return EntityProperty(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      propertyType: json['propertyType'] as String,
+      id: json['id'] as String? ?? '',
+      name: json['name'] as String? ?? '',
+      propertyType: json['propertyType'] as String? ?? '',
       required: json['required'] as bool? ?? false,
       isIdentifier: json['isIdentifier'] as bool? ?? false,
       isReadOnly: json['isReadOnly'] as bool? ?? false,
@@ -264,8 +264,8 @@ class MethodParameter extends Equatable {
 
   factory MethodParameter.fromJson(Map<String, dynamic> json) {
     return MethodParameter(
-      name: json['name'] as String,
-      parameterType: json['parameterType'] as String,
+      name: json['name'] as String? ?? '',
+      parameterType: json['parameterType'] as String? ?? '',
       required: json['required'] as bool? ?? true,
       defaultValue: json['defaultValue'],
     );
@@ -358,10 +358,10 @@ class EntityMethod extends Equatable {
 
   factory EntityMethod.fromJson(Map<String, dynamic> json) {
     return EntityMethod(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      methodType: MethodType.fromJson(json['methodType'] as String),
-      returnType: json['returnType'] as String,
+      id: json['id'] as String? ?? '',
+      name: json['name'] as String? ?? '',
+      methodType: MethodType.fromJson(json['methodType'] as String? ?? 'domainLogic'),
+      returnType: json['returnType'] as String? ?? '',
       parameters: (json['parameters'] as List<dynamic>?)
               ?.map((p) => MethodParameter.fromJson(p as Map<String, dynamic>))
               .toList() ??
@@ -434,10 +434,10 @@ class EntityInvariant extends Equatable {
 
   factory EntityInvariant.fromJson(Map<String, dynamic> json) {
     return EntityInvariant(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      expression: json['expression'] as String,
-      errorMessage: json['errorMessage'] as String,
+      id: json['id'] as String? ?? '',
+      name: json['name'] as String? ?? '',
+      expression: json['expression'] as String? ?? '',
+      errorMessage: json['errorMessage'] as String? ?? '',
       enabled: json['enabled'] as bool? ?? true,
     );
   }
@@ -540,12 +540,12 @@ class EntityDefinition extends Equatable {
 
   factory EntityDefinition.fromJson(Map<String, dynamic> json) {
     return EntityDefinition(
-      id: json['id'] as String,
-      projectId: json['projectId'] as String,
-      name: json['name'] as String,
+      id: json['id'] as String? ?? '',
+      projectId: json['projectId'] as String? ?? '',
+      name: json['name'] as String? ?? '',
       description: json['description'] as String?,
       aggregateId: json['aggregateId'] as String?,
-      entityType: EntityType.fromJson(json['entityType'] as String),
+      entityType: EntityType.fromJson(json['entityType'] as String? ?? 'entity'),
       properties: (json['properties'] as List<dynamic>?)
               ?.map((p) => EntityProperty.fromJson(p as Map<String, dynamic>))
               .toList() ??
@@ -558,8 +558,12 @@ class EntityDefinition extends Equatable {
               ?.map((i) => EntityInvariant.fromJson(i as Map<String, dynamic>))
               .toList() ??
           [],
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'] as String)
+          : DateTime.now(),
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.parse(json['updatedAt'] as String)
+          : DateTime.now(),
     );
   }
 

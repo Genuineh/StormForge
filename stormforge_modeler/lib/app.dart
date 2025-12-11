@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logger/logger.dart';
 
 import 'package:stormforge_modeler/canvas/canvas_widget.dart';
 import 'package:stormforge_modeler/router.dart';
@@ -13,6 +14,9 @@ class StormForgeModelerApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final logger = Logger();
+    logger.i('Building StormForgeModelerApp');
+
     return MaterialApp.router(
       title: 'StormForge Modeler',
       debugShowCheckedModeBanner: false,
@@ -47,6 +51,9 @@ class ModelerHomePage extends ConsumerStatefulWidget {
 class _ModelerHomePageState extends ConsumerState<ModelerHomePage> {
   @override
   Widget build(BuildContext context) {
+    final logger = Logger();
+    logger.i('Building ModelerHomePage');
+
     return const Scaffold(
       body: Column(
         children: [

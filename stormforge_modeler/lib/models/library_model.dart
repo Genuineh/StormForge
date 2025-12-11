@@ -250,22 +250,28 @@ class LibraryComponent extends Equatable {
 
   factory LibraryComponent.fromJson(Map<String, dynamic> json) {
     return LibraryComponent(
-      id: json['_id'] ?? json['id'] as String,
-      name: json['name'] as String,
-      namespace: json['namespace'] as String,
-      scope: LibraryScope.fromJson(json['scope'] as String),
-      componentType: ComponentType.fromJson(json['type'] as String),
-      version: json['version'] as String,
-      description: json['description'] as String,
+      id: json['_id'] ?? json['id'] as String? ?? '',
+      name: json['name'] as String? ?? '',
+      namespace: json['namespace'] as String? ?? '',
+      scope: LibraryScope.fromJson(json['scope'] as String? ?? 'global'),
+      componentType: ComponentType.fromJson(json['type'] as String? ?? 'entity'),
+      version: json['version'] as String? ?? '1.0.0',
+      description: json['description'] as String? ?? '',
       author: json['author'] as String?,
       organizationId: json['organizationId'] as String?,
       tags: (json['tags'] as List<dynamic>?)?.cast<String>() ?? [],
-      definition: json['definition'] as Map<String, dynamic>,
+      definition: json['definition'] as Map<String, dynamic>? ?? {},
       metadata: json['metadata'] as Map<String, dynamic>? ?? {},
-      status: ComponentStatus.fromJson(json['status'] as String),
-      usageStats: UsageStats.fromJson(json['usageStats'] as Map<String, dynamic>),
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      status: ComponentStatus.fromJson(json['status'] as String? ?? 'active'),
+      usageStats: json['usageStats'] != null
+          ? UsageStats.fromJson(json['usageStats'] as Map<String, dynamic>)
+          : const UsageStats(),
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'] as String)
+          : DateTime.now(),
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.parse(json['updatedAt'] as String)
+          : DateTime.now(),
     );
   }
 
@@ -378,13 +384,15 @@ class ComponentVersion extends Equatable {
 
   factory ComponentVersion.fromJson(Map<String, dynamic> json) {
     return ComponentVersion(
-      id: json['_id'] ?? json['id'] as String,
-      componentId: json['componentId'] as String,
-      version: json['version'] as String,
-      definition: json['definition'] as Map<String, dynamic>,
-      changeNotes: json['changeNotes'] as String,
-      author: json['author'] as String,
-      createdAt: DateTime.parse(json['createdAt'] as String),
+      id: json['_id'] ?? json['id'] as String? ?? '',
+      componentId: json['componentId'] as String? ?? '',
+      version: json['version'] as String? ?? '1.0.0',
+      definition: json['definition'] as Map<String, dynamic>? ?? {},
+      changeNotes: json['changeNotes'] as String? ?? '',
+      author: json['author'] as String? ?? '',
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'] as String)
+          : DateTime.now(),
     );
   }
 
@@ -432,12 +440,14 @@ class ComponentReference extends Equatable {
 
   factory ComponentReference.fromJson(Map<String, dynamic> json) {
     return ComponentReference(
-      id: json['_id'] ?? json['id'] as String,
-      projectId: json['projectId'] as String,
-      componentId: json['componentId'] as String,
-      version: json['version'] as String,
-      mode: ComponentReferenceMode.fromJson(json['mode'] as String),
-      addedAt: DateTime.parse(json['addedAt'] as String),
+      id: json['_id'] ?? json['id'] as String? ?? '',
+      projectId: json['projectId'] as String? ?? '',
+      componentId: json['componentId'] as String? ?? '',
+      version: json['version'] as String? ?? '1.0.0',
+      mode: ComponentReferenceMode.fromJson(json['mode'] as String? ?? 'direct'),
+      addedAt: json['addedAt'] != null
+          ? DateTime.parse(json['addedAt'] as String)
+          : DateTime.now(),
     );
   }
 
@@ -479,11 +489,11 @@ class ProjectImpact extends Equatable {
 
   factory ProjectImpact.fromJson(Map<String, dynamic> json) {
     return ProjectImpact(
-      projectId: json['projectId'] as String,
-      projectName: json['projectName'] as String,
-      currentVersion: json['currentVersion'] as String,
+      projectId: json['projectId'] as String? ?? '',
+      projectName: json['projectName'] as String? ?? '',
+      currentVersion: json['currentVersion'] as String? ?? '1.0.0',
       referenceMode:
-          ComponentReferenceMode.fromJson(json['referenceMode'] as String),
+          ComponentReferenceMode.fromJson(json['referenceMode'] as String? ?? 'direct'),
     );
   }
 
@@ -519,11 +529,12 @@ class ImpactAnalysis extends Equatable {
 
   factory ImpactAnalysis.fromJson(Map<String, dynamic> json) {
     return ImpactAnalysis(
-      componentId: json['componentId'] as String,
-      affectedProjects: (json['affectedProjects'] as List<dynamic>)
-          .map((e) => ProjectImpact.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      totalReferences: json['totalReferences'] as int,
+      componentId: json['componentId'] as String? ?? '',
+      affectedProjects: (json['affectedProjects'] as List<dynamic>?)
+              ?.map((e) => ProjectImpact.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
+      totalReferences: json['totalReferences'] as int? ?? 0,
     );
   }
 

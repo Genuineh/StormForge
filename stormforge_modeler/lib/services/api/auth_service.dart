@@ -40,10 +40,14 @@ class AuthService {
       'displayName': displayName,
       'password': password,
       'role': role.name,
-    });
+    }) as Map<String, dynamic>;
 
     final user = User.fromJson(response['user'] as Map<String, dynamic>);
-    final token = response['token'] as String;
+    final token = response['token'] as String?;
+
+    if (token == null) {
+      throw ApiException(statusCode: 500, message: 'No token in register response');
+    }
 
     // Store authentication data
     final prefs = await _prefs;
@@ -62,10 +66,14 @@ class AuthService {
     final response = await _apiClient.post('/api/auth/login', {
       'usernameOrEmail': usernameOrEmail,
       'password': password,
-    });
+    }) as Map<String, dynamic>;
 
     final user = User.fromJson(response['user'] as Map<String, dynamic>);
-    final token = response['token'] as String;
+    final token = response['token'] as String?;
+
+    if (token == null) {
+      throw ApiException(statusCode: 500, message: 'No token in login response');
+    }
 
     // Store authentication data
     final prefs = await _prefs;

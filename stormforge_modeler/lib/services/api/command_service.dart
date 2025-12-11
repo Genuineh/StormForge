@@ -20,13 +20,13 @@ class CommandService {
       if (aggregateId != null) 'aggregateId': aggregateId,
     });
 
-    return CommandDefinition.fromJson(response);
+    return CommandDefinition.fromJson(response as Map<String, dynamic>);
   }
 
   /// Get a command by ID
   Future<CommandDefinition> getCommand(String id) async {
     final response = await _apiClient.get('/api/commands/$id');
-    return CommandDefinition.fromJson(response);
+    return CommandDefinition.fromJson(response as Map<String, dynamic>);
   }
 
   /// List commands for a project
@@ -35,7 +35,16 @@ class CommandService {
     final response =
         await _apiClient.get('/api/projects/$projectId/commands');
     
-    final commands = (response['commands'] as List<dynamic>)
+    List<dynamic> commandsList;
+    if (response is List<dynamic>) {
+      commandsList = response;
+    } else if (response is Map<String, dynamic> && response.containsKey('commands')) {
+      commandsList = response['commands'] as List<dynamic>;
+    } else {
+      throw Exception('Unexpected response format for commands list');
+    }
+    
+    final commands = commandsList
         .map((json) => CommandDefinition.fromJson(json as Map<String, dynamic>))
         .toList();
     return commands;
@@ -56,7 +65,7 @@ class CommandService {
       if (producedEvents != null) 'producedEvents': producedEvents,
     });
 
-    return CommandDefinition.fromJson(response);
+    return CommandDefinition.fromJson(response as Map<String, dynamic>);
   }
 
   /// Delete a command
@@ -86,7 +95,7 @@ class CommandService {
       },
     );
 
-    return CommandDefinition.fromJson(response);
+    return CommandDefinition.fromJson(response as Map<String, dynamic>);
   }
 
   /// Update a field in command payload
@@ -112,7 +121,7 @@ class CommandService {
       },
     );
 
-    return CommandDefinition.fromJson(response);
+    return CommandDefinition.fromJson(response as Map<String, dynamic>);
   }
 
   /// Remove a field from command payload
@@ -124,7 +133,7 @@ class CommandService {
       '/api/commands/$commandId/fields/$fieldId',
     );
 
-    return CommandDefinition.fromJson(response);
+    return CommandDefinition.fromJson(response as Map<String, dynamic>);
   }
 
   /// Add a validation rule to command
@@ -145,7 +154,7 @@ class CommandService {
       },
     );
 
-    return CommandDefinition.fromJson(response);
+    return CommandDefinition.fromJson(response as Map<String, dynamic>);
   }
 
   /// Remove a validation rule from command
@@ -157,7 +166,7 @@ class CommandService {
       '/api/commands/$commandId/validations/$validationIndex',
     );
 
-    return CommandDefinition.fromJson(response);
+    return CommandDefinition.fromJson(response as Map<String, dynamic>);
   }
 
   /// Add a precondition to command
@@ -178,7 +187,7 @@ class CommandService {
       },
     );
 
-    return CommandDefinition.fromJson(response);
+    return CommandDefinition.fromJson(response as Map<String, dynamic>);
   }
 
   /// Remove a precondition from command
@@ -190,6 +199,6 @@ class CommandService {
       '/api/commands/$commandId/preconditions/$preconditionIndex',
     );
 
-    return CommandDefinition.fromJson(response);
+    return CommandDefinition.fromJson(response as Map<String, dynamic>);
   }
 }

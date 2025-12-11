@@ -24,13 +24,13 @@ class EntityService {
       if (description != null) 'description': description,
       if (aggregateId != null) 'aggregateId': aggregateId,
     });
-    return EntityDefinition.fromJson(response);
+    return EntityDefinition.fromJson(response as Map<String, dynamic>);
   }
 
   /// Gets an entity by ID.
   Future<EntityDefinition> getEntity(String entityId) async {
     final response = await _apiClient.get('/api/entities/$entityId');
-    return EntityDefinition.fromJson(response);
+    return EntityDefinition.fromJson(response as Map<String, dynamic>);
   }
 
   /// Lists entities for a project.
@@ -38,7 +38,17 @@ class EntityService {
       String projectId) async {
     final response =
         await _apiClient.get('/api/projects/$projectId/entities');
-    final entities = (response['entities'] as List<dynamic>)
+    
+    List<dynamic> entitiesList;
+    if (response is List<dynamic>) {
+      entitiesList = response;
+    } else if (response is Map<String, dynamic> && response.containsKey('entities')) {
+      entitiesList = response['entities'] as List<dynamic>;
+    } else {
+      throw Exception('Unexpected response format for entities list');
+    }
+    
+    final entities = entitiesList
         .map((e) => EntityDefinition.fromJson(e as Map<String, dynamic>))
         .toList();
     return entities;
@@ -49,7 +59,17 @@ class EntityService {
       String aggregateId) async {
     final response =
         await _apiClient.get('/api/aggregates/$aggregateId/entities');
-    final entities = (response['entities'] as List<dynamic>)
+    
+    List<dynamic> entitiesList;
+    if (response is List<dynamic>) {
+      entitiesList = response;
+    } else if (response is Map<String, dynamic> && response.containsKey('entities')) {
+      entitiesList = response['entities'] as List<dynamic>;
+    } else {
+      throw Exception('Unexpected response format for entities list');
+    }
+    
+    final entities = entitiesList
         .map((e) => EntityDefinition.fromJson(e as Map<String, dynamic>))
         .toList();
     return entities;
@@ -70,7 +90,7 @@ class EntityService {
     if (aggregateId != null) body['aggregateId'] = aggregateId;
 
     final response = await _apiClient.put('/api/entities/$entityId', body);
-    return EntityDefinition.fromJson(response);
+    return EntityDefinition.fromJson(response as Map<String, dynamic>);
   }
 
   /// Deletes an entity.
@@ -102,7 +122,7 @@ class EntityService {
       if (validations != null)
         'validations': validations.map((v) => v.toJson()).toList(),
     });
-    return EntityDefinition.fromJson(response);
+    return EntityDefinition.fromJson(response as Map<String, dynamic>);
   }
 
   /// Updates a property.
@@ -134,7 +154,7 @@ class EntityService {
       '/api/entities/$entityId/properties/$propertyId',
       body,
     );
-    return EntityDefinition.fromJson(response);
+    return EntityDefinition.fromJson(response as Map<String, dynamic>);
   }
 
   /// Removes a property.
@@ -145,7 +165,7 @@ class EntityService {
     final response = await _apiClient.delete(
       '/api/entities/$entityId/properties/$propertyId',
     );
-    return EntityDefinition.fromJson(response);
+    return EntityDefinition.fromJson(response as Map<String, dynamic>);
   }
 
   /// Adds a method to an entity.
@@ -165,7 +185,7 @@ class EntityService {
       if (parameters != null)
         'parameters': parameters.map((p) => p.toJson()).toList(),
     });
-    return EntityDefinition.fromJson(response);
+    return EntityDefinition.fromJson(response as Map<String, dynamic>);
   }
 
   /// Updates a method.
@@ -191,7 +211,7 @@ class EntityService {
       '/api/entities/$entityId/methods/$methodId',
       body,
     );
-    return EntityDefinition.fromJson(response);
+    return EntityDefinition.fromJson(response as Map<String, dynamic>);
   }
 
   /// Removes a method.
@@ -202,7 +222,7 @@ class EntityService {
     final response = await _apiClient.delete(
       '/api/entities/$entityId/methods/$methodId',
     );
-    return EntityDefinition.fromJson(response);
+    return EntityDefinition.fromJson(response as Map<String, dynamic>);
   }
 
   /// Adds an invariant to an entity.
@@ -220,7 +240,7 @@ class EntityService {
       'errorMessage': errorMessage,
       'enabled': enabled,
     });
-    return EntityDefinition.fromJson(response);
+    return EntityDefinition.fromJson(response as Map<String, dynamic>);
   }
 
   /// Updates an invariant.
@@ -242,7 +262,7 @@ class EntityService {
       '/api/entities/$entityId/invariants/$invariantId',
       body,
     );
-    return EntityDefinition.fromJson(response);
+    return EntityDefinition.fromJson(response as Map<String, dynamic>);
   }
 
   /// Removes an invariant.
@@ -253,7 +273,7 @@ class EntityService {
     final response = await _apiClient.delete(
       '/api/entities/$entityId/invariants/$invariantId',
     );
-    return EntityDefinition.fromJson(response);
+    return EntityDefinition.fromJson(response as Map<String, dynamic>);
   }
 
   /// Finds references to an entity.

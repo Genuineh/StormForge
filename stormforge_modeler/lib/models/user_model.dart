@@ -103,11 +103,12 @@ class User extends Equatable {
 
   /// Creates a user from a JSON map.
   factory User.fromJson(Map<String, dynamic> json) {
+    final username = json['username'] as String? ?? (throw ArgumentError('Username is required'));
     return User(
-      id: json['id'] as String,
-      username: json['username'] as String,
-      email: json['email'] as String,
-      displayName: json['display_name'] as String,
+      id: json['id'] as String? ?? (throw ArgumentError('User id is required')),
+      username: username,
+      email: json['email'] as String? ?? (throw ArgumentError('Email is required')),
+      displayName: json['display_name'] as String? ?? username,
       avatarUrl: json['avatar_url'] as String? ?? '',
       role: UserRole.values.firstWhere(
         (r) => r.name == json['role'],
@@ -120,7 +121,9 @@ class User extends Equatable {
                   ))
               .toList() ??
           [],
-      createdAt: DateTime.parse(json['created_at'] as String),
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'] as String)
+          : DateTime.now(),
     );
   }
 

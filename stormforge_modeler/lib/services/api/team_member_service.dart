@@ -22,14 +22,24 @@ class TeamMemberService {
         'role': role.name,
       },
     );
-    return TeamMember.fromJson(response);
+    return TeamMember.fromJson(response as Map<String, dynamic>);
   }
 
   /// Lists team members for a project.
   Future<List<TeamMember>> listTeamMembers(String projectId) async {
     final response =
         await _apiClient.get('/api/projects/$projectId/members');
-    final members = (response['members'] as List<dynamic>)
+    
+    List<dynamic> membersList;
+    if (response is List<dynamic>) {
+      membersList = response;
+    } else if (response is Map<String, dynamic> && response.containsKey('members')) {
+      membersList = response['members'] as List<dynamic>;
+    } else {
+      throw Exception('Unexpected response format for team members list');
+    }
+    
+    final members = membersList
         .map((m) => TeamMember.fromJson(m as Map<String, dynamic>))
         .toList();
     return members;
@@ -45,7 +55,7 @@ class TeamMemberService {
       '/api/projects/$projectId/members/$userId',
       {'role': role.name},
     );
-    return TeamMember.fromJson(response);
+    return TeamMember.fromJson(response as Map<String, dynamic>);
   }
 
   /// Removes a team member from a project.

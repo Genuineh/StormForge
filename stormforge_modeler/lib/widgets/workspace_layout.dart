@@ -137,6 +137,8 @@ class WorkspaceLayout extends ConsumerWidget {
             projectId: projectId,
           ),
           const VerticalDivider(),
+          // Quick actions (hidden until implemented to avoid confusion)
+          /*
           IconButton(
             icon: const Icon(Icons.save),
             tooltip: 'Save',
@@ -158,6 +160,7 @@ class WorkspaceLayout extends ConsumerWidget {
               // TODO: Implement redo
             },
           ),
+          */
           const SizedBox(width: 8),
         ],
       ),

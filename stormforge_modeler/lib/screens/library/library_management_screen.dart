@@ -239,7 +239,26 @@ class _LibraryManagementScreenState
   }
 
   Widget _buildDetailsPanel() {
-    if (_libraryService == null) return const SizedBox.shrink();
+    if (_libraryService == null) {
+      final theme = Theme.of(context);
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.info_outline,
+              size: 48,
+              color: theme.colorScheme.primary.withOpacity(0.5),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Loading library...',
+              style: theme.textTheme.titleMedium,
+            ),
+          ],
+        ),
+      );
+    }
 
     return ComponentDetailsDialog(
       component: _selectedComponent!,

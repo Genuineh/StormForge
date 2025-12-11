@@ -364,7 +364,7 @@ class _ProjectListCard extends ConsumerWidget {
 }
 
 /// Project grid card widget.
-class _ProjectGridCard extends StatelessWidget {
+class _ProjectGridCard extends ConsumerWidget {
   const _ProjectGridCard({required this.project});
 
   final Project project;
@@ -399,6 +399,10 @@ class _ProjectGridCard extends StatelessWidget {
                         child: Text('Open Canvas'),
                       ),
                       const PopupMenuItem(
+                        value: 'dashboard',
+                        child: Text('Dashboard'),
+                      ),
+                      const PopupMenuItem(
                         value: 'settings',
                         child: Text('Settings'),
                       ),
@@ -408,7 +412,20 @@ class _ProjectGridCard extends StatelessWidget {
                       ),
                     ],
                     onSelected: (value) {
-                      // Handle menu actions
+                      switch (value) {
+                        case 'open':
+                          context.go('/canvas/${project.id}');
+                          break;
+                        case 'dashboard':
+                          context.go('/projects/${project.id}');
+                          break;
+                        case 'settings':
+                          context.go('/projects/${project.id}/settings');
+                          break;
+                        case 'delete':
+                          // TODO: Show delete dialog
+                          break;
+                      }
                     },
                   ),
                 ],

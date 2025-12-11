@@ -112,6 +112,7 @@ final router = GoRouter(
         final projectId = state.pathParameters['id']!;
         final logger = Logger();
         logger.i('Navigating to LibraryBrowserScreen for project: $projectId');
+        // Use the existing LibraryBrowserScreen for backward compatibility
         return LibraryBrowserScreen(projectId: projectId);
       },
     ),

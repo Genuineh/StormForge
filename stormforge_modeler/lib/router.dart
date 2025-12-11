@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:logger/logger.dart';
 import 'package:stormforge_modeler/app.dart';
 import 'package:stormforge_modeler/screens/auth/login_screen.dart';
 import 'package:stormforge_modeler/screens/auth/register_screen.dart';
@@ -17,26 +18,44 @@ final router = GoRouter(
     // Auth routes
     GoRoute(
       path: '/login',
-      builder: (context, state) => const LoginScreen(),
+      builder: (context, state) {
+        final logger = Logger();
+        logger.i('Navigating to LoginScreen');
+        return const LoginScreen();
+      },
     ),
     GoRoute(
       path: '/register',
-      builder: (context, state) => const RegisterScreen(),
+      builder: (context, state) {
+        final logger = Logger();
+        logger.i('Navigating to RegisterScreen');
+        return const RegisterScreen();
+      },
     ),
 
     // Projects routes
     GoRoute(
       path: '/projects',
-      builder: (context, state) => const ProjectsListScreen(),
+      builder: (context, state) {
+        final logger = Logger();
+        logger.i('Navigating to ProjectsListScreen');
+        return const ProjectsListScreen();
+      },
     ),
     GoRoute(
       path: '/projects/new',
-      builder: (context, state) => const ProjectFormScreen(),
+      builder: (context, state) {
+        final logger = Logger();
+        logger.i('Navigating to ProjectFormScreen (new)');
+        return const ProjectFormScreen();
+      },
     ),
     GoRoute(
       path: '/projects/:id/edit',
       builder: (context, state) {
         final projectId = state.pathParameters['id']!;
+        final logger = Logger();
+        logger.i('Navigating to ProjectFormScreen (edit) for project: $projectId');
         return ProjectFormScreen(projectId: projectId);
       },
     ),
@@ -44,6 +63,8 @@ final router = GoRouter(
       path: '/projects/:id/settings',
       builder: (context, state) {
         final projectId = state.pathParameters['id']!;
+        final logger = Logger();
+        logger.i('Navigating to ProjectSettingsScreen for project: $projectId');
         return ProjectSettingsScreen(projectId: projectId);
       },
     ),
@@ -51,6 +72,8 @@ final router = GoRouter(
       path: '/projects/:id/team',
       builder: (context, state) {
         final projectId = state.pathParameters['id']!;
+        final logger = Logger();
+        logger.i('Navigating to TeamMembersScreen for project: $projectId');
         return TeamMembersScreen(projectId: projectId);
       },
     ),
@@ -58,6 +81,8 @@ final router = GoRouter(
       path: '/projects/:id/entities',
       builder: (context, state) {
         final projectId = state.pathParameters['id']!;
+        final logger = Logger();
+        logger.i('Navigating to EntityEditorScreen for project: $projectId');
         return EntityEditorScreen(projectId: projectId);
       },
     ),
@@ -65,6 +90,8 @@ final router = GoRouter(
       path: '/projects/:id/read-models',
       builder: (context, state) {
         final projectId = state.pathParameters['id']!;
+        final logger = Logger();
+        logger.i('Navigating to ReadModelDesignerScreen for project: $projectId');
         return ReadModelDesignerScreen(projectId: projectId);
       },
     ),
@@ -72,6 +99,8 @@ final router = GoRouter(
       path: '/projects/:id/commands',
       builder: (context, state) {
         final projectId = state.pathParameters['id']!;
+        final logger = Logger();
+        logger.i('Navigating to CommandDesignerScreen for project: $projectId');
         return CommandDesignerScreen(projectId: projectId);
       },
     ),
@@ -80,6 +109,9 @@ final router = GoRouter(
     GoRoute(
       path: '/canvas/:id',
       builder: (context, state) {
+        final projectId = state.pathParameters['id'];
+        final logger = Logger();
+        logger.i('Navigating to ModelerHomePage for canvas: $projectId');
         // For now, redirect to the existing modeler home page
         // In the future, this will load the specific project
         return const ModelerHomePage();
@@ -89,7 +121,11 @@ final router = GoRouter(
     // Root redirect
     GoRoute(
       path: '/',
-      redirect: (context, state) => '/login',
+      redirect: (context, state) {
+        final logger = Logger();
+        logger.i('Redirecting from root to /login');
+        return '/login';
+      },
     ),
   ],
 );

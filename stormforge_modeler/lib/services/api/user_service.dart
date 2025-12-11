@@ -12,7 +12,17 @@ class UserService {
   /// Lists all users.
   Future<List<User>> listUsers() async {
     final response = await _apiClient.get('/api/users');
-    final users = (response['users'] as List<dynamic>)
+    
+    List<dynamic> usersList;
+    if (response is List<dynamic>) {
+      usersList = response;
+    } else if (response is Map<String, dynamic> && response.containsKey('users')) {
+      usersList = response['users'] as List<dynamic>;
+    } else {
+      throw Exception('Unexpected response format for users list');
+    }
+    
+    final users = usersList
         .map((u) => User.fromJson(u as Map<String, dynamic>))
         .toList();
     return users;
@@ -21,7 +31,7 @@ class UserService {
   /// Gets a user by ID.
   Future<User> getUser(String userId) async {
     final response = await _apiClient.get('/api/users/$userId');
-    return User.fromJson(response);
+    return User.fromJson(response as Map<String, dynamic>);
   }
 
   /// Updates a user.
@@ -41,6 +51,6 @@ class UserService {
     if (role != null) body['role'] = role.name;
 
     final response = await _apiClient.put('/api/users/$userId', body);
-    return User.fromJson(response);
+    return User.fromJson(response as Map<String, dynamic>);
   }
 }

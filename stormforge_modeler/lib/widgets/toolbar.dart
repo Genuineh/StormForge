@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stormforge_modeler/canvas/canvas_controller.dart';
+import 'package:go_router/go_router.dart';
 import 'package:stormforge_modeler/services/yaml_service.dart';
 
 /// The toolbar widget at the top of the modeler.
@@ -24,80 +25,104 @@ class ModelerToolbar extends ConsumerWidget {
       ),
       child: Row(
         children: [
-          // Logo/App name
-          Row(
-            children: [
-              Icon(Icons.flash_on, color: theme.colorScheme.primary, size: 24),
-              const SizedBox(width: 8),
-              Text(
-                'StormForge',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
+          // Left-side controls are horizontally scrollable when space is limited
+          Flexible(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  // Logo/App name
+                  Row(
+                    children: [
+                      Icon(Icons.flash_on, color: theme.colorScheme.primary, size: 24),
+                      const SizedBox(width: 8),
+                      Text(
+                        'StormForge',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
 
-          const SizedBox(width: 24),
+                  const SizedBox(width: 8),
+                  // Back/Home to projects
+                  _ToolbarSection(
+                    children: [
+                      _ToolbarButton(
+                        icon: Icons.home,
+                        tooltip: 'Back to Projects',
+                        onPressed: () {
+                          context.go('/projects');
+                        },
+                      ),
+                    ],
+                  ),
 
-          // File operations
-          _ToolbarSection(
-            children: [
-              _ToolbarButton(
-                icon: Icons.folder_open,
-                tooltip: 'Open Project',
-                onPressed: () => _openProject(context, ref),
-              ),
-              _ToolbarButton(
-                icon: Icons.save,
-                tooltip: 'Save Project',
-                onPressed: () => _saveProject(context, ref),
-              ),
-              _ToolbarButton(
-                icon: Icons.file_download,
-                tooltip: 'Export YAML',
-                onPressed: () => _exportYaml(context, ref),
-              ),
-              _ToolbarButton(
-                icon: Icons.file_upload,
-                tooltip: 'Import YAML',
-                onPressed: () => _importYaml(context, ref),
-              ),
-            ],
-          ),
+                  const SizedBox(width: 24),
 
-          const SizedBox(width: 16),
+                  // File operations
+                  _ToolbarSection(
+                    children: [
+                      _ToolbarButton(
+                        icon: Icons.folder_open,
+                        tooltip: 'Open Project',
+                        onPressed: () => _openProject(context, ref),
+                      ),
+                      _ToolbarButton(
+                        icon: Icons.save,
+                        tooltip: 'Save Project',
+                        onPressed: () => _saveProject(context, ref),
+                      ),
+                      _ToolbarButton(
+                        icon: Icons.file_download,
+                        tooltip: 'Export YAML',
+                        onPressed: () => _exportYaml(context, ref),
+                      ),
+                      _ToolbarButton(
+                        icon: Icons.file_upload,
+                        tooltip: 'Import YAML',
+                        onPressed: () => _importYaml(context, ref),
+                      ),
+                    ],
+                  ),
 
-          // Edit operations
-          _ToolbarSection(
-            children: [
-              _ToolbarButton(
-                icon: Icons.undo,
-                tooltip: 'Undo',
-                onPressed: () {
-                  // TODO: Implement undo
-                },
+                  const SizedBox(width: 16),
+
+                  // Edit operations
+                  _ToolbarSection(
+                    children: [
+                      _ToolbarButton(
+                        icon: Icons.undo,
+                        tooltip: 'Undo',
+                        onPressed: () {
+                          // TODO: Implement undo
+                        },
+                      ),
+                      _ToolbarButton(
+                        icon: Icons.redo,
+                        tooltip: 'Redo',
+                        onPressed: () {
+                          // TODO: Implement redo
+                        },
+                      ),
+                      _ToolbarButton(
+                        icon: Icons.delete_outline,
+                        tooltip: 'Delete Selected',
+                        onPressed: () {
+                          final model = ref.read(canvasModelProvider);
+                          if (model.selectedElementId != null) {
+                            ref
+                                .read(canvasModelProvider.notifier)
+                                .removeElement(model.selectedElementId!);
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              _ToolbarButton(
-                icon: Icons.redo,
-                tooltip: 'Redo',
-                onPressed: () {
-                  // TODO: Implement redo
-                },
-              ),
-              _ToolbarButton(
-                icon: Icons.delete_outline,
-                tooltip: 'Delete Selected',
-                onPressed: () {
-                  final model = ref.read(canvasModelProvider);
-                  if (model.selectedElementId != null) {
-                    ref
-                        .read(canvasModelProvider.notifier)
-                        .removeElement(model.selectedElementId!);
-                  }
-                },
-              ),
-            ],
+            ),
           ),
 
           const Spacer(),

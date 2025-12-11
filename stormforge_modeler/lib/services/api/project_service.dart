@@ -20,23 +20,33 @@ class ProjectService {
     final response = await _apiClient.post('/api/projects', {
       'name': name,
       'namespace': namespace,
-      'owner_id': ownerId,
+      'ownerId': ownerId,
       if (description != null) 'description': description,
       'visibility': visibility.name,
     });
-    return Project.fromJson(response);
+    return Project.fromJson(response as Map<String, dynamic>);
   }
 
   /// Gets a project by ID.
   Future<Project> getProject(String projectId) async {
     final response = await _apiClient.get('/api/projects/$projectId');
-    return Project.fromJson(response);
+    return Project.fromJson(response as Map<String, dynamic>);
   }
 
   /// Lists projects for an owner.
   Future<List<Project>> listProjects(String ownerId) async {
     final response = await _apiClient.get('/api/projects/owner/$ownerId');
-    final projects = (response['projects'] as List<dynamic>)
+    
+    List<dynamic> projectsList;
+    if (response is List<dynamic>) {
+      projectsList = response;
+    } else if (response is Map<String, dynamic> && response.containsKey('projects')) {
+      projectsList = response['projects'] as List<dynamic>;
+    } else {
+      throw Exception('Unexpected response format for projects list');
+    }
+    
+    final projects = projectsList
         .map((p) => Project.fromJson(p as Map<String, dynamic>))
         .toList();
     return projects;
@@ -59,7 +69,7 @@ class ProjectService {
     if (settings != null) body['settings'] = settings.toJson();
 
     final response = await _apiClient.put('/api/projects/$projectId', body);
-    return Project.fromJson(response);
+    return Project.fromJson(response as Map<String, dynamic>);
   }
 
   /// Deletes a project.

@@ -107,17 +107,21 @@ class Project extends Equatable {
   /// Creates a project from a JSON map.
   factory Project.fromJson(Map<String, dynamic> json) {
     return Project(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      namespace: json['namespace'] as String,
+      id: json['id'] as String? ?? '',
+      name: json['name'] as String? ?? '',
+      namespace: json['namespace'] as String? ?? '',
       description: json['description'] as String? ?? '',
-      ownerId: json['owner_id'] as String,
+      ownerId: json['owner_id'] as String? ?? '',
       visibility: ProjectVisibility.values.firstWhere(
         (v) => v.name == json['visibility'],
         orElse: () => ProjectVisibility.private,
       ),
-      createdAt: DateTime.parse(json['created_at'] as String),
-      updatedAt: DateTime.parse(json['updated_at'] as String),
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'] as String)
+          : DateTime.now(),
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'] as String)
+          : DateTime.now(),
       settings: json['settings'] != null
           ? ProjectSettings.fromJson(json['settings'] as Map<String, dynamic>)
           : const ProjectSettings(),

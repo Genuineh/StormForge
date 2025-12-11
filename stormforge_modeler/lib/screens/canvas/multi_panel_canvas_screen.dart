@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:stormforge_modeler/canvas/canvas_widget.dart';
 import 'package:stormforge_modeler/widgets/project_tree.dart';
 import 'package:stormforge_modeler/widgets/property_panel.dart';
@@ -31,6 +32,11 @@ class MultiPanelCanvasScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          tooltip: 'Back to Projects',
+          onPressed: () => context.go('/projects'),
+        ),
         title: const Text('StormForge Modeler'),
         actions: [
           // Toggle left panel

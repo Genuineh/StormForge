@@ -18,13 +18,13 @@ class ReadModelService {
       if (description != null) 'description': description,
     });
 
-    return ReadModelDefinition.fromJson(response);
+    return ReadModelDefinition.fromJson(response as Map<String, dynamic>);
   }
 
   /// Get a read model by ID
   Future<ReadModelDefinition> getReadModel(String id) async {
     final response = await _apiClient.get('/api/read-models/$id');
-    return ReadModelDefinition.fromJson(response);
+    return ReadModelDefinition.fromJson(response as Map<String, dynamic>);
   }
 
   /// List read models for a project
@@ -33,7 +33,16 @@ class ReadModelService {
     final response =
         await _apiClient.get('/api/projects/$projectId/read-models');
     
-    final readModels = (response['readModels'] as List<dynamic>)
+    List<dynamic> readModelsList;
+    if (response is List<dynamic>) {
+      readModelsList = response;
+    } else if (response is Map<String, dynamic> && response.containsKey('readModels')) {
+      readModelsList = response['readModels'] as List<dynamic>;
+    } else {
+      throw Exception('Unexpected response format for read models list');
+    }
+    
+    final readModels = readModelsList
         .map((json) => ReadModelDefinition.fromJson(json as Map<String, dynamic>))
         .toList();
     return readModels;
@@ -52,7 +61,7 @@ class ReadModelService {
       if (updatedByEvents != null) 'updatedByEvents': updatedByEvents,
     });
 
-    return ReadModelDefinition.fromJson(response);
+    return ReadModelDefinition.fromJson(response as Map<String, dynamic>);
   }
 
   /// Delete a read model
@@ -78,7 +87,7 @@ class ReadModelService {
       },
     );
 
-    return ReadModelDefinition.fromJson(response);
+    return ReadModelDefinition.fromJson(response as Map<String, dynamic>);
   }
 
   /// Update a data source in a read model
@@ -100,7 +109,7 @@ class ReadModelService {
       },
     );
 
-    return ReadModelDefinition.fromJson(response);
+    return ReadModelDefinition.fromJson(response as Map<String, dynamic>);
   }
 
   /// Remove a data source from a read model
@@ -111,7 +120,7 @@ class ReadModelService {
     final response = await _apiClient
         .delete('/api/read-models/$readModelId/sources/$sourceIndex');
 
-    return ReadModelDefinition.fromJson(response);
+    return ReadModelDefinition.fromJson(response as Map<String, dynamic>);
   }
 
   /// Add a field to a read model
@@ -138,7 +147,7 @@ class ReadModelService {
       },
     );
 
-    return ReadModelDefinition.fromJson(response);
+    return ReadModelDefinition.fromJson(response as Map<String, dynamic>);
   }
 
   /// Update a field in a read model
@@ -166,7 +175,7 @@ class ReadModelService {
       },
     );
 
-    return ReadModelDefinition.fromJson(response);
+    return ReadModelDefinition.fromJson(response as Map<String, dynamic>);
   }
 
   /// Remove a field from a read model
@@ -177,6 +186,6 @@ class ReadModelService {
     final response = await _apiClient
         .delete('/api/read-models/$readModelId/fields/$fieldId');
 
-    return ReadModelDefinition.fromJson(response);
+    return ReadModelDefinition.fromJson(response as Map<String, dynamic>);
   }
 }

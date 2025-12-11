@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import 'package:logger/logger.dart';
 
 /// Service that handles automatic saving of project data
 /// 
@@ -25,11 +26,15 @@ class AutoSaveService extends ChangeNotifier {
   /// Debounce delay in milliseconds to prevent rapid saves (default: 2 seconds)
   final int debounceDelayMs;
 
+  final Logger _logger = Logger();
+
   AutoSaveService({
     required this.onSave,
     this.autoSaveIntervalSeconds = 30,
     this.debounceDelayMs = 2000,
-  });
+  }) {
+    _logger.i('AutoSaveService initialized with interval: $autoSaveIntervalSeconds seconds, debounce: $debounceDelayMs ms');
+  }
 
   /// Whether there are unsaved changes
   bool get isDirty => _isDirty;
@@ -45,6 +50,7 @@ class AutoSaveService extends ChangeNotifier {
 
   /// Start the auto-save timer
   void startAutoSave() {
+    _logger.i('Starting auto-save timer');
     stopAutoSave();
     _autoSaveTimer = Timer.periodic(
       Duration(seconds: autoSaveIntervalSeconds),
@@ -54,6 +60,7 @@ class AutoSaveService extends ChangeNotifier {
 
   /// Stop the auto-save timer
   void stopAutoSave() {
+    _logger.i('Stopping auto-save timer');
     _autoSaveTimer?.cancel();
     _autoSaveTimer = null;
     _debounceTimer?.cancel();
@@ -67,6 +74,7 @@ class AutoSaveService extends ChangeNotifier {
     _isDirty = true;
     _lastError = null;
     notifyListeners();
+    _logger.d('Marked as dirty, scheduling debounced save');
 
     // Debounce the save to avoid saving on every keystroke
     _debounceTimer?.cancel();
@@ -78,25 +86,32 @@ class AutoSaveService extends ChangeNotifier {
 
   /// Manually trigger a save operation
   Future<void> saveNow() async {
+    _logger.i('Manual save triggered');
     _debounceTimer?.cancel();
     await _executeSave();
   }
 
   /// Execute the save operation
   Future<void> _executeSave() async {
-    if (!_isDirty || _isSaving) return;
+    if (!_isDirty || _isSaving) {
+      _logger.d('Skipping save: dirty=$_isDirty, saving=$_isSaving');
+      return;
+    }
 
     _isSaving = true;
     _lastError = null;
     notifyListeners();
+    _logger.i('Starting save operation');
 
     try {
       await onSave();
       _isDirty = false;
       _lastSaveTime = DateTime.now();
       _lastError = null;
+      _logger.i('Save completed successfully');
     } catch (e) {
       _lastError = e.toString();
+      _logger.e('Save failed: $e');
       debugPrint('Auto-save error: $e');
     } finally {
       _isSaving = false;
@@ -129,6 +144,7 @@ class AutoSaveService extends ChangeNotifier {
 
   @override
   void dispose() {
+    _logger.i('Disposing AutoSaveService');
     stopAutoSave();
     super.dispose();
   }

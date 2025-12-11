@@ -95,17 +95,17 @@ class FieldSource extends Equatable {
         return const FieldSource.uiInput();
       case 'ReadModel':
         return FieldSource.readModel(
-          readModelId: json['readModelId'] as String,
-          fieldPath: json['fieldPath'] as String,
+          readModelId: json['readModelId'] as String? ?? '',
+          fieldPath: json['fieldPath'] as String? ?? '',
         );
       case 'Entity':
         return FieldSource.entity(
-          entityId: json['entityId'] as String,
-          fieldPath: json['fieldPath'] as String,
+          entityId: json['entityId'] as String? ?? '',
+          fieldPath: json['fieldPath'] as String? ?? '',
         );
       case 'Computed':
         return FieldSource.computed(
-          expression: json['expression'] as String,
+          expression: json['expression'] as String? ?? '',
         );
       case 'Custom':
         return const FieldSource.custom();
@@ -190,10 +190,10 @@ class CommandValidationRule extends Equatable {
 
   factory CommandValidationRule.fromJson(Map<String, dynamic> json) {
     return CommandValidationRule(
-      fieldName: json['fieldName'] as String,
-      operator: ValidationOperator.fromJson(json['operator'] as String),
+      fieldName: json['fieldName'] as String? ?? '',
+      operator: ValidationOperator.fromJson(json['operator'] as String? ?? 'equals'),
       value: json['value'],
-      errorMessage: json['errorMessage'] as String,
+      errorMessage: json['errorMessage'] as String? ?? '',
     );
   }
 
@@ -260,10 +260,10 @@ class Precondition extends Equatable {
 
   factory Precondition.fromJson(Map<String, dynamic> json) {
     return Precondition(
-      description: json['description'] as String,
-      expression: json['expression'] as String,
-      operator: PreconditionOperator.fromJson(json['operator'] as String),
-      errorMessage: json['errorMessage'] as String,
+      description: json['description'] as String? ?? '',
+      expression: json['expression'] as String? ?? '',
+      operator: PreconditionOperator.fromJson(json['operator'] as String? ?? 'custom'),
+      errorMessage: json['errorMessage'] as String? ?? '',
     );
   }
 
@@ -352,10 +352,10 @@ class CommandField extends Equatable {
 
   factory CommandField.fromJson(Map<String, dynamic> json) {
     return CommandField(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      fieldType: json['fieldType'] as String,
-      required: json['required'] as bool,
+      id: json['id'] as String? ?? '',
+      name: json['name'] as String? ?? '',
+      fieldType: json['fieldType'] as String? ?? '',
+      required: json['required'] as bool? ?? false,
       source: FieldSource.fromJson(json['source']),
       defaultValue: json['defaultValue'],
       description: json['description'] as String?,
@@ -363,7 +363,7 @@ class CommandField extends Equatable {
               ?.map((v) => CommandValidationRule.fromJson(v as Map<String, dynamic>))
               .toList() ??
           [],
-      displayOrder: json['displayOrder'] as int,
+      displayOrder: json['displayOrder'] as int? ?? 0,
     );
   }
 
@@ -560,12 +560,14 @@ class CommandDefinition extends Equatable {
 
   factory CommandDefinition.fromJson(Map<String, dynamic> json) {
     return CommandDefinition(
-      id: json['_id'] as String,
-      projectId: json['projectId'] as String,
-      name: json['name'] as String,
+      id: json['_id'] as String? ?? '',
+      projectId: json['projectId'] as String? ?? '',
+      name: json['name'] as String? ?? '',
       description: json['description'] as String?,
       aggregateId: json['aggregateId'] as String?,
-      payload: CommandPayload.fromJson(json['payload'] as Map<String, dynamic>),
+      payload: json['payload'] != null
+          ? CommandPayload.fromJson(json['payload'] as Map<String, dynamic>)
+          : CommandPayload.empty(),
       validations: (json['validations'] as List<dynamic>?)
               ?.map((v) => CommandValidationRule.fromJson(v as Map<String, dynamic>))
               .toList() ??
@@ -576,9 +578,15 @@ class CommandDefinition extends Equatable {
           [],
       producedEvents:
           (json['producedEvents'] as List<dynamic>?)?.map((e) => e as String).toList() ?? [],
-      metadata: CommandMetadata.fromJson(json['metadata'] as Map<String, dynamic>),
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      metadata: json['metadata'] != null
+          ? CommandMetadata.fromJson(json['metadata'] as Map<String, dynamic>)
+          : CommandMetadata.create(),
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'] as String)
+          : DateTime.now(),
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.parse(json['updatedAt'] as String)
+          : DateTime.now(),
     );
   }
 

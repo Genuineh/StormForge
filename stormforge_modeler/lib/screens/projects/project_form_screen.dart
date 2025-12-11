@@ -184,62 +184,66 @@ class _ProjectFormScreenState extends ConsumerState<ProjectFormScreen> {
                             labelText: 'Visibility',
                             border: OutlineInputBorder(),
                           ),
+                          itemHeight: 60, // 增加每个选项的高度
                           items: [
                             DropdownMenuItem(
                               value: ProjectVisibility.private,
-                              child: Row(
-                                children: [
-                                  const Icon(Icons.lock, size: 20),
-                                  const SizedBox(width: 8),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      const Text('Private'),
-                                      Text(
-                                        'Only you can see this',
-                                        style: theme.textTheme.bodySmall,
+                              child: ClipRect(
+                                child: Row(
+                                  children: [
+                                    const Icon(Icons.lock, size: 20),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      'Private\nOnly you can see this',
+                                      style: theme.textTheme.bodySmall?.copyWith(
+                                        fontSize: 10,
+                                        height: 1.0,
                                       ),
-                                    ],
-                                  ),
-                                ],
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                             DropdownMenuItem(
                               value: ProjectVisibility.team,
-                              child: Row(
-                                children: [
-                                  const Icon(Icons.group, size: 20),
-                                  const SizedBox(width: 8),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      const Text('Team'),
-                                      Text(
-                                        'Team members can see this',
-                                        style: theme.textTheme.bodySmall,
+                              child: ClipRect(
+                                child: Row(
+                                  children: [
+                                    const Icon(Icons.group, size: 20),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      'Team\nTeam members can see this',
+                                      style: theme.textTheme.bodySmall?.copyWith(
+                                        fontSize: 10,
+                                        height: 1.0,
                                       ),
-                                    ],
-                                  ),
-                                ],
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                             DropdownMenuItem(
                               value: ProjectVisibility.public,
-                              child: Row(
-                                children: [
-                                  const Icon(Icons.public, size: 20),
-                                  const SizedBox(width: 8),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      const Text('Public'),
-                                      Text(
-                                        'Anyone can see this',
-                                        style: theme.textTheme.bodySmall,
+                              child: ClipRect(
+                                child: Row(
+                                  children: [
+                                    const Icon(Icons.public, size: 20),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      'Public\nAnyone can see this',
+                                      style: theme.textTheme.bodySmall?.copyWith(
+                                        fontSize: 10,
+                                        height: 1.0,
                                       ),
-                                    ],
-                                  ),
-                                ],
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ],

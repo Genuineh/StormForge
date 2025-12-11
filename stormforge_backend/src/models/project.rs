@@ -105,6 +105,7 @@ pub struct CreateProjectRequest {
     pub name: String,
     pub namespace: String,
     pub description: String,
+    pub owner_id: String,
     #[serde(default)]
     pub visibility: ProjectVisibility,
 }

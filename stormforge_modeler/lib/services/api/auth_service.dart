@@ -60,7 +60,7 @@ class AuthService {
     required String password,
   }) async {
     final response = await _apiClient.post('/api/auth/login', {
-      'username_or_email': usernameOrEmail,
+      'usernameOrEmail': usernameOrEmail,
       'password': password,
     });
 

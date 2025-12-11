@@ -6,6 +6,7 @@ use axum::{
 use serde_json::{json, Value};
 
 use crate::{
+    middleware::auth::AuthUser,
     models::{
         CreateEntityRequest, EntityDefinition, InvariantRequest, MethodRequest, PropertyRequest,
         UpdateEntityRequest,
@@ -32,6 +33,7 @@ pub struct EntityStateInner {
     tag = "entities"
 )]
 pub async fn create_entity(
+    _auth: AuthUser,
     State(state): State<EntityState>,
     Json(payload): Json<CreateEntityRequest>,
 ) -> Result<(StatusCode, Json<EntityDefinition>), (StatusCode, Json<Value>)> {
@@ -63,6 +65,7 @@ pub async fn create_entity(
     tag = "entities"
 )]
 pub async fn get_entity(
+    _auth: AuthUser,
     State(state): State<EntityState>,
     Path(id): Path<String>,
 ) -> Result<Json<EntityDefinition>, (StatusCode, Json<Value>)> {
@@ -89,6 +92,7 @@ pub async fn get_entity(
     tag = "entities"
 )]
 pub async fn list_entities_for_project(
+    _auth: AuthUser,
     State(state): State<EntityState>,
     Path(project_id): Path<String>,
 ) -> Result<Json<Vec<EntityDefinition>>, (StatusCode, Json<Value>)> {
@@ -119,6 +123,7 @@ pub async fn list_entities_for_project(
     tag = "entities"
 )]
 pub async fn list_entities_by_aggregate(
+    _auth: AuthUser,
     State(state): State<EntityState>,
     Path(aggregate_id): Path<String>,
 ) -> Result<Json<Vec<EntityDefinition>>, (StatusCode, Json<Value>)> {
@@ -151,6 +156,7 @@ pub async fn list_entities_by_aggregate(
     tag = "entities"
 )]
 pub async fn update_entity(
+    _auth: AuthUser,
     State(state): State<EntityState>,
     Path(id): Path<String>,
     Json(payload): Json<UpdateEntityRequest>,
@@ -183,6 +189,7 @@ pub async fn update_entity(
     tag = "entities"
 )]
 pub async fn delete_entity(
+    _auth: AuthUser,
     State(state): State<EntityState>,
     Path(id): Path<String>,
 ) -> Result<StatusCode, (StatusCode, Json<Value>)> {
@@ -213,6 +220,7 @@ pub async fn delete_entity(
     tag = "entities"
 )]
 pub async fn add_property(
+    _auth: AuthUser,
     State(state): State<EntityState>,
     Path(entity_id): Path<String>,
     Json(payload): Json<PropertyRequest>,
@@ -247,6 +255,7 @@ pub async fn add_property(
     tag = "entities"
 )]
 pub async fn update_property(
+    _auth: AuthUser,
     State(state): State<EntityState>,
     Path((entity_id, property_id)): Path<(String, String)>,
     Json(payload): Json<PropertyRequest>,
@@ -280,6 +289,7 @@ pub async fn update_property(
     tag = "entities"
 )]
 pub async fn remove_property(
+    _auth: AuthUser,
     State(state): State<EntityState>,
     Path((entity_id, property_id)): Path<(String, String)>,
 ) -> Result<Json<EntityDefinition>, (StatusCode, Json<Value>)> {
@@ -314,6 +324,7 @@ pub async fn remove_property(
     tag = "entities"
 )]
 pub async fn add_method(
+    _auth: AuthUser,
     State(state): State<EntityState>,
     Path(entity_id): Path<String>,
     Json(payload): Json<MethodRequest>,
@@ -348,6 +359,7 @@ pub async fn add_method(
     tag = "entities"
 )]
 pub async fn update_method(
+    _auth: AuthUser,
     State(state): State<EntityState>,
     Path((entity_id, method_id)): Path<(String, String)>,
     Json(payload): Json<MethodRequest>,
@@ -381,6 +393,7 @@ pub async fn update_method(
     tag = "entities"
 )]
 pub async fn remove_method(
+    _auth: AuthUser,
     State(state): State<EntityState>,
     Path((entity_id, method_id)): Path<(String, String)>,
 ) -> Result<Json<EntityDefinition>, (StatusCode, Json<Value>)> {
@@ -415,6 +428,7 @@ pub async fn remove_method(
     tag = "entities"
 )]
 pub async fn add_invariant(
+    _auth: AuthUser,
     State(state): State<EntityState>,
     Path(entity_id): Path<String>,
     Json(payload): Json<InvariantRequest>,
@@ -449,6 +463,7 @@ pub async fn add_invariant(
     tag = "entities"
 )]
 pub async fn update_invariant(
+    _auth: AuthUser,
     State(state): State<EntityState>,
     Path((entity_id, invariant_id)): Path<(String, String)>,
     Json(payload): Json<InvariantRequest>,
@@ -482,6 +497,7 @@ pub async fn update_invariant(
     tag = "entities"
 )]
 pub async fn remove_invariant(
+    _auth: AuthUser,
     State(state): State<EntityState>,
     Path((entity_id, invariant_id)): Path<(String, String)>,
 ) -> Result<Json<EntityDefinition>, (StatusCode, Json<Value>)> {
@@ -512,6 +528,7 @@ pub async fn remove_invariant(
     tag = "entities"
 )]
 pub async fn find_references(
+    _auth: AuthUser,
     State(state): State<EntityState>,
     Path(entity_id): Path<String>,
 ) -> Result<Json<Vec<EntityDefinition>>, (StatusCode, Json<Value>)> {

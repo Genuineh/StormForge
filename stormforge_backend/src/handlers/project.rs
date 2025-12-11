@@ -72,6 +72,7 @@ pub async fn create_project(
     tag = "projects"
 )]
 pub async fn get_project(
+    _auth: AuthUser,
     State(state): State<ProjectState>,
     Path(id): Path<String>,
 ) -> Result<Json<Project>, (StatusCode, Json<Value>)> {
@@ -98,6 +99,7 @@ pub async fn get_project(
     tag = "projects"
 )]
 pub async fn list_projects_by_owner(
+    _auth: AuthUser,
     State(state): State<ProjectState>,
     Path(owner_id): Path<String>,
 ) -> Result<Json<Vec<Project>>, (StatusCode, Json<Value>)> {
@@ -130,6 +132,7 @@ pub async fn list_projects_by_owner(
     tag = "projects"
 )]
 pub async fn update_project(
+    _auth: AuthUser,
     State(state): State<ProjectState>,
     Path(id): Path<String>,
     Json(payload): Json<UpdateProjectRequest>,
@@ -168,6 +171,7 @@ pub async fn update_project(
     tag = "projects"
 )]
 pub async fn delete_project(
+    _auth: AuthUser,
     State(state): State<ProjectState>,
     Path(id): Path<String>,
 ) -> Result<StatusCode, (StatusCode, Json<Value>)> {

@@ -7,6 +7,7 @@ use axum::{
 use serde_json::json;
 
 use crate::models::{CreateConnectionRequest, UpdateConnectionRequest};
+use crate::middleware::auth::AuthUser;
 use crate::services::ConnectionService;
 
 /// Creates a new connection.
@@ -26,6 +27,7 @@ use crate::services::ConnectionService;
     tag = "connections"
 )]
 pub async fn create_connection(
+    _auth: AuthUser,
     State(service): State<ConnectionService>,
     Path(project_id): Path<String>,
     Json(request): Json<CreateConnectionRequest>,
@@ -56,6 +58,7 @@ pub async fn create_connection(
     tag = "connections"
 )]
 pub async fn get_connection(
+    _auth: AuthUser,
     State(service): State<ConnectionService>,
     Path((_project_id, connection_id)): Path<(String, String)>,
 ) -> impl IntoResponse {
@@ -83,6 +86,7 @@ pub async fn get_connection(
     tag = "connections"
 )]
 pub async fn list_connections(
+    _auth: AuthUser,
     State(service): State<ConnectionService>,
     Path(project_id): Path<String>,
 ) -> impl IntoResponse {
@@ -111,6 +115,7 @@ pub async fn list_connections(
     tag = "connections"
 )]
 pub async fn list_element_connections(
+    _auth: AuthUser,
     State(service): State<ConnectionService>,
     Path((project_id, element_id)): Path<(String, String)>,
 ) -> impl IntoResponse {
@@ -142,6 +147,7 @@ pub async fn list_element_connections(
     tag = "connections"
 )]
 pub async fn update_connection(
+    _auth: AuthUser,
     State(service): State<ConnectionService>,
     Path((_project_id, connection_id)): Path<(String, String)>,
     Json(request): Json<UpdateConnectionRequest>,
@@ -172,6 +178,7 @@ pub async fn update_connection(
     tag = "connections"
 )]
 pub async fn delete_connection(
+    _auth: AuthUser,
     State(service): State<ConnectionService>,
     Path((_project_id, connection_id)): Path<(String, String)>,
 ) -> impl IntoResponse {

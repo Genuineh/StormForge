@@ -7,6 +7,7 @@ use serde_json::{json, Value};
 
 use crate::{
     handlers::auth::AppState,
+    middleware::auth::AuthUser,
     models::{UpdateUserRequest, User},
 };
 
@@ -24,6 +25,7 @@ use crate::{
     tag = "users"
 )]
 pub async fn get_user(
+    _auth: AuthUser,
     State(state): State<AppState>,
     Path(id): Path<String>,
 ) -> Result<Json<User>, (StatusCode, Json<Value>)> {
@@ -50,6 +52,7 @@ pub async fn get_user(
     tag = "users"
 )]
 pub async fn list_users(
+    _auth: AuthUser,
     State(state): State<AppState>,
 ) -> Result<Json<Vec<User>>, (StatusCode, Json<Value>)> {
     let mut users = state.user_service.list_users().await.map_err(|e| {
@@ -82,10 +85,20 @@ pub async fn list_users(
     tag = "users"
 )]
 pub async fn update_user(
+    auth: AuthUser,
     State(state): State<AppState>,
     Path(id): Path<String>,
     Json(payload): Json<UpdateUserRequest>,
 ) -> Result<Json<User>, (StatusCode, Json<Value>)> {
+    // TODO: Add authorization check - users should only update their own profile unless admin
+    // For now, verify the user is updating themselves
+    if auth.0.sub != id && auth.0.role != "admin" {
+        return Err((
+            StatusCode::FORBIDDEN,
+            Json(json!({ "error": "You can only update your own profile" })),
+        ));
+    }
+
     let mut user = state
         .user_service
         .update_user(&id, payload.display_name, payload.avatar_url, payload.email)

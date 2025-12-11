@@ -67,6 +67,7 @@ pub async fn add_team_member(
     tag = "team"
 )]
 pub async fn list_team_members(
+    _auth: AuthUser,
     State(state): State<TeamState>,
     Path(project_id): Path<String>,
 ) -> Result<Json<Vec<TeamMember>>, (StatusCode, Json<Value>)> {
@@ -100,6 +101,7 @@ pub async fn list_team_members(
     tag = "team"
 )]
 pub async fn update_team_member(
+    _auth: AuthUser,
     State(state): State<TeamState>,
     Path((project_id, user_id)): Path<(String, String)>,
     Json(payload): Json<UpdateTeamMemberRequest>,
@@ -133,6 +135,7 @@ pub async fn update_team_member(
     tag = "team"
 )]
 pub async fn remove_team_member(
+    _auth: AuthUser,
     State(state): State<TeamState>,
     Path((project_id, user_id)): Path<(String, String)>,
 ) -> Result<StatusCode, (StatusCode, Json<Value>)> {

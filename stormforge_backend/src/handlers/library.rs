@@ -9,6 +9,7 @@ use std::sync::Arc;
 use utoipa::IntoParams;
 
 use crate::{
+    middleware::auth::AuthUser,
     models::{
         AddReferenceRequest, ComponentVersion, ImpactAnalysis, LibraryComponent, LibraryScope,
         PublishComponentRequest, UpdateVersionRequest,
@@ -41,6 +42,7 @@ pub struct SearchQuery {
     tag = "Library"
 )]
 pub async fn publish_component(
+    _auth: AuthUser,
     State(state): State<LibraryState>,
     Json(request): Json<PublishComponentRequest>,
 ) -> Response {
@@ -79,6 +81,7 @@ pub async fn publish_component(
     tag = "Library"
 )]
 pub async fn get_component(
+    _auth: AuthUser,
     State(state): State<LibraryState>,
     Path(id): Path<String>,
 ) -> Response {
@@ -103,6 +106,7 @@ pub async fn get_component(
     tag = "Library"
 )]
 pub async fn search_components(
+    _auth: AuthUser,
     State(state): State<LibraryState>,
     Query(query): Query<SearchQuery>,
 ) -> Response {
@@ -157,6 +161,7 @@ pub async fn search_components(
     tag = "Library"
 )]
 pub async fn update_component_version(
+    _auth: AuthUser,
     State(state): State<LibraryState>,
     Path(id): Path<String>,
     Json(request): Json<UpdateVersionRequest>,
@@ -197,6 +202,7 @@ pub async fn update_component_version(
     tag = "Library"
 )]
 pub async fn delete_component(
+    _auth: AuthUser,
     State(state): State<LibraryState>,
     Path(id): Path<String>,
 ) -> Response {
@@ -241,6 +247,7 @@ pub async fn delete_component(
     tag = "Library"
 )]
 pub async fn get_component_versions(
+    _auth: AuthUser,
     State(state): State<LibraryState>,
     Path(id): Path<String>,
 ) -> Response {
@@ -270,6 +277,7 @@ pub async fn get_component_versions(
     tag = "Library"
 )]
 pub async fn add_component_reference(
+    _auth: AuthUser,
     State(state): State<LibraryState>,
     Path(project_id): Path<String>,
     Json(request): Json<AddReferenceRequest>,
@@ -320,6 +328,7 @@ pub async fn add_component_reference(
     tag = "Library"
 )]
 pub async fn remove_component_reference(
+    _auth: AuthUser,
     State(state): State<LibraryState>,
     Path((project_id, component_id)): Path<(String, String)>,
 ) -> Response {
@@ -350,6 +359,7 @@ pub async fn remove_component_reference(
     tag = "Library"
 )]
 pub async fn get_project_references(
+    _auth: AuthUser,
     State(state): State<LibraryState>,
     Path(project_id): Path<String>,
 ) -> Response {
@@ -381,6 +391,7 @@ pub async fn get_project_references(
     tag = "Library"
 )]
 pub async fn analyze_component_impact(
+    _auth: AuthUser,
     State(state): State<LibraryState>,
     Path(id): Path<String>,
 ) -> Response {

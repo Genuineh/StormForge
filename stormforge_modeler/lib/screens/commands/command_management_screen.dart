@@ -88,7 +88,7 @@ class _CommandManagementScreenState
       final command = await _commandService.createCommand(
         projectId: widget.projectId,
         name: result['name'] as String,
-        targetEntityId: result['targetEntityId'] as String,
+        aggregateId: result['targetEntityId'] as String,
         description: result['description'] as String?,
       );
 
@@ -179,7 +179,7 @@ class _CommandManagementScreenState
                       ),
                       title: Text(command.name),
                       subtitle: Text(
-                        '${command.fields.length} fields',
+                        '${command.payload.fields.length} fields',
                         style: theme.textTheme.bodySmall,
                       ),
                       onTap: () {
@@ -229,14 +229,14 @@ class _CommandManagementScreenState
           // Target entity
           _InfoRow(
             label: 'Target Entity',
-            value: command.targetEntityId,
+            value: command.aggregateId ?? 'None',
           ),
           const SizedBox(height: 12),
 
           // Fields count
           _InfoRow(
             label: 'Fields',
-            value: '${command.fields.length}',
+            value: '${command.payload.fields.length}',
           ),
           const SizedBox(height: 24),
 
@@ -248,7 +248,7 @@ class _CommandManagementScreenState
             ),
           ),
           const SizedBox(height: 8),
-          if (command.fields.isEmpty)
+          if (command.payload.fields.isEmpty)
             Text(
               'No fields defined',
               style: theme.textTheme.bodySmall?.copyWith(
@@ -256,7 +256,7 @@ class _CommandManagementScreenState
               ),
             )
           else
-            ...command.fields.map((field) => Card(
+            ...command.payload.fields.map((field) => Card(
                   margin: const EdgeInsets.only(bottom: 8),
                   child: ListTile(
                     leading: Icon(
@@ -544,7 +544,7 @@ class _CommandCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    '${command.fields.length} fields',
+                    '${command.payload.fields.length} fields',
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: theme.colorScheme.onSurface.withOpacity(0.6),
                     ),

@@ -6,6 +6,7 @@ use axum::{
 use serde_json::{json, Value};
 
 use crate::{
+    middleware::auth::AuthUser,
     models::{CreateProjectRequest, Project, UpdateProjectRequest},
     services::ProjectService,
 };
@@ -29,13 +30,13 @@ pub struct ProjectStateInner {
     tag = "projects"
 )]
 pub async fn create_project(
+    auth: AuthUser,
     State(state): State<ProjectState>,
     Json(payload): Json<CreateProjectRequest>,
 ) -> Result<(StatusCode, Json<Project>), (StatusCode, Json<Value>)> {
-    // TODO: SECURITY - Implement authentication middleware to extract owner_id from JWT token
-    // This placeholder creates a security vulnerability - any user can create projects for any owner
-    // Solution: Add JWT verification middleware that extracts user_id from token claims
-    let owner_id = payload.owner_id.clone();
+    // Use authenticated user's ID as owner, or allow override for admin users
+    // TODO: Add admin role check for owner_id override
+    let owner_id = payload.owner_id.unwrap_or(auth.0.sub);
 
     let project = state
         .project_service

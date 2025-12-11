@@ -235,25 +235,32 @@ async fn main() -> Result<()> {
             .unwrap_or_else(|_| "admin123".to_string());
 
         tracing::info!("Initializing default admin user...");
-        let password_hash = auth_service
-            .hash_password(&admin_password)
-            .expect("Failed to hash default admin password");
-
-        match user_service
-            .ensure_default_admin(
-                admin_username.clone(),
-                admin_email,
-                admin_display_name,
-                password_hash,
-            )
-            .await
-        {
-            Ok(true) => tracing::info!(
-                "Default admin user '{}' created successfully",
-                admin_username
-            ),
-            Ok(false) => tracing::info!("Default admin user initialization skipped"),
-            Err(e) => tracing::error!("Failed to initialize default admin user: {}", e),
+        
+        match auth_service.hash_password(&admin_password) {
+            Ok(password_hash) => {
+                match user_service
+                    .ensure_default_admin(
+                        admin_username.clone(),
+                        admin_email,
+                        admin_display_name,
+                        password_hash,
+                    )
+                    .await
+                {
+                    Ok(true) => tracing::info!(
+                        "Default admin user '{}' created successfully",
+                        admin_username
+                    ),
+                    Ok(false) => tracing::info!("Default admin user initialization skipped"),
+                    Err(e) => tracing::error!("Failed to initialize default admin user: {}", e),
+                }
+            }
+            Err(e) => {
+                tracing::error!(
+                    "Failed to hash default admin password, skipping admin creation: {}",
+                    e
+                );
+            }
         }
     }
 

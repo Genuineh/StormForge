@@ -162,11 +162,11 @@ impl UserService {
 
         // Check if the username or email already exists (non-admin user)
         if self.find_by_username(&username).await.is_ok() {
-            tracing::warn!("Username '{}' already exists but is not admin", username);
+            tracing::warn!("Username '{}' already exists, skipping default admin creation", username);
             return Ok(false);
         }
         if self.find_by_email(&email).await.is_ok() {
-            tracing::warn!("Email '{}' already exists but is not admin", email);
+            tracing::warn!("Email '{}' already exists, skipping default admin creation", email);
             return Ok(false);
         }
 

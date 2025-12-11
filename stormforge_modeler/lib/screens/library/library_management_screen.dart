@@ -429,12 +429,12 @@ class _LibraryManagementScreenState
 
   String _getScopeLabel(LibraryScope scope) {
     switch (scope) {
-      case LibraryScope.personal:
-        return 'Personal';
-      case LibraryScope.team:
-        return 'Team';
-      case LibraryScope.public:
-        return 'Public';
+      case LibraryScope.enterprise:
+        return 'Enterprise';
+      case LibraryScope.organization:
+        return 'Organization';
+      case LibraryScope.project:
+        return 'Project';
     }
   }
 
@@ -452,8 +452,12 @@ class _LibraryManagementScreenState
         return 'Read Model';
       case ComponentType.policy:
         return 'Policy';
-      case ComponentType.saga:
-        return 'Saga';
+      case ComponentType.event:
+        return 'Event';
+      case ComponentType.enumType:
+        return 'Enum';
+      case ComponentType.interface:
+        return 'Interface';
     }
   }
 
@@ -461,10 +465,12 @@ class _LibraryManagementScreenState
     switch (status) {
       case ComponentStatus.draft:
         return 'Draft';
-      case ComponentStatus.published:
-        return 'Published';
+      case ComponentStatus.active:
+        return 'Active';
       case ComponentStatus.deprecated:
         return 'Deprecated';
+      case ComponentStatus.archived:
+        return 'Archived';
     }
   }
 }

@@ -234,7 +234,7 @@ class _ReadModelManagementScreenState
           // Source entities count
           _InfoRow(
             label: 'Source Entities',
-            value: '${readModel.sourceEntities.length}',
+            value: '${readModel.sources.length}',
           ),
           const SizedBox(height: 24),
 
@@ -259,7 +259,7 @@ class _ReadModelManagementScreenState
               child: ListTile(
                 leading: const Icon(Icons.label, size: 20),
                 title: Text(field.name),
-                subtitle: Text(field.type),
+                subtitle: Text(field.fieldType),
                 dense: true,
               ),
             )),
@@ -548,7 +548,7 @@ class _ReadModelCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    '${readModel.sourceEntities.length} sources',
+                    '${readModel.sources.length} sources',
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: theme.colorScheme.onSurface.withOpacity(0.6),
                     ),

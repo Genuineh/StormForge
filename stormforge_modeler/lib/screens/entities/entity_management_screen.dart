@@ -149,7 +149,7 @@ class _EntityManagementScreenState extends ConsumerState<EntityManagementScreen>
           _selectedEntity = entity;
         });
       },
-      onEntityDelete: (entity) async {
+      onEntityDeleted: (entity) async {
         try {
           await _entityService.deleteEntity(entity.id);
           setState(() {
@@ -166,6 +166,7 @@ class _EntityManagementScreenState extends ConsumerState<EntityManagementScreen>
           }
         }
       },
+      onCreateEntity: _createEntity,
     );
   }
 
@@ -503,7 +504,7 @@ class _EntityCard extends StatelessWidget {
 
   Color _getEntityTypeColor(EntityType type) {
     switch (type) {
-      case EntityType.aggregate:
+      case EntityType.aggregateRoot:
         return Colors.blue;
       case EntityType.entity:
         return Colors.green;
@@ -514,7 +515,7 @@ class _EntityCard extends StatelessWidget {
 
   IconData _getEntityTypeIcon(EntityType type) {
     switch (type) {
-      case EntityType.aggregate:
+      case EntityType.aggregateRoot:
         return Icons.account_tree;
       case EntityType.entity:
         return Icons.category;
@@ -525,7 +526,7 @@ class _EntityCard extends StatelessWidget {
 
   String _getEntityTypeLabel(EntityType type) {
     switch (type) {
-      case EntityType.aggregate:
+      case EntityType.aggregateRoot:
         return 'Aggregate';
       case EntityType.entity:
         return 'Entity';
@@ -547,7 +548,7 @@ class _CreateEntityDialogState extends State<_CreateEntityDialog> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
-  EntityType _selectedType = EntityType.aggregate;
+  EntityType _selectedType = EntityType.aggregateRoot;
 
   @override
   void dispose() {
@@ -639,7 +640,7 @@ class _CreateEntityDialogState extends State<_CreateEntityDialog> {
 
   String _getTypeLabel(EntityType type) {
     switch (type) {
-      case EntityType.aggregate:
+      case EntityType.aggregateRoot:
         return 'Aggregate';
       case EntityType.entity:
         return 'Entity';

@@ -35,7 +35,7 @@ class _ProjectsListScreenState extends ConsumerState<ProjectsListScreen> {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final projectsAsync = ref.watch(projectsProvider);
     final theme = Theme.of(context);
 

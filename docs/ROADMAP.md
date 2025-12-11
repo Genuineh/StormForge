@@ -88,16 +88,18 @@
 | Event sourcing | Event store | Event replay working | ✅ |
 | API generation | REST endpoints | OpenAPI documented | ✅ |
 
-### Sprint S04: Flutter API Package Generator v0.9 (2025.11.20 - 2025.12.03)
+### Sprint S04: Flutter API Package Generator v0.9 📋 (2025.11.20 - 2025.12.03)
 
-| Task | Deliverable | Acceptance Criteria |
-|------|-------------|---------------------|
-| Type generation | Dart classes | 1:1 mapping with backend |
-| Command classes | API commands | Clean command pattern |
-| Query classes | API queries | Efficient data fetching |
-| HTTP client | Network layer | Error handling included |
-| Event bus | Real-time events | Auto-reconnect |
-| Package config | pubspec.yaml | Valid pub package |
+> **Status**: 📋 Planned, Not Yet Implemented (only README exists)
+
+| Task | Deliverable | Acceptance Criteria | Status |
+|------|-------------|---------------------|--------|
+| Type generation | Dart classes | 1:1 mapping with backend | ⏳ |
+| Command classes | API commands | Clean command pattern | ⏳ |
+| Query classes | API queries | Efficient data fetching | ⏳ |
+| HTTP client | Network layer | Error handling included | ⏳ |
+| Event bus | Real-time events | Auto-reconnect | ⏳ |
+| Package config | pubspec.yaml | Valid pub package | ⏳ |
 
 ### Sprint S05: Multi-microservice + Independent Dart Packages (2025.12.04 - 2025.12.17)
 
@@ -175,15 +177,27 @@
 
 ## 🎯 Modeler 2.0 Upgrade (Parallel with Phase 1: 2025.12 - 2026.04)
 
+> **📋 PLANNING STATUS**: The Sprint M1-M9 sections below represent **design and planning documents**, not completed work. Dates are for planning purposes. For actual implementation status, see [TODO.md](../TODO.md) and [docs/sprints/planning/](sprints/planning/README.md).
+
 **Milestone**: Transform Modeler from basic EventStorming canvas to enterprise-grade modeling and project management platform
 
-**Timeline**: 18 weeks (Sprint M1-M9)
+**Timeline**: 18 weeks (Sprint M1-M9) - **Planning Timeline**
 
 **Team Size**: 6 people (parallel with main Phase 1 team)
 
 **Validation Criteria**: Complete project management, visual connections, entity modeling, read model designer, and global library
 
-### Sprint M1: Project Management Foundation ✅ (2025.12.04 - 2025.12.17)
+**Current Actual Status**: 
+- ✅ Design documents complete (100%)
+- 🚧 Backend framework established (~15%)
+- 📋 Frontend UI implementation starting (~5%)
+- See [TODO.md](../TODO.md) for detailed implementation tracking
+
+### Sprint M1: Project Management Foundation 📋 (2025.12.04 - 2025.12.17)
+
+> **Status**: 🚧 Design Complete, Backend Framework Implemented (~40% of Sprint M1 scope)
+> 
+> Detailed planning: [docs/sprints/planning/SPRINT_M1_SUMMARY.md](sprints/planning/SPRINT_M1_SUMMARY.md)
 
 | Task | Deliverable | Acceptance Criteria | Status |
 |------|-------------|---------------------|--------|
@@ -192,86 +206,123 @@
 | Permission system | RBAC with 12 permissions | Role hierarchy defined | ✅ |
 | Sync strategy | Offline-first design | Architecture documented | ✅ |
 | Documentation | Design docs | DATABASE_SCHEMA.md | ✅ |
+| Backend API | Full implementation | All endpoints working | 🚧 |
+| Frontend UI | Project management UI | Complete UI | ⏳ |
 
 **Key Achievements**:
 - 3 core data models implemented (Project, User, TeamMember)
 - 12 granular permissions defined
 - 3 global roles + 4 team roles designed
 - 6 MongoDB collections + 6 SQLite tables designed
+- Backend framework and basic API established
 - Comprehensive database schema documentation
 - Offline-first sync strategy designed
 
-### Sprint M2: Connection System (2025.12.18 - 2025.12.31)
+**Remaining Work**: Frontend UI, complete API implementation, integration testing
 
-| Task | Deliverable | Acceptance Criteria |
-|------|-------------|---------------------|
-| Connection model | 8 connection types | Type-safe connections |
-| Canvas rendering | Visual connections | Smooth rendering |
-| Validation | Connection rules | Valid connections only |
-| Interaction | Edit/delete | User-friendly |
+### Sprint M2: Connection System 📋 (2025.12.18 - 2025.12.31)
 
-### Sprint M3: Entity Modeling System (2026.01.01 - 2026.01.21)
+> **Status**: 📋 Design Complete, Implementation Pending
+> 
+> Detailed planning: [docs/sprints/planning/SPRINT_M2_SUMMARY.md](sprints/planning/SPRINT_M2_SUMMARY.md)
 
-| Task | Deliverable | Acceptance Criteria |
-|------|-------------|---------------------|
-| Entity editor | Dedicated UI | Full entity definition |
-| Property model | Attributes + validation | Complete property system |
-| Method model | Behaviors | Method definitions |
-| Invariant system | Business rules | Rule enforcement |
+| Task | Deliverable | Acceptance Criteria | Status |
+|------|-------------|---------------------|--------|
+| Connection model | 8 connection types | Type-safe connections | ✅ Design |
+| Canvas rendering | Visual connections | Smooth rendering | ⏳ |
+| Validation | Connection rules | Valid connections only | ⏳ |
+| Interaction | Edit/delete | User-friendly | ⏳ |
 
-### Sprint M4: Read Model Designer (2026.01.22 - 2026.02.04)
+### Sprint M3: Entity Modeling System 📋 (2026.01.01 - 2026.01.21)
 
-| Task | Deliverable | Acceptance Criteria |
-|------|-------------|---------------------|
-| Field selection | Visual designer | Drag-drop fields |
-| Multi-entity join | Join builder | Complex queries |
-| Field transformation | Expressions | Computed fields |
-| Preview | Live preview | Real-time feedback |
+> **Status**: 📋 Design Complete, Implementation Pending
+> 
+> Detailed planning: [docs/sprints/planning/SPRINT_M3_SUMMARY.md](sprints/planning/SPRINT_M3_SUMMARY.md)
 
-### Sprint M5: Command Data Model Designer (2026.02.05 - 2026.02.18)
+| Task | Deliverable | Acceptance Criteria | Status |
+|------|-------------|---------------------|--------|
+| Entity editor | Dedicated UI | Full entity definition | ⏳ |
+| Property model | Attributes + validation | Complete property system | ✅ Design |
+| Method model | Behaviors | Method definitions | ✅ Design |
+| Invariant system | Business rules | Rule enforcement | ⏳ |
 
-| Task | Deliverable | Acceptance Criteria |
-|------|-------------|---------------------|
-| Command designer | Payload editor | Complete command model |
-| Data source mapping | Field sources | Traceability |
-| Validation rules | Field validation | Rule enforcement |
-| Event association | Command-event link | Clear relationships |
+### Sprint M4: Read Model Designer 📋 (2026.01.22 - 2026.02.04)
 
-### Sprint M6: Enterprise Global Library (2026.02.19 - 2026.03.11)
+> **Status**: 📋 Design Complete, Implementation Pending
+> 
+> Detailed planning: [docs/sprints/planning/SPRINT_M4_SUMMARY.md](sprints/planning/SPRINT_M4_SUMMARY.md)
 
-| Task | Deliverable | Acceptance Criteria |
-|------|-------------|---------------------|
-| Library architecture | 3-tier hierarchy | Enterprise/Org/Project |
-| Version system | Component versions | Version management |
-| Library browser | Search + filter | Easy discovery |
-| Usage tracking | Analytics | Impact analysis |
+| Task | Deliverable | Acceptance Criteria | Status |
+|------|-------------|---------------------|--------|
+| Field selection | Visual designer | Drag-drop fields | ⏳ |
+| Multi-entity join | Join builder | Complex queries | ⏳ |
+| Field transformation | Expressions | Computed fields | ⏳ |
+| Preview | Live preview | Real-time feedback | ⏳ |
 
-### Sprint M7: Enhanced Canvas Integration (2026.03.12 - 2026.03.25)
+### Sprint M5: Command Data Model Designer 📋 (2026.02.05 - 2026.02.18)
 
-| Task | Deliverable | Acceptance Criteria |
-|------|-------------|---------------------|
-| Canvas sync | Model ↔ Canvas | Bidirectional sync |
-| Multi-panel layout | Project tree + Canvas | Efficient workflow |
-| Property panel | Enhanced properties | Rich editing |
-| Templates | Element templates | Reusability |
+> **Status**: 📋 Design Complete, Implementation Pending
+> 
+> Detailed planning: [docs/sprints/planning/SPRINT_M5_SUMMARY.md](sprints/planning/SPRINT_M5_SUMMARY.md)
 
-### Sprint M8: IR Schema v2.0 (2026.03.26 - 2026.04.08)
+| Task | Deliverable | Acceptance Criteria | Status |
+|------|-------------|---------------------|--------|
+| Command designer | Payload editor | Complete command model | ⏳ |
+| Data source mapping | Field sources | Traceability | ⏳ |
+| Validation rules | Field validation | Rule enforcement | ⏳ |
+| Event association | Command-event link | Clear relationships | ⏳ |
 
-| Task | Deliverable | Acceptance Criteria |
-|------|-------------|---------------------|
-| Schema design | IR v2.0 spec | Complete schema |
-| Serialization | v2.0 writer | Full support |
-| Migration | v1.0 → v2.0 tool | Lossless migration |
-| Generator update | Support v2.0 | Code generation works |
+### Sprint M6: Enterprise Global Library 📋 (2026.02.19 - 2026.03.11)
 
-### Sprint M9: Testing & Polish (2026.04.09 - 2026.04.22)
+> **Status**: 📋 Design Complete, Implementation Pending
+> 
+> Detailed planning: [docs/sprints/planning/SPRINT_M6_COMPLETION_REPORT.md](sprints/planning/SPRINT_M6_COMPLETION_REPORT.md)
 
-| Task | Deliverable | Acceptance Criteria |
-|------|-------------|---------------------|
-| Unit tests | Test suite | > 80% coverage |
-| Performance | Optimization | 1000+ elements @60fps |
-| Documentation | User guides | Complete docs |
-| Beta testing | User feedback | 50+ users |
+| Task | Deliverable | Acceptance Criteria | Status |
+|------|-------------|---------------------|--------|
+| Library architecture | 3-tier hierarchy | Enterprise/Org/Project | ✅ Design |
+| Version system | Component versions | Version management | ⏳ |
+| Library browser | Search + filter | Easy discovery | ⏳ |
+| Usage tracking | Analytics | Impact analysis | ⏳ |
+
+### Sprint M7: Enhanced Canvas Integration 📋 (2026.03.12 - 2026.03.25)
+
+> **Status**: 📋 Design Complete, Implementation Pending
+> 
+> Detailed planning: [docs/sprints/planning/SPRINT_M7_FINAL_SUMMARY.md](sprints/planning/SPRINT_M7_FINAL_SUMMARY.md)
+
+| Task | Deliverable | Acceptance Criteria | Status |
+|------|-------------|---------------------|--------|
+| Canvas sync | Model ↔ Canvas | Bidirectional sync | ⏳ |
+| Multi-panel layout | Project tree + Canvas | Efficient workflow | ⏳ |
+| Property panel | Enhanced properties | Rich editing | ⏳ |
+| Templates | Element templates | Reusability | ⏳ |
+
+### Sprint M8: IR Schema v2.0 📋 (2026.03.26 - 2026.04.08)
+
+> **Status**: 📋 Design Complete, Implementation Pending
+> 
+> Detailed planning: [docs/sprints/planning/SPRINT_M8_COMPLETION_REPORT.md](sprints/planning/SPRINT_M8_COMPLETION_REPORT.md)
+
+| Task | Deliverable | Acceptance Criteria | Status |
+|------|-------------|---------------------|--------|
+| Schema design | IR v2.0 spec | Complete schema | ✅ Design |
+| Serialization | v2.0 writer | Full support | ⏳ |
+| Migration | v1.0 → v2.0 tool | Lossless migration | ⏳ |
+| Generator update | Support v2.0 | Code generation works | ⏳ |
+
+### Sprint M9: Testing & Polish 📋 (2026.04.09 - 2026.04.22)
+
+> **Status**: 📋 Planned
+> 
+> Detailed planning: [docs/sprints/planning/SPRINT_M9_FINAL_COMPLETION_REPORT.md](sprints/planning/SPRINT_M9_FINAL_COMPLETION_REPORT.md)
+
+| Task | Deliverable | Acceptance Criteria | Status |
+|------|-------------|---------------------|--------|
+| Unit tests | Test suite | > 80% coverage | ⏳ |
+| Performance | Optimization | 1000+ elements @60fps | ⏳ |
+| Documentation | User guides | Complete docs | 🚧 |
+| Beta testing | User feedback | 50+ users | ⏳ |
 
 ---
 

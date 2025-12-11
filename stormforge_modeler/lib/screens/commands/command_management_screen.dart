@@ -267,7 +267,7 @@ class _CommandManagementScreenState
                           : theme.colorScheme.onSurface.withOpacity(0.6),
                     ),
                     title: Text(field.name),
-                    subtitle: Text(field.type),
+                    subtitle: Text(field.fieldType),
                     trailing: field.required
                         ? Chip(
                             label: const Text('Required'),

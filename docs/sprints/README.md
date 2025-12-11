@@ -1,61 +1,75 @@
-# Sprint Archives
+# Sprint Archives and Planning
 
-This directory contains archived sprint completion reports and summaries for the StormForge project.
+> **重要说明**: 本目录已重新组织，以区分实际完成的工作和设计规划文档。
+
+This directory contains sprint documents for the StormForge project, now reorganized to clearly separate actual completions from design and planning documents.
 
 ## Directory Structure
 
-- `completed/` - Completed sprint documents (Sprint M1-M8, Sprint S03)
-- `in_progress/` - Current sprint documents (Sprint M9)
+- `completed/` - **Actually completed** sprint work (currently empty - Phase 0 work predates this structure)
+- `planning/` - Design and planning documents for future implementation (Sprint M1-M9)
+- `in_progress/` - Current sprint work (currently none)
 
-## Completed Sprints
+---
 
-### Sprint M1: 项目管理基础 ✅ (2025.12.04 - 2025.12.17)
-- [SPRINT_M1_SUMMARY.md](completed/SPRINT_M1_SUMMARY.md) - Sprint M1 Summary
+## ✅ Actually Completed Work
 
-### Sprint M2: 组件连接系统 ✅ (2025.12.18 - 2025.12.31)
-- [SPRINT_M2_SUMMARY.md](completed/SPRINT_M2_SUMMARY.md) - Sprint M2 Summary
+### Phase 0: POC (Sprint S00-S03) ✅
+**Period**: 2025.10 - 2025.11  
+**Status**: Completed
 
-### Sprint M3: 实体建模系统 ✅ (2026.01.01 - 2026.01.21)
-- [SPRINT_M3_COMPLETION_REPORT.md](completed/SPRINT_M3_COMPLETION_REPORT.md) - Sprint M3 Completion Report
-- [SPRINT_M3_SUMMARY.md](completed/SPRINT_M3_SUMMARY.md) - Sprint M3 Summary
+这些早期Sprint的工作已实际完成，但文档位于主文档目录：
 
-### Sprint M4: 读模型设计器 ✅ (2026.01.22 - 2026.02.04)
-- [SPRINT_M4_COMPLETION_REPORT.md](completed/SPRINT_M4_COMPLETION_REPORT.md) - Sprint M4 Completion Report
-- [SPRINT_M4_SUMMARY.md](completed/SPRINT_M4_SUMMARY.md) - Sprint M4 Summary
+- **Sprint S00**: Project initialization - See [docs/sprint_s00_completion.md](../sprint_s00_completion.md) (if exists)
+- **Sprint S01-S02**: Flutter Modeler prototype with basic EventStorming canvas
+- **Sprint S03**: Rust generator prototype - See [docs/sprint_s03_completion.md](../sprint_s03_completion.md)
 
-### Sprint M5: 命令数据模型设计器 ✅ (2026.02.05 - 2026.02.18)
-- [SPRINT_M5_COMPLETION_REPORT.md](completed/SPRINT_M5_COMPLETION_REPORT.md) - Sprint M5 Completion Report
-- [SPRINT_M5_SUMMARY.md](completed/SPRINT_M5_SUMMARY.md) - Sprint M5 Summary
+**实际交付成果**:
+- ✅ Flutter modeler with working canvas (72 Dart files)
+- ✅ IR v1.0 YAML schema
+- ✅ Basic Rust generator (7 generator files)
+- ✅ Axum microservice scaffold generation
+- ✅ Basic entity and command generation
 
-### Sprint M6: 企业全局库 ✅ (2026.02.19 - 2026.03.11)
-- [SPRINT_M6_COMPLETION_REPORT.md](completed/SPRINT_M6_COMPLETION_REPORT.md) - Sprint M6 Completion Report
-- [SPRINT_M6_SECURITY_SUMMARY.md](completed/SPRINT_M6_SECURITY_SUMMARY.md) - Sprint M6 Security Summary
+---
 
-### Sprint M7: 增强画布集成 ✅ (2026.03.12 - 2026.03.25)
-- [SPRINT_M7_COMPLETION_REPORT.md](completed/SPRINT_M7_COMPLETION_REPORT.md) - Sprint M7 Completion Report (English)
-- [SPRINT_M7_COMPLETION_REPORT_CN.md](completed/SPRINT_M7_COMPLETION_REPORT_CN.md) - Sprint M7 Completion Report (中文)
-- [SPRINT_M7_FINAL_SUMMARY.md](completed/SPRINT_M7_FINAL_SUMMARY.md) - Sprint M7 Final Summary
-- [SPRINT_M7_IMPLEMENTATION_COMPLETE.md](completed/SPRINT_M7_IMPLEMENTATION_COMPLETE.md) - Sprint M7 Implementation Complete
-- [SPRINT_M7_IMPLEMENTATION_SUMMARY_CN.md](completed/SPRINT_M7_IMPLEMENTATION_SUMMARY_CN.md) - Sprint M7 Implementation Summary (中文)
-- [SPRINT_M7_KNOWN_ISSUES.md](completed/SPRINT_M7_KNOWN_ISSUES.md) - Sprint M7 Known Issues
-- [SPRINT_M7_PROGRESS_REPORT.md](completed/SPRINT_M7_PROGRESS_REPORT.md) - Sprint M7 Progress Report
-- [SPRINT_M7_SECURITY_SUMMARY.md](completed/SPRINT_M7_SECURITY_SUMMARY.md) - Sprint M7 Security Summary
+## 📋 Planning Documents (Modeler 2.0)
 
-### Sprint M8: IR Schema v2.0 ✅ (2026.03.26 - 2026.04.08)
-- [SPRINT_M8_COMPLETION_REPORT.md](completed/SPRINT_M8_COMPLETION_REPORT.md) - Sprint M8 Completion Report (English)
-- [SPRINT_M8_COMPLETION_REPORT_CN.md](completed/SPRINT_M8_COMPLETION_REPORT_CN.md) - Sprint M8 Completion Report (中文)
-- [SPRINT_M8_SECURITY_SUMMARY.md](completed/SPRINT_M8_SECURITY_SUMMARY.md) - Sprint M8 Security Summary
+### Sprint M1-M9: Modeler 2.0 Upgrade
+**Status**: 📋 Design Complete, Implementation In Progress
 
-## In Progress Sprints
+这些是**设计和规划文档**，使用未来日期(2026)来组织规划，但**并非表示功能已实现**。
 
-### Sprint M9: 测试、完善与文档 🚧 (2026.04.09 - 2026.04.22)
-**Status**: Documentation Complete (60% overall progress)
+All Sprint M1-M9 documents have been moved to the `planning/` directory:
 
-- [SPRINT_M9_DOCUMENTATION_COMPLETE.md](in_progress/SPRINT_M9_DOCUMENTATION_COMPLETE.md) - Sprint M9 Documentation Complete
-- [SPRINT_M9_DOCUMENTATION_SUMMARY_CN.md](in_progress/SPRINT_M9_DOCUMENTATION_SUMMARY_CN.md) - Sprint M9 Documentation Summary (中文)
-- [SPRINT_M9_FINAL_COMPLETION_REPORT.md](in_progress/SPRINT_M9_FINAL_COMPLETION_REPORT.md) - Sprint M9 Final Completion Report
-- [SPRINT_M9_SECURITY_SUMMARY.md](in_progress/SPRINT_M9_SECURITY_SUMMARY.md) - Sprint M9 Security Summary
-- [SPRINT_M9_完成总结_中文.md](in_progress/SPRINT_M9_完成总结_中文.md) - Sprint M9 完成总结 (中文)
+- [planning/README.md](planning/README.md) - Detailed overview of all planning documents
+- Sprint M1: 项目管理基础 (Project Management) - 📋 设计完成，部分实现
+- Sprint M2: 组件连接系统 (Connection System) - 📋 设计完成
+- Sprint M3: 实体建模系统 (Entity Modeling) - 📋 设计完成
+- Sprint M4: 读模型设计器 (Read Model Designer) - 📋 设计完成
+- Sprint M5: 命令数据模型设计器 (Command Designer) - 📋 设计完成
+- Sprint M6: 企业全局库 (Global Library) - 📋 设计完成
+- Sprint M7: 增强画布集成 (Canvas Integration) - 📋 设计完成
+- Sprint M8: IR Schema v2.0 - 📋 设计完成
+- Sprint M9: 测试、完善与文档 (Testing & Documentation) - 📋 规划中
+
+**当前实施状态**:
+- ✅ 后台数据模型已定义 (Backend models defined)
+- ✅ 基础API框架已搭建 (Basic API framework in place)
+- 🚧 前端UI实现进行中 (Frontend UI in progress)
+- ⏳ 完整功能集成待完成 (Full feature integration pending)
+
+---
+
+## 🚧 Current Focus (December 2025)
+
+根据TODO.md，当前实际工作重点：
+
+1. **Sprint S04**: Flutter API包生成器 (90%完成) - 实际实现中
+2. **Modeler 2.0基础**: 将设计转化为可工作的实现
+   - 实体编辑器UI基础版
+   - 连接可视化基础版
+   - 项目管理UI
 
 ---
 

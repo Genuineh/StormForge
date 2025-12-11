@@ -168,16 +168,20 @@ For detailed sprint progress and completion reports, see [docs/sprints/](docs/sp
 ### Current Progress
 
 - ✅ **Phase 0**: POC Complete (Sprint S00-S03)
-- 🚧 **Phase 1**: MVP In Progress 
-  - Sprint S04: 90% complete (Dart generator)
-  - Backend architecture: Established
-  - Core features: In development
-- 🚧 **Modeler 2.0**: Design Complete, Implementation In Progress
-  - Detailed design documents: Complete
-  - Backend models and API: 40% complete
-  - Frontend UI: 15% complete
+  - Basic EventStorming canvas in Flutter
+  - IR v1.0 YAML schema
+  - Basic Rust microservice generator
+- 🚧 **Phase 1**: MVP In Early Development (~20% complete)
+  - Sprint S03: Rust generator basics complete
+  - Sprint S04: Dart generator planned (not yet implemented)
+  - Backend framework established (35 Rust files)
+  - Core features in design/planning phase
+- 📋 **Modeler 2.0**: Design Complete, Implementation Starting (~10% complete)
+  - Detailed design documents: Complete (see `docs/sprints/planning/`)
+  - Backend models and basic API: 15% complete
+  - Frontend UI: 5% complete (basic canvas exists)
 
-> **Note**: Progress percentages are calculated as: Design (20%) + Implementation (60%) + Testing (20%). See [TODO.md](TODO.md) for detailed progress tracking methodology.
+> **Important Note**: Sprint M1-M9 documents (previously in `completed/`) are **design and planning documents**, not completion reports. They have been moved to `docs/sprints/planning/` for clarity. These documents describe the intended architecture using future dates (2026), but most features are not yet implemented. See [TODO.md](TODO.md) for actual implementation status.
 
 ## 🎨 Usage Example
 
@@ -207,11 +211,12 @@ We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guid
 
 ## 📚 Documentation
 
-- **[TODO.md](TODO.md)** - Current project status and task tracking
-- **[Sprint Archives](docs/sprints/README.md)** - Completed sprint reports and progress
+- **[TODO.md](TODO.md)** - Current project status and actual implementation tracking
+- **[Sprint Planning](docs/sprints/planning/README.md)** - Sprint M1-M9 design documents (future work)
+- **[Sprint Archives](docs/sprints/README.md)** - Sprint history and organization
 - **[Roadmap](docs/ROADMAP.md)** - Complete development plan
 - **[Architecture](docs/ARCHITECTURE.md)** - System architecture and design
-- **[User Guides](docs/guides/)** - Getting started and user documentation
+- **[User Guides](docs/guides/)** - Getting started and user documentation (when available)
 - **[Design Documents](docs/designs/)** - Detailed design specifications
 
 ## 📄 License

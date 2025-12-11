@@ -5,6 +5,8 @@ import 'package:stormforge_modeler/screens/auth/login_screen.dart';
 import 'package:stormforge_modeler/screens/auth/register_screen.dart';
 import 'package:stormforge_modeler/screens/commands/command_designer_screen.dart';
 import 'package:stormforge_modeler/screens/entities/entity_editor_screen.dart';
+import 'package:stormforge_modeler/screens/library/library_browser_screen.dart';
+import 'package:stormforge_modeler/screens/projects/project_dashboard_screen.dart';
 import 'package:stormforge_modeler/screens/projects/project_form_screen.dart';
 import 'package:stormforge_modeler/screens/projects/projects_list_screen.dart';
 import 'package:stormforge_modeler/screens/read_models/read_model_designer_screen.dart';
@@ -102,6 +104,25 @@ final router = GoRouter(
         final logger = Logger();
         logger.i('Navigating to CommandDesignerScreen for project: $projectId');
         return CommandDesignerScreen(projectId: projectId);
+      },
+    ),
+    GoRoute(
+      path: '/projects/:id/library',
+      builder: (context, state) {
+        final projectId = state.pathParameters['id']!;
+        final logger = Logger();
+        logger.i('Navigating to LibraryBrowserScreen for project: $projectId');
+        // Use the existing LibraryBrowserScreen for backward compatibility
+        return LibraryBrowserScreen(projectId: projectId);
+      },
+    ),
+    GoRoute(
+      path: '/projects/:id',
+      builder: (context, state) {
+        final projectId = state.pathParameters['id']!;
+        final logger = Logger();
+        logger.i('Navigating to ProjectDashboardScreen for project: $projectId');
+        return ProjectDashboardScreen(projectId: projectId);
       },
     ),
 

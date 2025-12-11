@@ -139,4 +139,44 @@ impl UserService {
 
         Ok(users)
     }
+
+    /// Initialize default admin user if it doesn't exist
+    /// Returns Ok(true) if admin was created, Ok(false) if admin already exists
+    pub async fn ensure_default_admin(
+        &self,
+        username: String,
+        email: String,
+        display_name: String,
+        password_hash: String,
+    ) -> Result<bool> {
+        // Check if any admin user already exists
+        let admin_count = self
+            .users
+            .count_documents(doc! { "role": "admin" }, None)
+            .await?;
+
+        if admin_count > 0 {
+            tracing::info!("Admin user already exists, skipping default admin creation");
+            return Ok(false);
+        }
+
+        // Check if the username or email already exists (non-admin user)
+        if self.find_by_username(&username).await.is_ok() {
+            tracing::warn!("Username '{}' already exists but is not admin", username);
+            return Ok(false);
+        }
+        if self.find_by_email(&email).await.is_ok() {
+            tracing::warn!("Email '{}' already exists but is not admin", email);
+            return Ok(false);
+        }
+
+        // Create default admin user
+        let mut user = User::new(username.clone(), email, display_name, UserRole::Admin);
+        user.password_hash = Some(password_hash);
+
+        self.users.insert_one(&user, None).await?;
+        tracing::info!("Default admin user '{}' created successfully", username);
+
+        Ok(true)
+    }
 }

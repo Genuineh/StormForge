@@ -218,6 +218,45 @@ async fn main() -> Result<()> {
     let command_service = CommandService::new(mongodb.db());
     let library_service = LibraryService::new(mongodb.db());
 
+    // Initialize default admin user if configured
+    let init_default_admin = std::env::var("INIT_DEFAULT_ADMIN")
+        .unwrap_or_else(|_| "false".to_string())
+        .parse::<bool>()
+        .unwrap_or(false);
+
+    if init_default_admin {
+        let admin_username = std::env::var("DEFAULT_ADMIN_USERNAME")
+            .unwrap_or_else(|_| "admin".to_string());
+        let admin_email = std::env::var("DEFAULT_ADMIN_EMAIL")
+            .unwrap_or_else(|_| "admin@stormforge.local".to_string());
+        let admin_display_name = std::env::var("DEFAULT_ADMIN_DISPLAY_NAME")
+            .unwrap_or_else(|_| "Administrator".to_string());
+        let admin_password = std::env::var("DEFAULT_ADMIN_PASSWORD")
+            .unwrap_or_else(|_| "admin123".to_string());
+
+        tracing::info!("Initializing default admin user...");
+        let password_hash = auth_service
+            .hash_password(&admin_password)
+            .expect("Failed to hash default admin password");
+
+        match user_service
+            .ensure_default_admin(
+                admin_username.clone(),
+                admin_email,
+                admin_display_name,
+                password_hash,
+            )
+            .await
+        {
+            Ok(true) => tracing::info!(
+                "Default admin user '{}' created successfully",
+                admin_username
+            ),
+            Ok(false) => tracing::info!("Default admin user initialization skipped"),
+            Err(e) => tracing::error!("Failed to initialize default admin user: {}", e),
+        }
+    }
+
     // Create application states
     let auth_state = Arc::new(AppStateInner {
         auth_service: auth_service.clone(),

@@ -94,6 +94,17 @@ Once the server is running, visit:
 | `SQLITE_PATH` | Path to SQLite database file | `./stormforge.db` |
 | `JWT_SECRET` | Secret key for JWT token generation | `your-secret-key-change-in-production` |
 | `PORT` | Server port | `3000` |
+| `INIT_DEFAULT_ADMIN` | Create default admin on startup if none exists | `false` |
+| `DEFAULT_ADMIN_USERNAME` | Username for default admin account | `admin` |
+| `DEFAULT_ADMIN_EMAIL` | Email for default admin account | `admin@stormforge.local` |
+| `DEFAULT_ADMIN_DISPLAY_NAME` | Display name for default admin account | `Administrator` |
+| `DEFAULT_ADMIN_PASSWORD` | Password for default admin account | `admin123` |
+
+### Default Admin Account
+
+When `INIT_DEFAULT_ADMIN=true`, the server will automatically create a default administrator account on startup if no admin user exists. This is useful for initial setup and testing.
+
+**Security Note**: Change the default admin password immediately after first login in production environments.
 
 ## Database Schema
 

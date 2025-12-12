@@ -1,4 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:stormforge_modeler/models/command_model.dart';
+import 'package:stormforge_modeler/models/entity_model.dart';
+import 'package:stormforge_modeler/models/project_model.dart';
+import 'package:stormforge_modeler/models/read_model_model.dart';
 import 'package:stormforge_modeler/models/user_model.dart';
 import 'package:stormforge_modeler/services/api/api_client.dart';
 import 'package:stormforge_modeler/services/api/auth_service.dart';
@@ -151,3 +155,46 @@ final isAuthenticatedProvider = Provider<bool>((ref) {
   final authState = ref.watch(authProvider);
   return authState.valueOrNull != null;
 });
+
+/// Cache duration for data providers.
+const _cacheDuration = Duration(minutes: 5);
+
+/// Cached provider for a single project.
+final projectProvider = FutureProvider.autoDispose.family<Project, String>(
+  (ref, projectId) async {
+    final projectService = ref.watch(projectServiceProvider);
+    return await projectService.getProject(projectId);
+  },
+);
+
+/// Cached provider for entities of a project.
+final entitiesProvider = FutureProvider.autoDispose.family<List<EntityDefinition>, String>(
+  (ref, projectId) async {
+    final entityService = ref.watch(entityServiceProvider);
+    return await entityService.listEntitiesForProject(projectId);
+  },
+);
+
+/// Cached provider for commands of a project.
+final commandsProvider = FutureProvider.autoDispose.family<List<CommandDefinition>, String>(
+  (ref, projectId) async {
+    final commandService = ref.watch(commandServiceProvider);
+    return await commandService.listCommandsForProject(projectId);
+  },
+);
+
+/// Cached provider for read models of a project.
+final readModelsProvider = FutureProvider.autoDispose.family<List<ReadModelDefinition>, String>(
+  (ref, projectId) async {
+    final readModelService = ref.watch(readModelServiceProvider);
+    return await readModelService.listReadModelsForProject(projectId);
+  },
+);
+
+/// Cached provider for connections of a project.
+final connectionsProvider = FutureProvider.autoDispose.family<List<ConnectionDefinition>, String>(
+  (ref, projectId) async {
+    final connectionService = ref.watch(connectionServiceProvider);
+    return await connectionService.listConnectionsForProject(projectId);
+  },
+);

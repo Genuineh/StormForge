@@ -43,15 +43,32 @@ class _ProjectDashboardScreenState extends ConsumerState<ProjectDashboardScreen>
 
     try {
       final projectService = ref.read(projectServiceProvider);
-      final project = await projectService.getProject(widget.projectId);
+      final entityService = ref.read(entityServiceProvider);
+      final commandService = ref.read(commandServiceProvider);
+      final readModelService = ref.read(readModelServiceProvider);
+      final connectionService = ref.read(connectionServiceProvider);
+
+      // Load project and stats in parallel
+      final results = await Future.wait([
+        projectService.getProject(widget.projectId),
+        entityService.listEntitiesForProject(widget.projectId),
+        commandService.listCommandsForProject(widget.projectId),
+        readModelService.listReadModelsForProject(widget.projectId),
+        connectionService.listConnectionsForProject(widget.projectId),
+      ]);
+
+      final project = results[0] as Project;
+      final entities = results[1] as List;
+      final commands = results[2] as List;
+      final readModels = results[3] as List;
+      final connections = results[4] as List;
       
-      // TODO: Load actual stats from services
       setState(() {
         _project = project;
-        _entityCount = 0;
-        _commandCount = 0;
-        _readModelCount = 0;
-        _connectionCount = 0;
+        _entityCount = entities.length;
+        _commandCount = commands.length;
+        _readModelCount = readModels.length;
+        _connectionCount = connections.length;
         _isLoading = false;
       });
     } catch (e) {

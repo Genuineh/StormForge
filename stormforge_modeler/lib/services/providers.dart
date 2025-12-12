@@ -3,6 +3,7 @@ import 'package:stormforge_modeler/models/user_model.dart';
 import 'package:stormforge_modeler/services/api/api_client.dart';
 import 'package:stormforge_modeler/services/api/auth_service.dart';
 import 'package:stormforge_modeler/services/api/command_service.dart';
+import 'package:stormforge_modeler/services/api/connection_service.dart';
 import 'package:stormforge_modeler/services/api/entity_service.dart';
 import 'package:stormforge_modeler/services/api/library_service.dart';
 import 'package:stormforge_modeler/services/api/project_service.dart';
@@ -61,6 +62,12 @@ final commandServiceProvider = Provider<CommandService>((ref) {
 final libraryServiceProvider = Provider<LibraryService>((ref) {
   final apiClient = ref.watch(apiClientProvider);
   return LibraryService(apiClient);
+});
+
+/// Provider for the connection service.
+final connectionServiceProvider = Provider<ConnectionService>((ref) {
+  final apiClient = ref.watch(apiClientProvider);
+  return ConnectionService(apiClient: apiClient);
 });
 
 /// State notifier for authentication state.

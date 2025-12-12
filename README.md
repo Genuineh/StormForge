@@ -171,15 +171,17 @@ For detailed sprint progress and completion reports, see [docs/sprints/](docs/sp
   - Basic EventStorming canvas in Flutter
   - IR v1.0 YAML schema
   - Basic Rust microservice generator
-- 🚧 **Phase 1**: MVP In Early Development (~20% complete)
-  - Sprint S03: Rust generator basics complete
-  - Sprint S04: Dart generator planned (not yet implemented)
-  - Backend framework established (35 Rust files)
-  - Core features in design/planning phase
-- 📋 **Modeler 2.0**: Design Complete, Implementation Starting (~10% complete)
-  - Detailed design documents: Complete (see `docs/sprints/planning/`)
-  - Backend models and basic API: 15% complete
-  - Frontend UI: 5% complete (basic canvas exists)
+- 🚧 **Phase 1**: MVP In Active Development (~45% complete)
+  - Sprint S03: Rust generator basics complete (60%)
+  - Sprint S04: Dart generator planned (not yet implemented, 0%)
+  - **Backend**: 37 Rust files, 69 API handlers, JWT auth, complete CRUD (85% complete)
+  - **Frontend**: 80 Dart files, 28 screens, full UI implementation (70% complete)
+  - **Integration**: API client layer defined, UI-to-API connection in progress (40% complete)
+- ✅ **Modeler 2.0**: Design Complete, Implementation ~65% complete
+  - Detailed design documents: ✅ Complete (see `docs/sprints/planning/`)
+  - Backend API implementation: ✅ 85% complete (69 handlers, JWT auth, full CRUD)
+  - Frontend UI implementation: ✅ 70% complete (all management screens, navigation, layouts)
+  - Frontend-Backend integration: 🚧 40% complete (API client layer ready, connections in progress)
 
 > **Important Note**: Sprint M1-M9 documents (previously in `completed/`) are **design and planning documents**, not completion reports. They have been moved to `docs/sprints/planning/` for clarity. These documents describe the intended architecture using future dates (2026), but most features are not yet implemented. See [TODO.md](TODO.md) for actual implementation status.
 

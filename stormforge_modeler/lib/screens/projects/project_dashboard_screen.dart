@@ -42,16 +42,34 @@ class _ProjectDashboardScreenState extends ConsumerState<ProjectDashboardScreen>
     });
 
     try {
-      final projectService = ref.read(projectServiceProvider);
-      final project = await projectService.getProject(widget.projectId);
+      // Use cached providers for better performance
+      final projectAsync = ref.read(projectProvider(widget.projectId).future);
+      final entitiesAsync = ref.read(entitiesProvider(widget.projectId).future);
+      final commandsAsync = ref.read(commandsProvider(widget.projectId).future);
+      final readModelsAsync = ref.read(readModelsProvider(widget.projectId).future);
+      final connectionsAsync = ref.read(connectionsProvider(widget.projectId).future);
+
+      // Load all data in parallel
+      final results = await Future.wait([
+        projectAsync,
+        entitiesAsync,
+        commandsAsync,
+        readModelsAsync,
+        connectionsAsync,
+      ]);
+
+      final project = results[0] as Project;
+      final entities = results[1] as List;
+      final commands = results[2] as List;
+      final readModels = results[3] as List;
+      final connections = results[4] as List;
       
-      // TODO: Load actual stats from services
       setState(() {
         _project = project;
-        _entityCount = 0;
-        _commandCount = 0;
-        _readModelCount = 0;
-        _connectionCount = 0;
+        _entityCount = entities.length;
+        _commandCount = commands.length;
+        _readModelCount = readModels.length;
+        _connectionCount = connections.length;
         _isLoading = false;
       });
     } catch (e) {
@@ -108,11 +126,22 @@ class _ProjectDashboardScreenState extends ConsumerState<ProjectDashboardScreen>
   Widget _buildDashboardContent(BuildContext context) {
     final theme = Theme.of(context);
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+    return RefreshIndicator(
+      onRefresh: () async {
+        // Invalidate cached providers to force refresh
+        ref.invalidate(projectProvider(widget.projectId));
+        ref.invalidate(entitiesProvider(widget.projectId));
+        ref.invalidate(commandsProvider(widget.projectId));
+        ref.invalidate(readModelsProvider(widget.projectId));
+        ref.invalidate(connectionsProvider(widget.projectId));
+        await _loadProjectData();
+      },
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
           // Project header
           Row(
             children: [
@@ -273,6 +302,7 @@ class _ProjectDashboardScreenState extends ConsumerState<ProjectDashboardScreen>
             ),
           ),
         ],
+      ),
       ),
     );
   }

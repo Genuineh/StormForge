@@ -167,29 +167,41 @@ class _ProjectsListScreenState extends ConsumerState<ProjectsListScreen> {
           }
 
           if (_isGridView) {
-            return GridView.builder(
-              padding: const EdgeInsets.all(16),
-              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 300,
-                childAspectRatio: 1.2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-              ),
-              itemCount: filteredProjects.length,
-              itemBuilder: (context, index) {
-                final project = filteredProjects[index];
-                return _ProjectGridCard(project: project);
+            return RefreshIndicator(
+              onRefresh: () async {
+                ref.invalidate(projectsProvider);
               },
+              child: GridView.builder(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.all(16),
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 300,
+                  childAspectRatio: 1.2,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                ),
+                itemCount: filteredProjects.length,
+                itemBuilder: (context, index) {
+                  final project = filteredProjects[index];
+                  return _ProjectGridCard(project: project);
+                },
+              ),
             );
           }
 
-          return ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: filteredProjects.length,
-            itemBuilder: (context, index) {
-              final project = filteredProjects[index];
-              return _ProjectListCard(project: project);
+          return RefreshIndicator(
+            onRefresh: () async {
+              ref.invalidate(projectsProvider);
             },
+            child: ListView.builder(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(16),
+              itemCount: filteredProjects.length,
+              itemBuilder: (context, index) {
+                final project = filteredProjects[index];
+                return _ProjectListCard(project: project);
+              },
+            ),
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
